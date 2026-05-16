@@ -3,12 +3,12 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<meta name="description" content="Juan David Suárez Sandoval — Full-Stack AI Engineer. Six production-grade projects: self-healing agents, GraphRAG, MemGPT memory, multi-agent debate, MCP workflows, agentic RAG with benchmarks." />
+<meta name="description" content="Heims A. Caicedo Lopera — pure mathematics → AI engineer. Six production-grade AI systems built with the rigor of a proof: self-correcting agents, persistent memory, hybrid retrieval, multi-agent reasoning, MCP workflows, vector DB benchmarks." />
 <meta name="theme-color" content="#0a0a0f" />
-<meta property="og:title" content="Juan David Suárez Sandoval — AI Engineer Portfolio" />
-<meta property="og:description" content="Six production-grade AI engineering projects. Self-correcting agents, persistent memory, hybrid retrieval, multi-agent reasoning, MCP, vector DB benchmarks." />
+<meta property="og:title" content="Heims Andrés Caicedo Lopera — AI Engineer Portfolio" />
+<meta property="og:description" content="Pure mathematics → AI engineering. Six production-grade systems built with the rigor of a proof. Most AI ships confidence — I ship systems that know when they're wrong." />
 <meta property="og:type" content="website" />
-<title>Juan David Suárez Sandoval — AI Engineer Portfolio</title>
+<title>Heims Andrés Caicedo Lopera — AI Engineer Portfolio</title>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
@@ -1655,6 +1655,151 @@
     to { opacity: 1; transform: translateY(0); }
   }
   body.modal-open { overflow: hidden; }
+
+  /* ===== Demo controls — make them POP ===== */
+  .demo-controls .btn {
+    padding: 8px 16px;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+  }
+  .demo-controls #demoRun {
+    background: linear-gradient(135deg, var(--accent) 0%, #5d3aff 100%);
+    border: 1px solid var(--accent);
+    color: white;
+    box-shadow: 0 0 0 0 rgba(124,92,255,0.6);
+    animation: demoPulse 2.4s ease-in-out infinite;
+  }
+  .demo-controls #demoRun:hover {
+    background: linear-gradient(135deg, #9d80ff 0%, #6e4dff 100%);
+    box-shadow: 0 8px 24px rgba(124,92,255,0.5);
+    animation: none;
+    transform: translateY(-1px);
+  }
+  @keyframes demoPulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(124,92,255,0.55), 0 4px 12px rgba(124,92,255,0.35); }
+    50% { box-shadow: 0 0 0 10px rgba(124,92,255,0), 0 4px 14px rgba(124,92,255,0.5); }
+  }
+  .demo-controls #demoReset {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid var(--border-strong);
+    color: var(--text);
+  }
+  .demo-controls #demoReset:hover {
+    background: rgba(255,255,255,0.08);
+    color: var(--accent);
+    border-color: var(--accent);
+  }
+
+  /* ===== "Why a mathematician?" section ===== */
+  .why-math {
+    background: linear-gradient(135deg, rgba(124,92,255,0.06) 0%, rgba(77,208,194,0.03) 100%);
+    border: 1px solid rgba(124,92,255,0.18);
+    border-radius: var(--radius-lg);
+    padding: 48px 44px;
+    position: relative;
+    overflow: hidden;
+  }
+  @media (max-width: 720px) { .why-math { padding: 32px 24px; } }
+  .why-math::before {
+    content: '∇';
+    position: absolute;
+    top: 12px;
+    right: 28px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 140px;
+    color: var(--accent);
+    opacity: 0.05;
+    line-height: 1;
+    pointer-events: none;
+  }
+  .why-math-grid {
+    display: grid;
+    grid-template-columns: 320px 1fr;
+    gap: 48px;
+    align-items: start;
+    position: relative;
+    z-index: 1;
+  }
+  @media (max-width: 880px) { .why-math-grid { grid-template-columns: 1fr; gap: 32px; } }
+  .why-math h3 {
+    font-size: clamp(22px, 2.4vw, 28px);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    margin-bottom: 16px;
+    line-height: 1.15;
+  }
+  .why-math .preamble {
+    color: var(--text-dim);
+    font-size: 15px;
+    line-height: 1.7;
+  }
+  .why-math .preamble strong { color: var(--text); }
+  .why-math-pts {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+  }
+  .why-math-pt {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 22px 24px;
+    display: grid;
+    grid-template-columns: 50px 1fr;
+    gap: 18px;
+    align-items: start;
+    transition: all 0.25s;
+  }
+  .why-math-pt:hover {
+    border-color: var(--border-strong);
+    transform: translateY(-2px);
+  }
+  .why-math-pt-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 30px;
+    font-weight: 700;
+    background: linear-gradient(135deg, var(--accent), var(--accent-2));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    line-height: 1;
+  }
+  .why-math-pt h4 {
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    margin-bottom: 8px;
+  }
+  .why-math-pt p {
+    font-size: 14px;
+    color: var(--text-dim);
+    line-height: 1.6;
+  }
+  .why-math-pt p strong { color: var(--text); }
+
+  /* ===== Scarcity bar (above contact) ===== */
+  .scarcity-bar {
+    background: linear-gradient(90deg, rgba(255,158,109,0.08), rgba(124,92,255,0.05));
+    border: 1px solid rgba(255,158,109,0.25);
+    border-radius: var(--radius);
+    padding: 18px 24px;
+    margin-bottom: 28px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    font-size: 14px;
+    color: var(--text);
+    flex-wrap: wrap;
+  }
+  .scarcity-bar .pip {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--accent-3);
+    box-shadow: 0 0 12px var(--accent-3);
+    animation: pulse 1.8s ease-in-out infinite;
+    flex-shrink: 0;
+  }
+  .scarcity-bar strong { color: var(--accent-3); font-weight: 600; }
 </style>
 </head>
 <body>
@@ -1668,11 +1813,11 @@
   <div class="nav-inner">
     <div class="logo">
       <span class="logo-dot"></span>
-      <span>jds.ai</span>
+      <span>hac · math → ai</span>
     </div>
     <div class="nav-links" id="navLinks">
       <a href="#thesis">Thesis</a>
-      <a href="#capabilities">Capabilities</a>
+      <a href="#why-math">Why math?</a>
       <a href="#projects">Projects</a>
       <a href="#demo">Live demo</a>
       <a href="#benchmarks">Benchmarks</a>
@@ -1738,12 +1883,10 @@
   </svg>
 
   <div class="hero-inner">
-    <div class="hero-badge">Open to AI Engineer roles · EU / USA · remote-first</div>
-    <h1>I build AI systems that <span class="accent">survive Monday morning</span> in production.</h1>
+    <div class="hero-badge">Pure Mathematics · UNAL · open to AI Engineer roles · remote-first</div>
+    <h1>Most AI ships confidence.<br>I ship systems that <span class="accent">know when they're wrong.</span></h1>
     <p class="lede">
-      <strong>Juan David Suárez Sandoval</strong> — Full-Stack AI Engineer.
-      Six production-grade projects on multi-agent orchestration, persistent memory, hybrid retrieval, and the Model Context Protocol.
-      Every project ships with Docker, evaluation loops, and observability from day one — not as an afterthought.
+      <strong>Heims Andrés Caicedo Lopera</strong> — pure mathematics undergrad at Universidad Nacional de Colombia, training as an AI Engineer. Six production-grade designs built on a single thesis: <strong>a system that can't detect its own failure isn't intelligent — it's just confident</strong>. Every project treats reliability the way mathematics treats correctness: as a property you <em>prove</em>, not one you <em>hope for</em>.
     </p>
     <div class="hero-cta">
       <a class="btn btn-primary" href="#projects">View the work
@@ -1754,7 +1897,7 @@
         <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0a12 12 0 0 0-3.8 23.4c.6.1.8-.3.8-.6v-2c-3.3.7-4-1.6-4-1.6-.5-1.4-1.3-1.7-1.3-1.7-1-.8.1-.7.1-.7 1.2 0 1.8 1.2 1.8 1.2 1 1.8 2.8 1.3 3.4 1 .1-.8.4-1.3.7-1.6-2.7-.3-5.5-1.3-5.5-5.9 0-1.3.5-2.4 1.2-3.2-.1-.3-.5-1.5.1-3.2 0 0 1-.3 3.3 1.2a11.4 11.4 0 0 1 6 0c2.3-1.5 3.3-1.2 3.3-1.2.6 1.7.2 2.9.1 3.2.8.8 1.2 1.9 1.2 3.2 0 4.6-2.8 5.6-5.5 5.9.4.4.8 1.1.8 2.2v3.3c0 .3.2.7.8.6A12 12 0 0 0 12 0z"/></svg>
         GitHub
       </a>
-      <a class="btn" href="mailto:juadsuarezsan@unal.edu.co">Email</a>
+      <a class="btn" href="mailto:hecaicedol@unal.edu.co">Email</a>
     </div>
     <div class="hero-stats">
       <div>
@@ -1763,15 +1906,15 @@
       </div>
       <div>
         <div class="stat-num">1<span class="unit">/ 6</span></div>
-        <div class="stat-label">Currently functional</div>
+        <div class="stat-label">Functional flagship · honest status</div>
       </div>
       <div>
-        <div class="stat-num">15<span class="unit">+</span></div>
-        <div class="stat-label">Agent roles implemented</div>
+        <div class="stat-num">0</div>
+        <div class="stat-label">Silent failures tolerated</div>
       </div>
       <div>
         <div class="stat-num">100<span class="unit">%</span></div>
-        <div class="stat-label">Dockerized & traced</div>
+        <div class="stat-label">Typed boundaries · traced runs</div>
       </div>
     </div>
   </div>
@@ -1813,10 +1956,60 @@
   </div>
 </section>
 
+<!-- ============ WHY A MATHEMATICIAN ============ -->
+<section id="why-math">
+  <div class="container">
+    <div class="section-eyebrow">02 · The differentiator</div>
+    <h2>Why hire a mathematician for AI engineering?</h2>
+    <p class="section-sub">The honest answer — and the three things mathematics gives me that a CS degree alone wouldn't.</p>
+
+    <div class="why-math reveal">
+      <div class="why-math-grid">
+        <div>
+          <h3>"AI engineering is hard because correctness is hard."</h3>
+          <p class="preamble">
+            Mathematics is the only discipline that spends years teaching you how to <strong>prove</strong> what you claim — and how to know exactly when your proof breaks. Production AI fails the same way undergraduate proofs fail: hidden assumptions, untested cases, ambiguous definitions, missing edge cases.
+          </p>
+          <p class="preamble" style="margin-top:14px">
+            The difference is that in production, <strong>no one is grading you</strong>. The system just quietly produces a wrong answer — and someone pays for it. That's the gap this portfolio is built to close.
+          </p>
+          <p class="preamble" style="margin-top:14px;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--text-faint)">
+            ↳ Anthropic, DeepMind, OpenAI hire heavily from math and physics. Not by accident.
+          </p>
+        </div>
+
+        <div class="why-math-pts">
+          <div class="why-math-pt">
+            <div class="why-math-pt-num">01</div>
+            <div>
+              <h4>Failure modes are theorems.</h4>
+              <p>A mathematician spends years learning to enumerate every case before claiming a result. <strong>Critic agents, reflection loops, eval suites</strong> are the same instinct, applied to LLMs. <em>(See: Project 01)</em></p>
+            </div>
+          </div>
+          <div class="why-math-pt">
+            <div class="why-math-pt-num">02</div>
+            <div>
+              <h4>Abstraction is the daily job.</h4>
+              <p>Three-tier memory, hybrid retrieval, multi-agent debate — these are all <strong>structural problems</strong>. Naming the right abstraction is what mathematics teaches; engineering it is what production teaches. I do both. <em>(See: Projects 03, 04, 06)</em></p>
+            </div>
+          </div>
+          <div class="why-math-pt">
+            <div class="why-math-pt-num">03</div>
+            <div>
+              <h4>Rigor scales. Vibes don't.</h4>
+              <p>Most AI work is "ship the thing and pray." Mathematics doesn't permit that. Every claim here has an <strong>explicit metric</strong>, an <strong>explicit baseline</strong>, and <strong>conditions under which it stops working</strong>. <em>(See: any project's metrics block)</em></p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- ============ CAPABILITIES ============ -->
 <section id="capabilities">
   <div class="container">
-    <div class="section-eyebrow">02 · Capabilities</div>
+    <div class="section-eyebrow">03 · Capabilities</div>
     <h2>Six axes of production AI</h2>
     <p class="section-sub">A radar of the production concerns AI teams hire for. Each axis is grounded in at least one of the six projects.</p>
 
@@ -1920,7 +2113,7 @@
 <!-- ============ PROJECTS ============ -->
 <section id="projects">
   <div class="container">
-    <div class="section-eyebrow">03 · The work</div>
+    <div class="section-eyebrow">04 · The work</div>
     <h2>Six projects, one philosophy</h2>
     <p class="section-sub">Each project answers a distinct production question. Status is honest: one functional flagship and five scaffolded designs with full READMEs and code skeletons.</p>
 
@@ -2379,7 +2572,7 @@
 <!-- ============ LIVE DEMO ============ -->
 <section id="demo">
   <div class="container">
-    <div class="section-eyebrow">04 · Live demo · Project 01</div>
+    <div class="section-eyebrow">05 · Live demo · Project 01</div>
     <h2>Watch the self-healing loop run</h2>
     <p class="section-sub">A simulated execution of the LangGraph state machine on a malformed invoice. The critic flags the failure, the extractor reflects, episodic memory is consulted. No real LLM calls — the timing and scores match the actual run profile.</p>
 
@@ -2458,7 +2651,7 @@
 <!-- ============ BENCHMARKS ============ -->
 <section id="benchmarks">
   <div class="container">
-    <div class="section-eyebrow">05 · Benchmarks · Project 06</div>
+    <div class="section-eyebrow">06 · Benchmarks · Project 06</div>
     <h2>Three vector stores. Same corpus. Same queries.</h2>
     <p class="section-sub">Target benchmarks for the agentic RAG benchmark suite, with and without the reranker stage. Numbers are the project's success targets — real measurements land in the README when the benchmark runs against the production corpus.</p>
 
@@ -2531,7 +2724,7 @@
 <!-- ============ STACK ============ -->
 <section id="stack">
   <div class="container">
-    <div class="section-eyebrow">06 · The toolbox</div>
+    <div class="section-eyebrow">07 · The toolbox</div>
     <h2>What I actually reach for</h2>
     <p class="section-sub">Categorized by layer. Dots indicate self-assessed proficiency — three dots means I've shipped it under load, two means I've built a non-trivial project with it, one means I've used it enough to have an opinion.</p>
 
@@ -2605,7 +2798,7 @@
 <!-- ============ ROADMAP ============ -->
 <section id="roadmap">
   <div class="container">
-    <div class="section-eyebrow">07 · Roadmap</div>
+    <div class="section-eyebrow">08 · Roadmap</div>
     <h2>What lands next</h2>
     <p class="section-sub">Public, honest, dated. Each quarter has one project pushed from <em>scaffolded</em> to <em>functional with metrics in the README</em>.</p>
 
@@ -2637,41 +2830,42 @@
 <!-- ============ ABOUT ============ -->
 <section id="about">
   <div class="container">
-    <div class="section-eyebrow">08 · About</div>
+    <div class="section-eyebrow">09 · About</div>
     <h2>The person behind the repos</h2>
     <p class="section-sub">Short version below. The rest lives in the code.</p>
 
     <div class="about-grid">
       <div class="about-text">
-        <p><strong>Juan David Suárez Sandoval</strong> — Computer Science / Systems Engineering, Universidad Nacional de Colombia. Based in Bogotá, building for remote teams in EU and USA.</p>
-        <p>I build AI systems with the discipline of a backend engineer: typed boundaries, observability, evaluation loops, Docker from day one. Most "agents" you'll find online are demos. The work in this portfolio is engineered for what happens <em>after</em> the demo — the Monday morning when a customer hands you a real document and a real deadline.</p>
+        <p><strong>Heims Andrés Caicedo Lopera</strong> — pure mathematics, Universidad Nacional de Colombia. Bogotá-based, building for remote teams in EU and USA.</p>
+        <p>I spent years learning how to <strong>prove what I claim</strong>. Mathematics is the only field where you don't get partial credit for "it usually works." That training transfers directly to production AI engineering — where the same failure modes that kill an undergraduate proof (hidden assumptions, untested cases, ambiguous definitions) silently destroy AI systems.</p>
+        <p>The six projects here aren't "AI demos." They're attempts to engineer systems where every property — reliability, recall, latency, cost — is explicitly defined, explicitly bounded, and explicitly measured.</p>
 
         <div class="quote-block">
-          <p>Reliability under failure is the single most-asked-about property in AI hiring loops in 2025–2026. Every project here is built to answer one version of that question.</p>
-          <span class="cite">— my own thesis, written on day one</span>
+          <p>If you cannot describe the conditions under which your system fails, you have not built a system. You have built a hope.</p>
+          <span class="cite">— the only engineering principle I had to learn twice</span>
         </div>
 
-        <p>I'm currently open to <strong>Full-Stack AI Engineer</strong> and <strong>AI Platform Engineer</strong> roles — remote-first, willing to relocate for the right team. Comfortable with a paid take-home, a live system-design session, or a code walkthrough of any project here.</p>
-        <p>Outside the IDE: I read papers from Anthropic, Microsoft Research, and DeepMind weekly. I keep notes on what's actually shippable vs. what's still research-grade.</p>
+        <p>I'm open to <strong>AI Engineer</strong> and <strong>AI Platform Engineer</strong> roles — remote-first, willing to relocate for the right team. I'll do a <strong>paid take-home</strong>, a <strong>live system-design session</strong>, or a <strong>code walkthrough of any project here</strong> before any commitment. Your risk on a first hire is zero.</p>
+        <p>Outside the IDE: I read papers from Anthropic, Microsoft Research, and DeepMind weekly. I keep a notebook (in LaTeX, because old habits) on what's actually shippable vs. what's still research-grade.</p>
       </div>
 
       <div>
         <div class="about-stats">
           <div class="about-stat">
-            <div class="about-stat-num">3</div>
-            <div class="about-stat-label">Languages spoken</div>
+            <div class="about-stat-num">∇</div>
+            <div class="about-stat-label">Pure math · UNAL</div>
           </div>
           <div class="about-stat">
-            <div class="about-stat-num">15+</div>
-            <div class="about-stat-label">Agent roles designed</div>
+            <div class="about-stat-num">6</div>
+            <div class="about-stat-label">AI systems engineered</div>
           </div>
           <div class="about-stat">
-            <div class="about-stat-num">4</div>
-            <div class="about-stat-label">Vector stores used</div>
+            <div class="about-stat-num">4+</div>
+            <div class="about-stat-label">Vector stores benchmarked</div>
           </div>
           <div class="about-stat">
-            <div class="about-stat-num">∞</div>
-            <div class="about-stat-label">README revisions</div>
+            <div class="about-stat-num">24h</div>
+            <div class="about-stat-label">Average reply time</div>
           </div>
         </div>
 
@@ -2694,13 +2888,17 @@
 <!-- ============ CONTACT ============ -->
 <section id="contact">
   <div class="container">
+    <div class="scarcity-bar reveal">
+      <span class="pip"></span>
+      <span><strong>Currently interviewing.</strong> &nbsp;Ready Q2 2026 · taking <strong>one role at a time</strong> · typical reply within 24 hours.</span>
+    </div>
     <div class="contact-card reveal">
-      <h2>Let's build something that holds up in production.</h2>
-      <p class="lede">If you're hiring for AI engineering in EU or USA and you've read this far, I'd love to talk. I'll do a paid take-home, a live system-design session, or walk you through any project on this page over a call.</p>
+      <h2>Hire the mathematician before someone else does.</h2>
+      <p class="lede">If you're hiring for AI engineering in EU or USA and you've read this far, you already know what you'd be getting. I'll do a <strong>paid take-home</strong>, a <strong>live system-design call (30 min, free)</strong>, or a <strong>code walkthrough of any project here</strong> — before any commitment. The asymmetry on a first hire favors you.</p>
       <div class="contact-cta">
-        <a class="btn btn-primary" href="mailto:juadsuarezsan@unal.edu.co">
+        <a class="btn btn-primary" href="mailto:hecaicedol@unal.edu.co">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-          juadsuarezsan@unal.edu.co
+          hecaicedol@unal.edu.co
         </a>
         <a class="btn" href="https://github.com/" target="_blank" rel="noopener">
           <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0a12 12 0 0 0-3.8 23.4c.6.1.8-.3.8-.6v-2c-3.3.7-4-1.6-4-1.6-.5-1.4-1.3-1.7-1.3-1.7-1-.8.1-.7.1-.7 1.2 0 1.8 1.2 1.8 1.2 1 1.8 2.8 1.3 3.4 1 .1-.8.4-1.3.7-1.6-2.7-.3-5.5-1.3-5.5-5.9 0-1.3.5-2.4 1.2-3.2-.1-.3-.5-1.5.1-3.2 0 0 1-.3 3.3 1.2a11.4 11.4 0 0 1 6 0c2.3-1.5 3.3-1.2 3.3-1.2.6 1.7.2 2.9.1 3.2.8.8 1.2 1.9 1.2 3.2 0 4.6-2.8 5.6-5.5 5.9.4.4.8 1.1.8 2.2v3.3c0 .3.2.7.8.6A12 12 0 0 0 12 0z"/></svg>
@@ -2741,9 +2939,9 @@
 
 <footer>
   <div class="footer-inner">
-    <div>© <span id="year"></span> Juan David Suárez Sandoval · Bogotá, Colombia</div>
+    <div>© <span id="year"></span> Heims Andrés Caicedo Lopera · Bogotá, Colombia</div>
     <div class="footer-meta">
-      <span>Built with HTML, restraint, and a dark theme.</span>
+      <span>Q.E.D. · MIT-licensed · fork it</span>
       <span class="dot">●</span>
       <span>Last updated <span id="updated"></span></span>
     </div>
@@ -3232,7 +3430,7 @@
             View source on GitHub
           </a>
           <a class="btn" href="${p.readme}" target="_blank" rel="noopener">↗ Full README</a>
-          <a class="btn" href="mailto:juadsuarezsan@unal.edu.co?subject=About ${encodeURIComponent(p.title)}">✉ Ask me about this</a>
+          <a class="btn" href="mailto:hecaicedol@unal.edu.co?subject=About ${encodeURIComponent(p.title)}">✉ Ask me about this</a>
         </div>
       </section>
     `;
