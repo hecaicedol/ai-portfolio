@@ -1,0 +1,48 @@
+version: "3.9"
+
+services:
+  neo4j:
+    image: neo4j:5.24
+    restart: unless-stopped
+    environment:
+      NEO4J_AUTH: ${NEO4J_USER:-neo4j}/${NEO4J_PASSWORD:-knowledge_dev_pw}
+      NEO4J_PLUGINS: '["apoc","graph-data-science"]'
+      NEO4J_dbms_security_procedures_unrestricted: apoc.*,gds.*
+      NEO4J_dbms_memory_pagecache_size: 512M
+    ports:
+      - "7474:7474"
+      - "7687:7687"
+    volumes:
+      - neo4j-data:/data
+    healthcheck:
+      test: ["CMD-SHELL", "wget --spider -q http://localhost:7474 || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  api:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    env_file: .env
+    depends_on:
+      neo4j:
+        condition: service_healthy
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend:/app
+    command: uvicorn api.main:app --host 0.0.0.0 --port 8000 --reload
+
+  frontend:
+    image: node:20-alpine
+    working_dir: /app
+    volumes:
+      - ./frontend:/app
+    ports:
+      - "3000:3000"
+    command: sh -c "npm install && npm run dev"
+
+volumes:
+  neo4j-data:
