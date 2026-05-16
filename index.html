@@ -1239,6 +1239,422 @@
   .text-mono { font-family: 'JetBrains Mono', monospace; }
   .text-dim { color: var(--text-dim); }
   .nowrap { white-space: nowrap; }
+
+  /* ===== Project link buttons ===== */
+  .project-open-btn {
+    background: linear-gradient(135deg, var(--accent) 0%, #5d3aff 100%);
+    border: 1px solid var(--accent);
+    color: white;
+    padding: 11px 20px;
+    border-radius: var(--radius-sm);
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
+    box-shadow: 0 4px 12px rgba(124,92,255,0.25);
+  }
+  .project-open-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 30px rgba(124,92,255,0.4);
+    background: linear-gradient(135deg, #9d80ff 0%, #6e4dff 100%);
+  }
+  .project-open-btn .arr {
+    transition: transform 0.25s;
+  }
+  .project-open-btn:hover .arr { transform: translateX(3px); }
+  .project-links a.muted {
+    color: var(--text-faint);
+  }
+  .project-links a.muted:hover { color: var(--text-dim); }
+
+  /* ===== Hypnotic modal ===== */
+  .modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(4, 5, 9, 0);
+    backdrop-filter: blur(0px);
+    -webkit-backdrop-filter: blur(0px);
+    z-index: 200;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1), backdrop-filter 0.5s, background 0.5s;
+  }
+  .modal-backdrop.open {
+    opacity: 1;
+    pointer-events: auto;
+    background: rgba(4, 5, 9, 0.78);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+  }
+  .modal-shell {
+    position: fixed;
+    inset: 0;
+    z-index: 201;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    overflow-y: auto;
+    padding: 40px 20px 80px;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  .modal-shell.open { pointer-events: auto; opacity: 1; }
+  .modal-panel {
+    position: relative;
+    width: 100%;
+    max-width: 1080px;
+    background:
+      radial-gradient(ellipse 600px 300px at 30% 0%, rgba(124,92,255,0.15), transparent 60%),
+      radial-gradient(ellipse 500px 250px at 100% 100%, rgba(77,208,194,0.08), transparent 60%),
+      var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    overflow: hidden;
+    transform: scale(0.85) translateY(40px);
+    opacity: 0;
+    transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .modal-shell.open .modal-panel {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+  }
+  .modal-panel::before {
+    content: '';
+    position: absolute;
+    inset: -2px;
+    border-radius: 24px;
+    padding: 2px;
+    background: conic-gradient(from 0deg,
+      transparent 0deg, transparent 60deg,
+      rgba(124,92,255,0.6) 90deg, rgba(77,208,194,0.6) 120deg,
+      transparent 150deg, transparent 360deg);
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask-composite: exclude;
+    animation: rotateBorder 6s linear infinite;
+    opacity: 0;
+    transition: opacity 0.8s;
+    pointer-events: none;
+  }
+  .modal-shell.open .modal-panel::before { opacity: 1; }
+  @keyframes rotateBorder {
+    to { transform: rotate(360deg); }
+  }
+
+  .modal-header {
+    padding: 32px 40px 0;
+    position: sticky;
+    top: 0;
+    z-index: 5;
+    background: linear-gradient(180deg, rgba(18,20,28,0.95) 0%, rgba(18,20,28,0.85) 80%, transparent 100%);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+  }
+  .modal-close {
+    position: absolute;
+    top: 24px;
+    right: 24px;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--bg-elev);
+    border: 1px solid var(--border-strong);
+    color: var(--text-dim);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: inherit;
+    transition: all 0.2s;
+    z-index: 10;
+  }
+  .modal-close:hover {
+    background: var(--bg-card);
+    color: var(--text);
+    border-color: var(--accent);
+    transform: rotate(90deg);
+  }
+  .modal-close svg { width: 16px; height: 16px; }
+
+  .modal-meta-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 18px;
+    flex-wrap: wrap;
+  }
+  .modal-meta-row .project-num { font-size: 12px; }
+  .modal-title {
+    font-size: clamp(28px, 4vw, 44px);
+    font-weight: 800;
+    letter-spacing: -0.025em;
+    line-height: 1.1;
+    margin-bottom: 12px;
+    background: linear-gradient(180deg, #ffffff 30%, #b4bac8 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .modal-tagline {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px;
+    color: var(--accent-2);
+    margin-bottom: 28px;
+    line-height: 1.5;
+  }
+
+  .modal-body { padding: 0 40px 40px; }
+  @media (max-width: 720px) {
+    .modal-header { padding: 28px 22px 0; }
+    .modal-body { padding: 0 22px 32px; }
+  }
+
+  .modal-pitch {
+    font-size: 18px;
+    line-height: 1.65;
+    color: var(--text);
+    padding: 24px 28px;
+    background: linear-gradient(135deg, rgba(124,92,255,0.08), rgba(77,208,194,0.04));
+    border-left: 3px solid var(--accent);
+    border-radius: 0 var(--radius) var(--radius) 0;
+    margin-bottom: 40px;
+  }
+  .modal-pitch strong { color: var(--text); font-weight: 700; }
+
+  .modal-section { margin-bottom: 44px; }
+  .modal-section-head {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 18px;
+  }
+  .modal-section-head .modal-section-tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    padding: 4px 10px;
+    background: rgba(124,92,255,0.1);
+    border: 1px solid rgba(124,92,255,0.25);
+    border-radius: 100px;
+  }
+  .modal-section h4 {
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: -0.015em;
+    margin: 0;
+  }
+
+  .three-up {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+  }
+  @media (max-width: 720px) { .three-up { grid-template-columns: 1fr; } }
+  .three-card {
+    background: var(--bg-elev);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 22px;
+    position: relative;
+    overflow: hidden;
+  }
+  .three-card-icon {
+    width: 32px; height: 32px;
+    border-radius: 8px;
+    background: rgba(124,92,255,0.1);
+    border: 1px solid rgba(124,92,255,0.3);
+    color: var(--accent);
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: 14px;
+  }
+  .three-card-icon svg { width: 16px; height: 16px; }
+  .three-card h5 {
+    font-size: 13px;
+    color: var(--text-faint);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+  .three-card p {
+    font-size: 14px;
+    color: var(--text);
+    line-height: 1.65;
+  }
+  .three-card.problem .three-card-icon { background: rgba(255,90,114,0.1); border-color: rgba(255,90,114,0.3); color: var(--danger); }
+  .three-card.solution .three-card-icon { background: rgba(77,208,194,0.1); border-color: rgba(77,208,194,0.3); color: var(--accent-2); }
+  .three-card.impact .three-card-icon { background: rgba(52,211,153,0.1); border-color: rgba(52,211,153,0.3); color: var(--success); }
+
+  .modal-analogy {
+    background: var(--bg-elev);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 24px 28px;
+    margin-top: 18px;
+    position: relative;
+  }
+  .modal-analogy::before {
+    content: '"';
+    position: absolute;
+    top: 4px; left: 14px;
+    font-size: 60px;
+    color: var(--accent);
+    opacity: 0.18;
+    font-family: 'JetBrains Mono', monospace;
+    line-height: 1;
+  }
+  .modal-analogy p {
+    font-size: 15px;
+    color: var(--text);
+    line-height: 1.7;
+    font-style: italic;
+    padding-left: 18px;
+  }
+  .modal-analogy p strong { color: var(--accent-2); font-style: normal; font-weight: 600; }
+
+  /* Expandable engineering section */
+  .modal-engineering {
+    background: var(--bg-elev);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+  .eng-toggle {
+    width: 100%;
+    background: transparent;
+    border: 0;
+    padding: 20px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    color: var(--text);
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .eng-toggle:hover { background: rgba(255,255,255,0.02); }
+  .eng-toggle .label-l {
+    display: flex; align-items: center; gap: 12px;
+  }
+  .eng-toggle .label-l .ic {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px;
+    color: var(--accent);
+  }
+  .eng-toggle .chev {
+    transition: transform 0.3s;
+    color: var(--text-faint);
+  }
+  .modal-engineering.open .chev { transform: rotate(180deg); }
+  .eng-body {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .modal-engineering.open .eng-body { max-height: 3000px; }
+  .eng-body-inner {
+    padding: 0 24px 24px;
+    border-top: 1px solid var(--border);
+    padding-top: 22px;
+  }
+
+  .modal-arch {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+    margin-bottom: 22px;
+  }
+  .modal-arch h6 {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--text-faint);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    margin-bottom: 14px;
+  }
+  .modal-arch svg { width: 100%; height: auto; max-height: 280px; }
+
+  .modal-metrics-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 12px;
+    margin-bottom: 24px;
+  }
+  .mm-card {
+    background: var(--bg-elev);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 18px;
+  }
+  .mm-card .mm-val {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--text);
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .mm-card .mm-val.target { color: var(--accent-2); }
+  .mm-card .mm-label {
+    font-size: 11px;
+    color: var(--text-faint);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-top: 8px;
+  }
+
+  .modal-stack {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 24px;
+  }
+  .modal-stack span {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    padding: 5px 11px;
+    background: var(--bg-elev);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--text-dim);
+  }
+
+  .modal-cta-row {
+    display: flex;
+    gap: 12px;
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+    flex-wrap: wrap;
+  }
+
+  /* Modal content reveal */
+  .modal-shell.open .modal-section,
+  .modal-shell.open .modal-pitch {
+    animation: modalContentIn 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+  .modal-shell.open .modal-pitch { animation-delay: 0.3s; }
+  .modal-shell.open .modal-section:nth-of-type(1) { animation-delay: 0.4s; }
+  .modal-shell.open .modal-section:nth-of-type(2) { animation-delay: 0.5s; }
+  .modal-shell.open .modal-section:nth-of-type(3) { animation-delay: 0.6s; }
+  .modal-shell.open .modal-section:nth-of-type(4) { animation-delay: 0.7s; }
+  .modal-shell.open .modal-section:nth-of-type(5) { animation-delay: 0.8s; }
+  @keyframes modalContentIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  body.modal-open { overflow: hidden; }
 </style>
 </head>
 <body>
@@ -1618,9 +2034,9 @@
       </div>
 
       <div class="project-links">
-        <a href="./01-self-healing-pipeline/README.md">→ Full README</a>
-        <a href="./01-self-healing-pipeline/">→ Source tree</a>
-        <a href="#demo">→ Try the simulated run</a>
+        <button class="project-open-btn" data-project="01">Open project page <span class="arr">→</span></button>
+        <a class="muted" href="https://github.com/hecaicedol/ai-portfolio/tree/main/01-self-healing-pipeline" target="_blank" rel="noopener">↗ Source on GitHub</a>
+        <a class="muted" href="#demo">↓ Try the simulated run</a>
       </div>
     </article>
 
@@ -1691,8 +2107,8 @@
         </div>
       </div>
       <div class="project-links">
-        <a href="./02-knowledge-os/README.md">→ Full README</a>
-        <a href="./02-knowledge-os/">→ Source tree</a>
+        <button class="project-open-btn" data-project="02">Open project page <span class="arr">→</span></button>
+        <a class="muted" href="https://github.com/hecaicedol/ai-portfolio/tree/main/02-knowledge-os" target="_blank" rel="noopener">↗ Source on GitHub</a>
       </div>
     </article>
 
@@ -1749,8 +2165,8 @@
         </div>
       </div>
       <div class="project-links">
-        <a href="./03-research-agent/README.md">→ Full README</a>
-        <a href="./03-research-agent/">→ Source tree</a>
+        <button class="project-open-btn" data-project="03">Open project page <span class="arr">→</span></button>
+        <a class="muted" href="https://github.com/hecaicedol/ai-portfolio/tree/main/03-research-agent" target="_blank" rel="noopener">↗ Source on GitHub</a>
       </div>
     </article>
 
@@ -1809,8 +2225,8 @@
         </div>
       </div>
       <div class="project-links">
-        <a href="./04-debate-system/README.md">→ Full README</a>
-        <a href="./04-debate-system/">→ Source tree</a>
+        <button class="project-open-btn" data-project="04">Open project page <span class="arr">→</span></button>
+        <a class="muted" href="https://github.com/hecaicedol/ai-portfolio/tree/main/04-debate-system" target="_blank" rel="noopener">↗ Source on GitHub</a>
       </div>
     </article>
 
@@ -1872,8 +2288,8 @@
         </div>
       </div>
       <div class="project-links">
-        <a href="./05-workflow-engine/README.md">→ Full README</a>
-        <a href="./05-workflow-engine/">→ Source tree</a>
+        <button class="project-open-btn" data-project="05">Open project page <span class="arr">→</span></button>
+        <a class="muted" href="https://github.com/hecaicedol/ai-portfolio/tree/main/05-workflow-engine" target="_blank" rel="noopener">↗ Source on GitHub</a>
       </div>
     </article>
 
@@ -1951,9 +2367,9 @@
         </div>
       </div>
       <div class="project-links">
-        <a href="./06-agentic-rag/README.md">→ Full README</a>
-        <a href="./06-agentic-rag/">→ Source tree</a>
-        <a href="#benchmarks">→ Live benchmark comparison</a>
+        <button class="project-open-btn" data-project="06">Open project page <span class="arr">→</span></button>
+        <a class="muted" href="https://github.com/hecaicedol/ai-portfolio/tree/main/06-agentic-rag" target="_blank" rel="noopener">↗ Source on GitHub</a>
+        <a class="muted" href="#benchmarks">↓ Live benchmark comparison</a>
       </div>
     </article>
 
@@ -2304,6 +2720,25 @@
   </div>
 </section>
 
+<!-- ============ PROJECT MODAL ============ -->
+<div class="modal-backdrop" id="modalBackdrop"></div>
+<div class="modal-shell" id="modalShell" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+  <div class="modal-panel" id="modalPanel">
+    <button class="modal-close" id="modalClose" aria-label="Close">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+    </button>
+    <div class="modal-header">
+      <div class="modal-meta-row">
+        <span class="project-num" id="modalNum">PROJECT 01 / 06</span>
+        <span class="badge" id="modalBadge">● Functional</span>
+      </div>
+      <h3 class="modal-title" id="modalTitle">Title</h3>
+      <p class="modal-tagline" id="modalTagline">Subtitle</p>
+    </div>
+    <div class="modal-body" id="modalBody"></div>
+  </div>
+</div>
+
 <footer>
   <div class="footer-inner">
     <div>© <span id="year"></span> Juan David Suárez Sandoval · Bogotá, Colombia</div>
@@ -2482,6 +2917,370 @@
       });
     });
   });
+
+  // ====================================================
+  // ============= PROJECT MODAL (data + logic) =========
+  // ====================================================
+
+  const PROJECTS = {
+    '01': {
+      num: 'PROJECT 01 / 06',
+      status: { label: '● Functional', cls: 'badge-live' },
+      title: 'Self-Healing Multi-Agent Pipeline',
+      tagline: 'Five AI agents that catch their own mistakes — before a wrong invoice gets paid.',
+      pitch: 'Imagine your company processes <strong>5,000 supplier invoices a month</strong>. One in twenty has a typo or unusual layout. A standard AI extractor confidently reads the wrong vendor name — and your accounts payable system pays <strong>Acme Corp $4,820 instead of Acme Construction</strong>. This pipeline fixes that class of failure at its root: every output is reviewed by a critic agent, mistakes trigger a reflection loop, and the system learns from past errors so it doesn\'t repeat them.',
+      three: {
+        problem: 'The most expensive AI failures are silent. A confident wrong answer flows straight into your ERP. You only find out when a vendor calls to ask why they were paid twice — or not paid at all.',
+        solution: 'Five specialized agents work as a team: <strong>extractor</strong> reads the document, <strong>validator</strong> checks structure, <strong>critic</strong> scores it on four quality principles, <strong>reflection</strong> learns from past errors when something fails, <strong>synthesizer</strong> produces the final audited output. Capped at 3 retry cycles — failures get flagged loudly, never silently.',
+        impact: 'Catches roughly <strong>11% more failures</strong> than a naive extractor. Costs about <strong>18% more in tokens</strong> per document — a small price for stopping wrong payments downstream. Every run is traced in Langfuse, so audit trails are automatic.'
+      },
+      analogy: 'Think of it as a <strong>small accounting team that knows when to double-check itself</strong>. Without a reviewer, an intern submits the first answer that "looks right." With a senior reviewer reading every submission against a checklist — and a notebook of mistakes the team has seen before — the same intern produces output you can trust. That\'s the pipeline.',
+      arch: '<svg viewBox="0 0 600 320" xmlns="http://www.w3.org/2000/svg"><defs><marker id="m1arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#8b6dff"/></marker><marker id="m1ret" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#ff9e6d"/></marker></defs><g font-family="JetBrains Mono, monospace" font-size="12" fill="#e8eaf0"><rect x="30" y="30" width="120" height="44" rx="8" fill="#0f1118" stroke="#2a3142"/><text x="90" y="58" text-anchor="middle">Extractor</text><rect x="220" y="30" width="120" height="44" rx="8" fill="#0f1118" stroke="#2a3142"/><text x="280" y="58" text-anchor="middle">Validator</text><rect x="410" y="30" width="120" height="44" rx="8" fill="#0f1118" stroke="#8b6dff" stroke-width="2"/><text x="470" y="58" text-anchor="middle" fill="#8b6dff">Critic</text><rect x="410" y="150" width="120" height="44" rx="8" fill="#0f1118" stroke="#fbbf24"/><text x="470" y="178" text-anchor="middle" fill="#fbbf24">Reflection</text><rect x="220" y="260" width="120" height="44" rx="8" fill="#0f1118" stroke="#34d399" stroke-width="2"/><text x="280" y="288" text-anchor="middle" fill="#34d399">Synthesizer</text><rect x="30" y="150" width="120" height="44" rx="8" fill="#0f1118" stroke="#4dd0c2" stroke-dasharray="3,3"/><text x="90" y="172" text-anchor="middle" fill="#4dd0c2" font-size="11">Episodic Mem</text><text x="90" y="187" text-anchor="middle" fill="#5a5f6e" font-size="10">(pgvector)</text><line x1="150" y1="52" x2="218" y2="52" stroke="#8b6dff" stroke-width="2" marker-end="url(#m1arr)"/><line x1="340" y1="52" x2="408" y2="52" stroke="#8b6dff" stroke-width="2" marker-end="url(#m1arr)"/><line x1="470" y1="74" x2="470" y2="148" stroke="#ff9e6d" stroke-width="2" stroke-dasharray="5,3" marker-end="url(#m1ret)"/><line x1="408" y1="172" x2="155" y2="60" stroke="#ff9e6d" stroke-width="2" stroke-dasharray="5,3" marker-end="url(#m1ret)" fill="none"/><text x="285" y="105" fill="#ff9e6d" font-size="11" text-anchor="middle">reflect (≤3 cycles)</text><line x1="410" y1="172" x2="155" y2="172" stroke="#4dd0c2" stroke-width="1.5" stroke-dasharray="2,2" marker-end="url(#m1arr)"/><text x="285" y="166" fill="#4dd0c2" font-size="11" text-anchor="middle">consults · writes errors</text><line x1="470" y1="74" x2="340" y2="260" stroke="#34d399" stroke-width="2" marker-end="url(#m1arr)"/><text x="430" y="165" fill="#34d399" font-size="11">pass ≥ 0.85</text></g></svg>',
+      decisions: [
+        ['LangGraph orchestration', 'Explicit, inspectable state transitions — debug-friendly when something fails in production'],
+        ['Constitutional AI critic', 'Per-principle scoring (4 axes) yields actionable feedback to the next iteration'],
+        ['Episodic memory in pgvector', 'Failure patterns surface across thousands of past runs in the Postgres you already have'],
+        ['Hard cap: 3 iterations', 'Unbounded retry loops burn $40 in one PDF — cap forces loud failures, not silent token spend']
+      ],
+      lessons: [
+        '<strong>Critics need memory, not just rubrics.</strong> A stateless critic re-makes the same mistake every run; one that retrieves past failures catches domain patterns within ~50 examples.',
+        '<strong>Constitutional principles must be evaluable, not philosophical.</strong> "Output should be helpful" is unscorable. "Every required field has a non-empty value matching its type" is scorable.',
+        '<strong>Reflection loops without caps are an incident waiting to happen.</strong> Learned the hard way after burning real money on a single malformed PDF in week one.'
+      ],
+      metrics: [
+        ['≥ 0.92', 'Extraction accuracy target', true],
+        ['≤ 0.8', 'Avg retries / document', true],
+        ['+18%', 'Token overhead vs baseline', false],
+        ['≥ 0.88 κ', 'Critic vs human agreement', true]
+      ],
+      stack: ['LangGraph 0.2', 'Claude Sonnet 4.5', 'FastAPI', 'Pydantic v2', 'pgvector', 'Server-Sent Events', 'Langfuse', 'Next.js 14'],
+      github: 'https://github.com/hecaicedol/ai-portfolio/tree/main/01-self-healing-pipeline',
+      readme: 'https://github.com/hecaicedol/ai-portfolio/blob/main/01-self-healing-pipeline/README.md'
+    },
+
+    '02': {
+      num: 'PROJECT 02 / 06',
+      status: { label: '◐ Scaffolded', cls: 'badge-scaffold' },
+      title: 'Enterprise Knowledge OS · GraphRAG',
+      tagline: 'A knowledge system that understands relationships — not just keywords.',
+      pitch: 'Most corporate knowledge bases can only answer "where is X documented?" But the real questions look like: <strong>"Has anyone on the API team worked on payment processing in the last 3 years?"</strong> or <strong>"Which competitors employ ex-Stripe engineers?"</strong> These require <strong>connections</strong>, not just text similarity. This system builds a living graph of every entity in your company — people, projects, systems, concepts — and the relationships between them. Then it combines that graph with traditional search to answer questions other systems can\'t.',
+      three: {
+        problem: 'Vector search asks "what document is most similar to my query?" — fine for "find me the API docs." Useless for "find me the projects led by alumni of Acme that compete with our Y product." That requires understanding connections.',
+        solution: 'Reads every document, extracts entities and the relationships between them, builds a Neo4j graph. At query time, it walks the graph (Cypher) <strong>and</strong> searches text (pgvector), then fuses both results with Reciprocal Rank Fusion. A background "staleness agent" flags entities whose facts drift from their source documents.',
+        impact: 'Multi-hop question accuracy lifts from <strong>~0.56</strong> (vector-only) to a target of <strong>≥ 0.78</strong>. Onboarding goes from "read the wiki" to "ask the wiki." Compliance audits drop from days to minutes.'
+      },
+      analogy: 'Imagine your company\'s knowledge as a <strong>Wikipedia, but every person, project, and concept is hyperlinked to every other one</strong>. Ask any question and the system follows the trail — it doesn\'t just find a matching paragraph, it walks from "API team" to "individuals" to "their past projects" to find the answer. Regular search reads. This system <strong>reasons</strong>.',
+      arch: '<svg viewBox="0 0 600 280" xmlns="http://www.w3.org/2000/svg"><defs><marker id="m2arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#4dd0c2"/></marker></defs><g font-family="JetBrains Mono, monospace" font-size="12" fill="#e8eaf0"><rect x="30" y="30" width="120" height="44" rx="8" fill="#0f1118" stroke="#2a3142"/><text x="90" y="58" text-anchor="middle">Documents</text><rect x="220" y="30" width="120" height="44" rx="8" fill="#0f1118" stroke="#8b6dff"/><text x="280" y="52" text-anchor="middle" fill="#8b6dff" font-size="11">Entity LLM</text><text x="280" y="68" text-anchor="middle" fill="#5a5f6e" font-size="10">extracts triples</text><rect x="410" y="30" width="120" height="44" rx="8" fill="#0f1118" stroke="#fbbf24"/><text x="470" y="58" text-anchor="middle" fill="#fbbf24">Triples</text><rect x="220" y="120" width="120" height="44" rx="8" fill="#0f1118" stroke="#4dd0c2"/><text x="280" y="148" text-anchor="middle" fill="#4dd0c2">Neo4j graph</text><rect x="410" y="120" width="120" height="44" rx="8" fill="#0f1118" stroke="#4dd0c2"/><text x="470" y="148" text-anchor="middle" fill="#4dd0c2">Vector store</text><rect x="220" y="210" width="310" height="44" rx="8" fill="#0f1118" stroke="#34d399" stroke-width="2"/><text x="375" y="238" text-anchor="middle" fill="#34d399">Hybrid retriever · RRF fusion</text><line x1="150" y1="52" x2="218" y2="52" stroke="#4dd0c2" stroke-width="2" marker-end="url(#m2arr)"/><line x1="340" y1="52" x2="408" y2="52" stroke="#4dd0c2" stroke-width="2" marker-end="url(#m2arr)"/><line x1="470" y1="74" x2="470" y2="118" stroke="#4dd0c2" stroke-width="2" marker-end="url(#m2arr)"/><line x1="280" y1="74" x2="280" y2="118" stroke="#4dd0c2" stroke-width="2" marker-end="url(#m2arr)"/><line x1="280" y1="164" x2="280" y2="208" stroke="#34d399" stroke-width="2" marker-end="url(#m2arr)"/><line x1="470" y1="164" x2="470" y2="208" stroke="#34d399" stroke-width="2" marker-end="url(#m2arr)"/></g></svg>',
+      decisions: [
+        ['Neo4j over Postgres CTEs', 'Path queries and Cypher\'s pattern matching are native; recursive CTEs become unreadable at depth 3+'],
+        ['Hybrid: graph + vector', 'Graph captures structure; vectors capture unstructured language. RRF fuses both at query time'],
+        ['Background staleness agent', 'Knowledge decays — when a person changes role, the graph must reflect it. The agent flags drift']
+      ],
+      lessons: [
+        '<strong>Entity extraction is half the work.</strong> Get the schema wrong on day one and you\'ll be re-extracting forever. Pydantic schemas with versioning are non-negotiable.',
+        '<strong>RRF is not magic.</strong> Fusion weights need tuning per domain. Treat them as hyperparameters, not constants.'
+      ],
+      metrics: [
+        ['≥ 0.78', '2-hop QA accuracy target', true],
+        ['+0.22', 'Lift vs vector-only', false],
+        ['≥ 0.85', 'Entity extraction F1', true],
+        ['TBD', 'Staleness recall @ 7d', false]
+      ],
+      stack: ['Neo4j 5 + APOC', 'LlamaIndex', 'Pydantic v2', 'react-force-graph', 'Cohere Rerank v3', 'FastAPI'],
+      github: 'https://github.com/hecaicedol/ai-portfolio/tree/main/02-knowledge-os',
+      readme: 'https://github.com/hecaicedol/ai-portfolio/blob/main/02-knowledge-os/README.md'
+    },
+
+    '03': {
+      num: 'PROJECT 03 / 06',
+      status: { label: '◐ Scaffolded', cls: 'badge-scaffold' },
+      title: 'Autonomous Research Agent · MemGPT pattern',
+      tagline: 'An AI researcher that remembers your work across weeks, not just sessions.',
+      pitch: 'Friday evening, your research agent has spent <strong>40 hours mapping the competitive landscape</strong>. Monday morning, you want to continue. A normal chatbot says <em>"what were we talking about?"</em> — context window cleared, work lost. This agent says: <em>"Last Friday we identified seven competitors, ranked their pricing tiers, and I was about to draft the executive summary on tier-2 risks."</em> It does that by externalizing memory in three explicit tiers, just like a human researcher would.',
+      three: {
+        problem: 'Chatbots forget. Every session starts from zero. A research project spanning weeks would require you to manually re-summarize context every morning — defeating the point of having an agent at all.',
+        solution: 'Three memory tiers: <strong>working</strong> (in-context, fastest, smallest), <strong>episodic</strong> (last 200 sessions, vector-searchable), <strong>semantic</strong> (consolidated facts, never expires). A memory controller — a first-class agent in the graph — decides what to promote and what to archive. Every read and write is observable in Langfuse.',
+        impact: 'Cross-session research becomes possible. Reports cite real sources, not hallucinations. Knowledge survives team turnover because it lives outside the model, in your database.'
+      },
+      analogy: 'A human researcher doesn\'t memorize every word. They <strong>take notes</strong>, file them by topic, and re-read them when they need context. Working memory = what\'s on the desk. Episodic = the filing cabinet. Semantic = the textbook of permanent facts. This agent does exactly that — explicitly, observably, controllably.',
+      arch: '<svg viewBox="0 0 600 260" xmlns="http://www.w3.org/2000/svg"><g font-family="JetBrains Mono, monospace" font-size="12"><rect x="60" y="30" width="480" height="50" rx="10" fill="#0f1118" stroke="#8b6dff" stroke-width="2"/><text x="300" y="60" text-anchor="middle" fill="#8b6dff" font-size="13">WORKING · in context · ~8k tokens</text><rect x="100" y="110" width="400" height="50" rx="10" fill="#0f1118" stroke="#4dd0c2" stroke-width="2"/><text x="300" y="140" text-anchor="middle" fill="#4dd0c2" font-size="13">EPISODIC · pgvector · last 200 runs</text><rect x="140" y="190" width="320" height="50" rx="10" fill="#0f1118" stroke="#34d399" stroke-width="2"/><text x="300" y="220" text-anchor="middle" fill="#34d399" font-size="13">SEMANTIC · consolidated facts</text><text x="555" y="60" fill="#5a5f6e" font-size="11">↑ promote</text><text x="555" y="140" fill="#5a5f6e" font-size="11">↑ archive</text><text x="555" y="220" fill="#5a5f6e" font-size="11">consolidate</text></g></svg>',
+      decisions: [
+        ['Three tiers, not one big context', 'Cost scales linearly with context. Tiered retrieval keeps working memory cheap'],
+        ['Memory controller as a graph node', 'Promotion and eviction are inspectable in Langfuse, not buried in private hooks'],
+        ['arXiv + Tavily + web scraping', 'Mixing structured (arXiv API) and unstructured sources reduces source-bias in synthesis']
+      ],
+      lessons: [
+        '<strong>"Just use a longer context" doesn\'t scale.</strong> Cost grows linearly; coherence does not. Explicit tiering wins.',
+        '<strong>Memory writes need policies.</strong> Without explicit rules, the agent forgets the right things and remembers the wrong ones.'
+      ],
+      metrics: [
+        ['≥ 0.75', 'Cross-session recall target', true],
+        ['≤ 60k', 'Tokens per report', true],
+        ['≥ 12', 'Sources per report', true],
+        ['TBD', 'Human-rated coherence', false]
+      ],
+      stack: ['LangGraph', 'pgvector', 'Tavily', 'arXiv API', 'ReportLab', 'Next.js'],
+      github: 'https://github.com/hecaicedol/ai-portfolio/tree/main/03-research-agent',
+      readme: 'https://github.com/hecaicedol/ai-portfolio/blob/main/03-research-agent/README.md'
+    },
+
+    '04': {
+      num: 'PROJECT 04 / 06',
+      status: { label: '◐ Scaffolded', cls: 'badge-scaffold' },
+      title: 'Multi-Agent Debate System · Society of Mind',
+      tagline: 'Five AIs argue from different perspectives — so your board gets a defensible recommendation.',
+      pitch: 'Should we launch product X next quarter? Ask one AI and you get one answer reflecting one bias. Ask five AIs — <strong>Optimist, Skeptic, Financial Analyst, Risk Officer, Devil\'s Advocate</strong> — and they argue across three rounds: opening positions, rebuttals, executive synthesis. You walk into your board meeting with a recommendation, eight named risks, and a transcript that shows every dissenting voice was heard.',
+      three: {
+        problem: 'Single-agent reasoning collapses to the model\'s prior. Strategic decisions need <strong>dissent</strong>. Hidden assumptions kill products — and they only surface when someone with a different perspective is forced to argue against the majority.',
+        solution: 'Five specialized agents with persistent, distinct roles. A three-round protocol prevents both infinite loops and premature consensus. A measurable <strong>consensus score</strong> (cosine similarity over rounds) tracks how far apart the agents started and how close they got. The synthesizer cannot ignore dissent — it must address each unresolved disagreement explicitly.',
+        impact: 'Executives get a balanced recommendation they can defend. Hidden risks surface early — typically <strong>8+ distinct considerations per decision</strong>, vs ~3 from a single-agent CoT chain.'
+      },
+      analogy: 'A <strong>board meeting with five different domain experts</strong>, except it runs in 60 seconds and you can replay any decision later. The cost: ~5× a single agent call. The benefit: dissent that single-agent reasoning systematically hides.',
+      arch: '<svg viewBox="0 0 600 280" xmlns="http://www.w3.org/2000/svg"><g font-family="JetBrains Mono, monospace" font-size="11" fill="#e8eaf0"><rect x="30" y="20" width="100" height="36" rx="8" fill="#0f1118" stroke="#34d399"/><text x="80" y="44" text-anchor="middle" fill="#34d399">Optimist</text><rect x="146" y="20" width="100" height="36" rx="8" fill="#0f1118" stroke="#ff5a72"/><text x="196" y="44" text-anchor="middle" fill="#ff5a72">Skeptic</text><rect x="262" y="20" width="100" height="36" rx="8" fill="#0f1118" stroke="#fbbf24"/><text x="312" y="44" text-anchor="middle" fill="#fbbf24">Financial</text><rect x="378" y="20" width="100" height="36" rx="8" fill="#0f1118" stroke="#4dd0c2"/><text x="428" y="44" text-anchor="middle" fill="#4dd0c2">Risk</text><rect x="494" y="20" width="100" height="36" rx="8" fill="#0f1118" stroke="#8b6dff"/><text x="544" y="44" text-anchor="middle" fill="#8b6dff">Devil</text><rect x="80" y="100" width="440" height="40" rx="8" fill="#0f1118" stroke="#2a3142"/><text x="300" y="124" text-anchor="middle" fill="#8b91a3">Round 1 · opening positions (parallel)</text><rect x="80" y="155" width="440" height="40" rx="8" fill="#0f1118" stroke="#2a3142"/><text x="300" y="179" text-anchor="middle" fill="#8b91a3">Round 2 · rebuttals + consensus score</text><rect x="80" y="210" width="440" height="44" rx="8" fill="#0f1118" stroke="#8b6dff" stroke-width="2"/><text x="300" y="237" text-anchor="middle" fill="#8b6dff" font-size="12">Round 3 · executive synthesis</text></g></svg>',
+      decisions: [
+        ['5 roles, not 2', 'Two-agent debate collapses to majority. Five distinct roles, three structured rounds, prevent groupthink'],
+        ['Three rounds, not unbounded', 'Opening · rebuttal · synthesis. Bounded, measurable, prevents infinite back-and-forth'],
+        ['Consensus = cosine similarity over rounds', 'Measurable convergence. Not "it feels like they agreed"'],
+        ['WebSocket streaming to UI', 'Debate becomes a watchable artifact, not a black box decision']
+      ],
+      lessons: [
+        '<strong>Personality persistence matters.</strong> If the Skeptic\'s prompt isn\'t firm, by round 2 they\'ve agreed with the Optimist. Use system prompts that explicitly reject the agreement reflex.',
+        '<strong>Synthesizers cheat.</strong> Without forcing them to address each dissent by name, they paper over disagreement. Schema-enforced output stops that.'
+      ],
+      metrics: [
+        ['≥ 8', 'Distinct considerations / decision', true],
+        ['≥ 0.82', 'Consensus convergence by R3', true],
+        ['~5×', 'Token cost vs single agent', false],
+        ['TBD', 'Exec-rated quality lift', false]
+      ],
+      stack: ['LangGraph', 'Redis', 'WebSockets', 'Claude Opus', 'Next.js 14'],
+      github: 'https://github.com/hecaicedol/ai-portfolio/tree/main/04-debate-system',
+      readme: 'https://github.com/hecaicedol/ai-portfolio/blob/main/04-debate-system/README.md'
+    },
+
+    '05': {
+      num: 'PROJECT 05 / 06',
+      status: { label: '◐ Scaffolded', cls: 'badge-scaffold' },
+      title: 'Adaptive Workflow Engine · MCP',
+      tagline: 'An AI that builds custom workflows for any business request — on the fly.',
+      pitch: 'Your ops team says: <em>"Whenever a P0 bug is filed, ping the lead engineer, search past tickets for similar incidents, and post a summary to the #incidents Slack channel — but if it\'s a customer-facing outage, also page the on-call manager."</em> Normally that\'s a sprint of engineering work. Here, a meta-agent <strong>reads the sentence and builds the workflow on the spot</strong>. Each step talks to real tools — GitHub, Jira, Slack, Drive — through Model Context Protocol (MCP), the emerging standard for tool integration.',
+      three: {
+        problem: 'Hardcoded workflows break the moment the business changes. Every new process needs an engineer to wire it up. The half-life of a workflow before it needs revision is weeks, not years.',
+        solution: 'A meta-agent reads natural-language goals and outputs a workflow DAG. It retrieves similar past workflows from memory before planning. Each tool is an MCP server (standardized, swappable). Critical actions — sending messages, irreversible writes — pause for human approval.',
+        impact: 'Workflow change cost drops by an order of magnitude. Business users describe outcomes; the system builds the steps. Auditable approval trails. <strong>Target: ≥ 70%</strong> of generated workflows are valid first-pass, ≥ 90% after one reflection cycle.'
+      },
+      analogy: 'A <strong>smart office assistant who can write their own job description and then execute it</strong>. You describe the goal in one sentence; they design the steps, check past examples, and ask you for sign-off on anything that can\'t be undone.',
+      arch: '<svg viewBox="0 0 600 260" xmlns="http://www.w3.org/2000/svg"><defs><marker id="m5arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#8b6dff"/></marker></defs><g font-family="JetBrains Mono, monospace" font-size="12" fill="#e8eaf0"><rect x="30" y="30" width="120" height="44" rx="8" fill="#0f1118" stroke="#8b6dff" stroke-width="2"/><text x="90" y="58" text-anchor="middle" fill="#8b6dff">Meta-agent</text><rect x="220" y="30" width="120" height="44" rx="8" fill="#0f1118" stroke="#fbbf24"/><text x="280" y="58" text-anchor="middle" fill="#fbbf24">DAG plan</text><rect x="410" y="30" width="120" height="44" rx="8" fill="#0f1118" stroke="#4dd0c2"/><text x="470" y="58" text-anchor="middle" fill="#4dd0c2">Executor</text><rect x="30" y="120" width="110" height="40" rx="8" fill="#0f1118" stroke="#2a3142"/><text x="85" y="145" text-anchor="middle" font-size="11">MCP · GitHub</text><rect x="160" y="120" width="110" height="40" rx="8" fill="#0f1118" stroke="#2a3142"/><text x="215" y="145" text-anchor="middle" font-size="11">MCP · Jira</text><rect x="290" y="120" width="110" height="40" rx="8" fill="#0f1118" stroke="#2a3142"/><text x="345" y="145" text-anchor="middle" font-size="11">MCP · Slack</text><rect x="420" y="120" width="110" height="40" rx="8" fill="#0f1118" stroke="#2a3142"/><text x="475" y="145" text-anchor="middle" font-size="11">MCP · Drive</text><rect x="160" y="195" width="240" height="44" rx="8" fill="#0f1118" stroke="#ff9e6d" stroke-width="2"/><text x="280" y="223" text-anchor="middle" fill="#ff9e6d">HITL approval gate</text><line x1="150" y1="52" x2="218" y2="52" stroke="#8b6dff" stroke-width="2" marker-end="url(#m5arr)"/><line x1="340" y1="52" x2="408" y2="52" stroke="#8b6dff" stroke-width="2" marker-end="url(#m5arr)"/><line x1="470" y1="74" x2="475" y2="118" stroke="#8b6dff" stroke-width="2" marker-end="url(#m5arr)"/><line x1="470" y1="74" x2="345" y2="118" stroke="#8b6dff" stroke-width="2" marker-end="url(#m5arr)"/><line x1="470" y1="74" x2="215" y2="118" stroke="#8b6dff" stroke-width="2" marker-end="url(#m5arr)"/><line x1="470" y1="74" x2="85" y2="118" stroke="#8b6dff" stroke-width="2" marker-end="url(#m5arr)"/></g></svg>',
+      decisions: [
+        ['MCP, not custom tool APIs', 'Standardized protocol means GitHub/Jira/Slack/Drive integrations are reusable, swappable, auditable'],
+        ['Planner learns from past DAGs', 'Successful workflows are embedded; planner retrieves similar past plans before generating new ones'],
+        ['HITL approval on critical nodes', 'Sending messages, irreversible writes, deletions — all pause for human sign-off']
+      ],
+      lessons: [
+        '<strong>"Generate the DAG" is not the hard part.</strong> Validating it is. Without a strict DAG schema and dry-run mode, the meta-agent invents tool calls that don\'t exist.',
+        '<strong>HITL gates need timeouts.</strong> A workflow that waits forever for approval is a workflow that dies silently. Always have a fallback action.'
+      ],
+      metrics: [
+        ['≥ 0.70', 'Valid DAG first-pass', true],
+        ['≥ 0.90', 'After 1 reflection', true],
+        ['5–12', 'Avg nodes / workflow', false],
+        ['4+', 'MCP servers integrated', false]
+      ],
+      stack: ['Model Context Protocol', 'LangGraph', 'pgvector', 'react-flow', 'FastAPI'],
+      github: 'https://github.com/hecaicedol/ai-portfolio/tree/main/05-workflow-engine',
+      readme: 'https://github.com/hecaicedol/ai-portfolio/blob/main/05-workflow-engine/README.md'
+    },
+
+    '06': {
+      num: 'PROJECT 06 / 06',
+      status: { label: '◐ Scaffolded', cls: 'badge-scaffold' },
+      title: 'Agentic RAG · Vector DB Benchmark',
+      tagline: 'I run three vector databases in parallel — and let the data pick the winner.',
+      pitch: 'Most teams pick a vector database by <strong>reading a blog post</strong>. But the right answer depends on YOUR documents, YOUR queries, YOUR budget — not a benchmark someone ran on a different corpus. This system runs the same queries against <strong>pgvector, Qdrant, and Pinecone in parallel</strong>. Same documents, same evaluation harness. An optimizer agent watches Ragas scores in real time and re-tunes parameters when quality drops. Vendor choice becomes a measured decision, not a vibe.',
+      three: {
+        problem: 'Published benchmarks are rarely run on data that looks like yours. "We chose X because it had the best recall" usually means "we read one blog." Real answers require real measurement, on your real corpus.',
+        solution: 'Triple-write to pgvector, Qdrant, and Pinecone. Apply Anthropic\'s contextual retrieval (chunks enriched with their surrounding context), BM25 + vector hybrid with RRF fusion, then Cohere reranking. A Ragas-driven optimizer agent watches faithfulness scores and auto-tunes chunk size, rerank-k, and fusion weights — A/B tested against a held-out set.',
+        impact: 'Faithfulness target lifts from <strong>~0.74</strong> (vector-only) to <strong>≥ 0.88</strong> with the full stack. Cost trade-offs become explicit, not assumed. Optimization runs continuously — your retrieval gets better while you sleep.'
+      },
+      analogy: '<strong>A/B testing for your AI\'s memory.</strong> Instead of guessing which retrieval setup is best, the system measures it on real questions and re-tunes itself when quality drifts. The closed loop matters: a one-time tuning becomes stale within weeks.',
+      arch: '<svg viewBox="0 0 600 320" xmlns="http://www.w3.org/2000/svg"><defs><marker id="m6arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#8b6dff"/></marker><marker id="m6tune" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#34d399"/></marker></defs><g font-family="JetBrains Mono, monospace" font-size="12" fill="#e8eaf0"><rect x="240" y="10" width="120" height="36" rx="8" fill="#0f1118" stroke="#2a3142"/><text x="300" y="34" text-anchor="middle">Query</text><rect x="30" y="80" width="120" height="40" rx="8" fill="#0f1118" stroke="#8b6dff" stroke-width="2"/><text x="90" y="105" text-anchor="middle" fill="#8b6dff">pgvector</text><rect x="240" y="80" width="120" height="40" rx="8" fill="#0f1118" stroke="#4dd0c2" stroke-width="2"/><text x="300" y="105" text-anchor="middle" fill="#4dd0c2">Qdrant</text><rect x="450" y="80" width="120" height="40" rx="8" fill="#0f1118" stroke="#ff9e6d" stroke-width="2"/><text x="510" y="105" text-anchor="middle" fill="#ff9e6d">Pinecone</text><rect x="200" y="160" width="200" height="44" rx="8" fill="#0f1118" stroke="#fbbf24" stroke-width="2"/><text x="300" y="187" text-anchor="middle" fill="#fbbf24">RRF + Cohere rerank</text><rect x="120" y="240" width="160" height="44" rx="8" fill="#0f1118" stroke="#34d399"/><text x="200" y="267" text-anchor="middle" fill="#34d399">Ragas eval</text><rect x="320" y="240" width="160" height="44" rx="8" fill="#0f1118" stroke="#34d399"/><text x="400" y="267" text-anchor="middle" fill="#34d399">Optimizer agent</text><line x1="300" y1="46" x2="90" y2="78" stroke="#8b6dff" stroke-width="1.5" marker-end="url(#m6arr)"/><line x1="300" y1="46" x2="300" y2="78" stroke="#8b6dff" stroke-width="1.5" marker-end="url(#m6arr)"/><line x1="300" y1="46" x2="510" y2="78" stroke="#8b6dff" stroke-width="1.5" marker-end="url(#m6arr)"/><line x1="90" y1="120" x2="220" y2="158" stroke="#8b6dff" stroke-width="1.5" marker-end="url(#m6arr)"/><line x1="300" y1="120" x2="300" y2="158" stroke="#8b6dff" stroke-width="1.5" marker-end="url(#m6arr)"/><line x1="510" y1="120" x2="380" y2="158" stroke="#8b6dff" stroke-width="1.5" marker-end="url(#m6arr)"/><line x1="260" y1="204" x2="220" y2="238" stroke="#34d399" stroke-width="1.5" marker-end="url(#m6tune)"/><line x1="340" y1="204" x2="380" y2="238" stroke="#34d399" stroke-width="1.5" marker-end="url(#m6tune)"/><path d="M 400 284 Q 580 300, 580 200 Q 580 100, 90 90" fill="none" stroke="#34d399" stroke-width="1.2" stroke-dasharray="3,3" marker-end="url(#m6tune)"/><text x="500" y="305" fill="#5a5f6e" font-size="10">retune params</text></g></svg>',
+      decisions: [
+        ['Three stores in parallel', 'Same corpus, same queries, same eval. Apples-to-apples — published benchmarks rarely are'],
+        ['Anthropic\'s contextual retrieval', 'Prepending chunk context reduces retrieval failure ~49%. Free quality lift before any reranker'],
+        ['BM25 + vector + rerank (RRF fusion)', 'Each stage measured independently. Hybrid wins on long-tail queries that pure semantic misses'],
+        ['Auto-optimizer with Ragas', 'Closed-loop quality control. Static tuning decays — continuous tuning compounds']
+      ],
+      lessons: [
+        '<strong>"Just use a vector DB" is the easy half of RAG.</strong> The chunking strategy, fusion weights, and eval harness are the hard half. Most production RAG fails on the second.',
+        '<strong>Pinecone latency is great. Pinecone cost is not.</strong> The benchmark exists precisely because the right tradeoff depends on traffic patterns you can\'t guess.'
+      ],
+      metrics: [
+        ['≥ 0.88', 'Ragas faithfulness target', true],
+        ['+0.14', 'vs vector-only baseline', false],
+        ['≤ 800ms', 'P95 query latency', true],
+        ['~3 / wk', 'Auto-tune episodes', false]
+      ],
+      stack: ['pgvector', 'Qdrant', 'Pinecone', 'Cohere Rerank v3', 'Ragas', 'BM25', 'recharts'],
+      github: 'https://github.com/hecaicedol/ai-portfolio/tree/main/06-agentic-rag',
+      readme: 'https://github.com/hecaicedol/ai-portfolio/blob/main/06-agentic-rag/README.md'
+    }
+  };
+
+  // Modal state + DOM refs
+  const $backdrop = document.getElementById('modalBackdrop');
+  const $shell = document.getElementById('modalShell');
+  const $panel = document.getElementById('modalPanel');
+  const $closeBtn = document.getElementById('modalClose');
+  const $num = document.getElementById('modalNum');
+  const $badge = document.getElementById('modalBadge');
+  const $title = document.getElementById('modalTitle');
+  const $tagline = document.getElementById('modalTagline');
+  const $body = document.getElementById('modalBody');
+
+  function renderProject(id) {
+    const p = PROJECTS[id];
+    if (!p) return;
+    $num.textContent = p.num;
+    $badge.className = 'badge ' + p.status.cls;
+    $badge.textContent = p.status.label;
+    $title.textContent = p.title;
+    $tagline.textContent = p.tagline;
+
+    const decisionsHtml = p.decisions.map(d =>
+      `<tr><td>${d[0]}</td><td>${d[1]}</td></tr>`).join('');
+    const lessonsHtml = p.lessons.map(l => `<li>${l}</li>`).join('');
+    const metricsHtml = p.metrics.map(m =>
+      `<div class="mm-card"><div class="mm-val${m[2] ? ' target' : ''}">${m[0]}</div><div class="mm-label">${m[1]}</div></div>`).join('');
+    const stackHtml = p.stack.map(s => `<span>${s}</span>`).join('');
+
+    $body.innerHTML = `
+      <div class="modal-pitch">${p.pitch}</div>
+
+      <section class="modal-section">
+        <div class="modal-section-head">
+          <span class="modal-section-tag">For everyone</span>
+          <h4>What it does, why it matters</h4>
+        </div>
+        <div class="three-up">
+          <div class="three-card problem">
+            <div class="three-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div>
+            <h5>The problem</h5>
+            <p>${p.three.problem}</p>
+          </div>
+          <div class="three-card solution">
+            <div class="three-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg></div>
+            <h5>How it works</h5>
+            <p>${p.three.solution}</p>
+          </div>
+          <div class="three-card impact">
+            <div class="three-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg></div>
+            <h5>Why it matters</h5>
+            <p>${p.three.impact}</p>
+          </div>
+        </div>
+        <div class="modal-analogy">
+          <p>${p.analogy}</p>
+        </div>
+      </section>
+
+      <section class="modal-section">
+        <div class="modal-section-head">
+          <span class="modal-section-tag">Watch it work</span>
+          <h4>Architecture at a glance</h4>
+        </div>
+        <div class="modal-arch">
+          <h6>System diagram</h6>
+          ${p.arch}
+        </div>
+        <div class="modal-metrics-row">
+          ${metricsHtml}
+        </div>
+      </section>
+
+      <section class="modal-section">
+        <div class="modal-section-head">
+          <span class="modal-section-tag">For engineers</span>
+          <h4>Under the hood</h4>
+        </div>
+        <div class="modal-engineering" id="engBlock">
+          <button class="eng-toggle" id="engToggle">
+            <span class="label-l"><span class="ic">{ }</span> Architectural decisions &amp; lessons learned</span>
+            <span class="chev">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+            </span>
+          </button>
+          <div class="eng-body">
+            <div class="eng-body-inner">
+              <h6 style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text-faint);text-transform:uppercase;letter-spacing:0.12em;margin-bottom:12px">Key decisions</h6>
+              <table class="decisions" style="margin-bottom:24px">${decisionsHtml}</table>
+              <h6 style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text-faint);text-transform:uppercase;letter-spacing:0.12em;margin-bottom:12px">Lessons learned</h6>
+              <ul style="list-style:none;padding:0">${lessonsHtml.replace(/<li>/g, '<li style="padding:8px 0 8px 22px;position:relative;color:var(--text-dim);font-size:14px;line-height:1.6"><span style="position:absolute;left:0;color:var(--accent);font-family:\\'JetBrains Mono\\',monospace">→</span>')}</ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="modal-section">
+        <div class="modal-section-head">
+          <span class="modal-section-tag">Stack</span>
+          <h4>What I used to build it</h4>
+        </div>
+        <div class="modal-stack">${stackHtml}</div>
+        <div class="modal-cta-row">
+          <a class="btn btn-primary" href="${p.github}" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0a12 12 0 0 0-3.8 23.4c.6.1.8-.3.8-.6v-2c-3.3.7-4-1.6-4-1.6-.5-1.4-1.3-1.7-1.3-1.7-1-.8.1-.7.1-.7 1.2 0 1.8 1.2 1.8 1.2 1 1.8 2.8 1.3 3.4 1 .1-.8.4-1.3.7-1.6-2.7-.3-5.5-1.3-5.5-5.9 0-1.3.5-2.4 1.2-3.2-.1-.3-.5-1.5.1-3.2 0 0 1-.3 3.3 1.2a11.4 11.4 0 0 1 6 0c2.3-1.5 3.3-1.2 3.3-1.2.6 1.7.2 2.9.1 3.2.8.8 1.2 1.9 1.2 3.2 0 4.6-2.8 5.6-5.5 5.9.4.4.8 1.1.8 2.2v3.3c0 .3.2.7.8.6A12 12 0 0 0 12 0z"/></svg>
+            View source on GitHub
+          </a>
+          <a class="btn" href="${p.readme}" target="_blank" rel="noopener">↗ Full README</a>
+          <a class="btn" href="mailto:juadsuarezsan@unal.edu.co?subject=About ${encodeURIComponent(p.title)}">✉ Ask me about this</a>
+        </div>
+      </section>
+    `;
+
+    // Hook up engineering toggle (collapsed by default)
+    const engBlock = document.getElementById('engBlock');
+    const engToggle = document.getElementById('engToggle');
+    if (engToggle) engToggle.addEventListener('click', () => engBlock.classList.toggle('open'));
+  }
+
+  function openModal(id) {
+    if (!PROJECTS[id]) return;
+    renderProject(id);
+    document.body.classList.add('modal-open');
+    requestAnimationFrame(() => {
+      $backdrop.classList.add('open');
+      $shell.classList.add('open');
+    });
+    history.replaceState(null, '', '#/p/' + id);
+    $shell.scrollTop = 0;
+  }
+  function closeModal() {
+    $backdrop.classList.remove('open');
+    $shell.classList.remove('open');
+    document.body.classList.remove('modal-open');
+    if (location.hash.startsWith('#/p/')) history.replaceState(null, '', location.pathname + location.search);
+  }
+
+  // Wire up open buttons
+  document.querySelectorAll('.project-open-btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      openModal(btn.dataset.project);
+    });
+  });
+
+  // Close handlers
+  $closeBtn.addEventListener('click', closeModal);
+  $backdrop.addEventListener('click', closeModal);
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && $shell.classList.contains('open')) closeModal();
+  });
+
+  // Deep link on load
+  if (location.hash.startsWith('#/p/')) {
+    const id = location.hash.replace('#/p/', '').padStart(2, '0');
+    if (PROJECTS[id]) setTimeout(() => openModal(id), 300);
+  }
 </script>
 </body>
 </html>
