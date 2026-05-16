@@ -1323,28 +1323,82 @@
     transform: scale(1) translateY(0);
     opacity: 1;
   }
-  .modal-panel::before {
+  /* ===== Mathematical curve overlay (Lissajous + rose polar) ===== */
+  .modal-math-overlay {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    overflow: hidden;
+    border-radius: inherit;
+    z-index: 0;
+    opacity: 0;
+    transition: opacity 1.4s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .modal-shell.open .modal-math-overlay { opacity: 1; }
+  .modal-math-overlay svg {
+    position: absolute;
+    inset: 0;
+    width: 100%; height: 100%;
+    display: block;
+  }
+  .modal-math-overlay path {
+    fill: none;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-dashoffset: var(--len, 5000);
+  }
+  .modal-shell.open .modal-math-overlay path {
+    transition: stroke-dashoffset 2.4s cubic-bezier(0.22, 1, 0.36, 1);
+    stroke-dashoffset: 0;
+  }
+  .modal-shell.open .modal-math-overlay path.lj-1 { transition-delay: 0.15s; }
+  .modal-shell.open .modal-math-overlay path.lj-2 { transition-delay: 0.35s; }
+  .modal-shell.open .modal-math-overlay path.lj-3 { transition-delay: 0.55s; }
+  .modal-shell.open .modal-math-overlay path.lj-4 { transition-delay: 0.75s; }
+  .modal-shell.open .modal-math-overlay path.rose { transition-delay: 0.95s; }
+
+  /* After draw-in completes, curves "breathe" via opacity oscillation */
+  .modal-math-overlay.alive path {
+    animation: curveBreathe 7s ease-in-out infinite;
+  }
+  .modal-math-overlay.alive path.lj-2 { animation-delay: -1.2s; }
+  .modal-math-overlay.alive path.lj-3 { animation-delay: -2.4s; }
+  .modal-math-overlay.alive path.lj-4 { animation-delay: -3.6s; }
+  .modal-math-overlay.alive path.rose { animation-delay: -4.8s; }
+  @keyframes curveBreathe {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.45; }
+  }
+
+  /* A vignette mask so curves fade out at edges (don't overpower content) */
+  .modal-math-overlay::after {
     content: '';
     position: absolute;
-    inset: -2px;
-    border-radius: 24px;
-    padding: 2px;
-    background: conic-gradient(from 0deg,
-      transparent 0deg, transparent 60deg,
-      rgba(124,92,255,0.6) 90deg, rgba(77,208,194,0.6) 120deg,
-      transparent 150deg, transparent 360deg);
-    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-    -webkit-mask-composite: xor;
-    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-    mask-composite: exclude;
-    animation: rotateBorder 6s linear infinite;
-    opacity: 0;
-    transition: opacity 0.8s;
+    inset: 0;
+    background:
+      radial-gradient(ellipse at center, transparent 0%, transparent 40%, var(--bg-card) 95%),
+      linear-gradient(180deg, transparent 0%, transparent 65%, var(--bg-card) 100%);
     pointer-events: none;
+    border-radius: inherit;
   }
-  .modal-shell.open .modal-panel::before { opacity: 1; }
-  @keyframes rotateBorder {
-    to { transform: rotate(360deg); }
+
+  /* Math equation watermarks (subtle, top-right of modal) */
+  .modal-math-formula {
+    position: absolute;
+    top: 78px; right: 28px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--accent);
+    opacity: 0;
+    letter-spacing: 0.06em;
+    transition: opacity 1.2s ease-out 1.4s;
+    pointer-events: none;
+    z-index: 1;
+    white-space: nowrap;
+  }
+  .modal-shell.open .modal-math-formula { opacity: 0.42; }
+  @media (max-width: 720px) {
+    .modal-math-formula { display: none; }
   }
 
   .modal-header {
@@ -1355,6 +1409,10 @@
     background: linear-gradient(180deg, rgba(18,20,28,0.95) 0%, rgba(18,20,28,0.85) 80%, transparent 100%);
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
+  }
+  .modal-body {
+    position: relative;
+    z-index: 2;
   }
   .modal-close {
     position: absolute;
@@ -1637,6 +1695,167 @@
     padding-top: 24px;
     border-top: 1px solid var(--border);
     flex-wrap: wrap;
+  }
+
+  /* Per-project chart */
+  .modal-chart {
+    background: var(--bg-elev);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 24px;
+    margin-bottom: 22px;
+  }
+  .modal-chart-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 18px;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .modal-chart-head h6 {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--text-faint);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+  }
+  .modal-chart-head .caption {
+    font-size: 12px;
+    color: var(--text-dim);
+  }
+  .modal-chart-head .caption strong { color: var(--accent-2); }
+  .modal-chart svg {
+    width: 100%;
+    height: auto;
+    display: block;
+    overflow: visible;
+  }
+  .modal-chart .legend {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-top: 14px;
+    font-size: 11px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .modal-chart .legend span {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--text-dim);
+  }
+  .modal-chart .legend span::before {
+    content: '';
+    width: 12px;
+    height: 2px;
+    background: currentColor;
+    border-radius: 2px;
+  }
+  .modal-chart .legend .l-complete { color: var(--accent); }
+  .modal-chart .legend .l-accuracy { color: var(--accent-2); }
+  .modal-chart .legend .l-consistency { color: var(--success); }
+  .modal-chart .legend .l-format { color: var(--warning); }
+  .modal-chart .legend .l-overall { color: white; }
+  .modal-chart .legend .l-vector { color: var(--text-faint); }
+  .modal-chart .legend .l-hybrid { color: var(--accent); }
+  .modal-chart .legend .l-rose { color: var(--accent); }
+  .modal-chart .legend .l-skeptic { color: var(--danger); }
+  .modal-chart .legend .l-finance { color: var(--warning); }
+  .modal-chart .legend .l-risk { color: var(--accent-2); }
+  .modal-chart .legend .l-devil { color: var(--accent); }
+  .modal-chart .legend .l-naive { color: var(--text-faint); }
+  .modal-chart .legend .l-tier { color: var(--accent); }
+  .modal-chart .legend .l-pg { color: var(--accent); }
+  .modal-chart .legend .l-qd { color: var(--accent-2); }
+  .modal-chart .legend .l-pn { color: var(--accent-3); }
+
+  /* Sample run block */
+  .modal-sample {
+    background: var(--bg-elev);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 22px;
+    margin-bottom: 22px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12.5px;
+    line-height: 1.7;
+    color: var(--text-dim);
+  }
+  .modal-sample h6 {
+    font-size: 11px;
+    color: var(--text-faint);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    margin-bottom: 14px;
+  }
+  .modal-sample .arrow {
+    color: var(--accent);
+    margin: 6px 0;
+  }
+  .modal-sample .input { color: var(--accent-2); }
+  .modal-sample .output { color: var(--success); }
+  .modal-sample .crit { color: var(--warning); }
+  .modal-sample .fail { color: var(--danger); }
+  .modal-sample pre {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 12px 14px;
+    margin: 8px 0;
+    font-size: 12px;
+    overflow-x: auto;
+    color: var(--text);
+    white-space: pre-wrap;
+  }
+
+  /* References */
+  .modal-refs {
+    background: var(--bg-elev);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 22px 24px;
+    margin-bottom: 22px;
+  }
+  .modal-refs h6 {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--text-faint);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    margin-bottom: 14px;
+  }
+  .modal-refs ol {
+    list-style: none;
+    counter-reset: refs;
+    padding-left: 0;
+  }
+  .modal-refs li {
+    counter-increment: refs;
+    font-size: 13px;
+    padding: 8px 0 8px 32px;
+    position: relative;
+    color: var(--text-dim);
+    line-height: 1.55;
+    border-bottom: 1px dashed rgba(28,32,48,0.5);
+  }
+  .modal-refs li:last-child { border-bottom: 0; }
+  .modal-refs li::before {
+    content: '[' counter(refs) ']';
+    position: absolute;
+    left: 0;
+    top: 8px;
+    color: var(--accent);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    font-weight: 600;
+  }
+  .modal-refs em { color: var(--text); font-style: normal; font-weight: 500; }
+  .modal-refs .venue {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--accent-2);
+    margin-left: 4px;
   }
 
   /* Modal content reveal */
@@ -2922,6 +3141,8 @@
 <div class="modal-backdrop" id="modalBackdrop"></div>
 <div class="modal-shell" id="modalShell" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
   <div class="modal-panel" id="modalPanel">
+    <div class="modal-math-overlay" id="modalMath"></div>
+    <div class="modal-math-formula" id="modalFormula"></div>
     <button class="modal-close" id="modalClose" aria-label="Close">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
     </button>
@@ -3120,6 +3341,64 @@
   // ============= PROJECT MODAL (data + logic) =========
   // ====================================================
 
+  // ---- Mathematical curve generators (Lissajous + rose polar) ----
+  function lissajousPath(a, b, delta, A, B, cx, cy, steps) {
+    let d = '';
+    for (let i = 0; i <= steps; i++) {
+      const t = (i / steps) * 2 * Math.PI;
+      const x = cx + A * Math.sin(a * t + delta);
+      const y = cy + B * Math.sin(b * t);
+      d += (i === 0 ? 'M' : 'L') + x.toFixed(1) + ',' + y.toFixed(1);
+    }
+    return d;
+  }
+  function rosePath(k, R, cx, cy, steps) {
+    let d = '';
+    for (let i = 0; i <= steps; i++) {
+      const t = (i / steps) * 2 * Math.PI;
+      const r = R * Math.sin(k * t);
+      const x = cx + r * Math.cos(t);
+      const y = cy + r * Math.sin(t);
+      d += (i === 0 ? 'M' : 'L') + x.toFixed(1) + ',' + y.toFixed(1);
+    }
+    return d;
+  }
+  function buildMathOverlay(host) {
+    const VW = 1200, VH = 800;
+    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    svg.setAttribute('viewBox', `0 0 ${VW} ${VH}`);
+    svg.setAttribute('preserveAspectRatio', 'xMidYMid slice');
+
+    const curves = [
+      { cls: 'lj-1', d: lissajousPath(3, 4, Math.PI/2, 480, 320, VW*0.5, VH*0.5, 720), stroke: '#8b6dff', sw: 1.1, op: 0.55 },
+      { cls: 'lj-2', d: lissajousPath(5, 4, Math.PI/3, 320, 220, VW*0.28, VH*0.42, 720), stroke: '#4dd0c2', sw: 0.9, op: 0.5 },
+      { cls: 'lj-3', d: lissajousPath(2, 3, Math.PI/4, 400, 270, VW*0.72, VH*0.58, 720), stroke: '#8b6dff', sw: 0.8, op: 0.4 },
+      { cls: 'lj-4', d: lissajousPath(7, 6, 0, 260, 200, VW*0.5, VH*0.5, 900), stroke: '#ff9e6d', sw: 0.6, op: 0.3 },
+      { cls: 'rose', d: rosePath(5, 240, VW*0.86, VH*0.22, 720), stroke: '#4dd0c2', sw: 0.9, op: 0.5 }
+    ];
+
+    svg.innerHTML = curves.map(c =>
+      `<path class="${c.cls}" d="${c.d}" stroke="${c.stroke}" stroke-width="${c.sw}" opacity="${c.op}"></path>`
+    ).join('');
+
+    host.innerHTML = '';
+    host.appendChild(svg);
+    host.classList.remove('alive');
+
+    // Set up the stroke-dasharray for the draw-in animation
+    requestAnimationFrame(() => {
+      svg.querySelectorAll('path').forEach(p => {
+        const len = p.getTotalLength();
+        p.style.strokeDasharray = len;
+        p.style.setProperty('--len', len);
+        p.style.strokeDashoffset = len;
+        p.getBoundingClientRect(); // force reflow
+      });
+      // After all curves drew themselves, let them "breathe"
+      setTimeout(() => host.classList.add('alive'), 3600);
+    });
+  }
+
   const PROJECTS = {
     '01': {
       num: 'PROJECT 01 / 06',
@@ -3152,6 +3431,19 @@
         ['≥ 0.88 κ', 'Critic vs human agreement', true]
       ],
       stack: ['LangGraph 0.2', 'Claude Sonnet 4.5', 'FastAPI', 'Pydantic v2', 'pgvector', 'Server-Sent Events', 'Langfuse', 'Next.js 14'],
+      formula: 'accept(x) ⟺  Σᵢ wᵢ · pᵢ(x) ≥ τ = 0.85',
+      chart: {
+        title: 'Critic scores across reflection iterations',
+        caption: '<strong>Threshold τ = 0.85</strong> · the system reflects until pass or 3 retries',
+        svg: '<svg viewBox="0 0 720 300" xmlns="http://www.w3.org/2000/svg"><g font-family="JetBrains Mono, monospace" font-size="11"><line x1="60" y1="40" x2="60" y2="250" stroke="#2a3142"/><line x1="60" y1="250" x2="680" y2="250" stroke="#2a3142"/><line x1="60" y1="71.5" x2="680" y2="71.5" stroke="#ff9e6d" stroke-dasharray="4,4" opacity="0.7"/><text x="688" y="76" fill="#ff9e6d" font-size="10">τ = 0.85</text><text x="55" y="50" text-anchor="end" fill="#5a5f6e">1.0</text><text x="55" y="103" text-anchor="end" fill="#5a5f6e">0.75</text><text x="55" y="155" text-anchor="end" fill="#5a5f6e">0.50</text><text x="55" y="207" text-anchor="end" fill="#5a5f6e">0.25</text><text x="55" y="255" text-anchor="end" fill="#5a5f6e">0.00</text><text x="155" y="275" text-anchor="middle" fill="#8b91a3">iter 1 (extractor)</text><text x="365" y="275" text-anchor="middle" fill="#8b91a3">iter 2 (after reflection)</text><text x="575" y="275" text-anchor="middle" fill="#8b91a3">iter 3 (final)</text><polyline points="155,189 365,71 575,46" fill="none" stroke="#8b6dff" stroke-width="2.5"/><polyline points="155,86 365,86 575,86" fill="none" stroke="#4dd0c2" stroke-width="2"/><polyline points="155,80 365,75 575,69" fill="none" stroke="#34d399" stroke-width="2"/><polyline points="155,127 365,103 575,80" fill="none" stroke="#fbbf24" stroke-width="2"/><polyline points="155,166 365,86 575,52" fill="none" stroke="white" stroke-width="3" stroke-dasharray="6,3"/><circle cx="155" cy="189" r="3.5" fill="#8b6dff"/><circle cx="365" cy="71" r="3.5" fill="#8b6dff"/><circle cx="575" cy="46" r="3.5" fill="#8b6dff"/><circle cx="155" cy="166" r="4" fill="white"/><circle cx="365" cy="86" r="4" fill="white"/><circle cx="575" cy="52" r="4" fill="white"/><text x="155" y="155" text-anchor="middle" fill="white" font-size="10">0.82</text><text x="365" y="76" text-anchor="middle" fill="white" font-size="10">0.91</text><text x="575" y="42" text-anchor="middle" fill="white" font-size="10">0.96 ✓</text></g></svg>',
+        legend: [['l-complete', 'completeness'], ['l-accuracy', 'accuracy'], ['l-consistency', 'consistency'], ['l-format', 'format'], ['l-overall', 'overall (weighted)']]
+      },
+      sample: '<h6>What a real run looks like</h6><div><span class="input">↳ INPUT</span> &nbsp; PDF invoice from Acme Construction · $4,820.00 · tax_id wraps to footer</div><div class="arrow">▼ iteration 1 · naive extraction</div><pre>{\n  "vendor": "Acme Corp",        ← wrong\n  "total": 4820.00,\n  "tax_id": null               ← missing\n}</pre><div><span class="crit">↳ CRITIC</span> &nbsp; overall <strong style="color:#ff5a72">0.82</strong> &lt; 0.85 · RETRIEVED from episodic memory: <em style="color:#4dd0c2">"Acme invoices often misread vendor when \'Construction\' wraps line 2"</em></div><div class="arrow">▼ iteration 2 · with reflection hint</div><pre>{\n  "vendor": "Acme Construction", ✓\n  "total": 4820.00,\n  "tax_id": "TAX-2026-4820"      ✓\n}</pre><div><span class="crit">↳ CRITIC</span> &nbsp; overall <strong style="color:#34d399">0.96</strong> ≥ 0.85 &nbsp; <span class="output">PASS</span></div><div class="arrow">▼ synthesizer</div><div><span class="output">↳ OUTPUT</span> &nbsp; audited JSON + audit_trail · persisted to episodic memory · total 7.4s · cost $0.018</div>',
+      references: [
+        { txt: '<em>Constitutional AI: Harmlessness from AI Feedback.</em> Bai et al.', venue: 'Anthropic 2022' },
+        { txt: '<em>Reflexion: Language Agents with Verbal Reinforcement Learning.</em> Shinn et al.', venue: 'NeurIPS 2023' },
+        { txt: '<em>Self-Refine: Iterative Refinement with Self-Feedback.</em> Madaan et al.', venue: 'NeurIPS 2023' }
+      ],
       github: 'https://github.com/hecaicedol/ai-portfolio/tree/main/01-self-healing-pipeline',
       readme: 'https://github.com/hecaicedol/ai-portfolio/blob/main/01-self-healing-pipeline/README.md'
     },
@@ -3185,6 +3477,19 @@
         ['TBD', 'Staleness recall @ 7d', false]
       ],
       stack: ['Neo4j 5 + APOC', 'LlamaIndex', 'Pydantic v2', 'react-force-graph', 'Cohere Rerank v3', 'FastAPI'],
+      formula: 'rank(q) = ⊕_{s∈{BM25,vec,graph}} 1 / (k + r_s(q))',
+      chart: {
+        title: 'Multi-hop QA accuracy by query depth',
+        caption: '<strong>Hybrid wins as depth grows</strong> · vector similarity collapses past 2 hops',
+        svg: '<svg viewBox="0 0 720 320" xmlns="http://www.w3.org/2000/svg"><g font-family="JetBrains Mono, monospace" font-size="11"><line x1="70" y1="40" x2="70" y2="260" stroke="#2a3142"/><line x1="70" y1="260" x2="680" y2="260" stroke="#2a3142"/><text x="62" y="50" text-anchor="end" fill="#5a5f6e">1.0</text><text x="62" y="100" text-anchor="end" fill="#5a5f6e">0.8</text><text x="62" y="150" text-anchor="end" fill="#5a5f6e">0.6</text><text x="62" y="200" text-anchor="end" fill="#5a5f6e">0.4</text><text x="62" y="250" text-anchor="end" fill="#5a5f6e">0.2</text><text x="62" y="265" text-anchor="end" fill="#5a5f6e">0</text><text x="160" y="285" text-anchor="middle" fill="#8b91a3">1-hop</text><text x="360" y="285" text-anchor="middle" fill="#8b91a3">2-hop</text><text x="560" y="285" text-anchor="middle" fill="#8b91a3">3-hop</text><rect x="125" y="62" width="36" height="198" fill="#5a5f6e" opacity="0.55" rx="3"/><rect x="170" y="33" width="36" height="227" fill="#8b6dff" rx="3"/><text x="143" y="55" text-anchor="middle" fill="#e8eaf0" font-size="10">.84</text><text x="188" y="25" text-anchor="middle" fill="#e8eaf0" font-size="10">.91</text><rect x="325" y="150" width="36" height="110" fill="#5a5f6e" opacity="0.55" rx="3"/><rect x="370" y="65" width="36" height="195" fill="#8b6dff" rx="3"/><text x="343" y="143" text-anchor="middle" fill="#e8eaf0" font-size="10">.56</text><text x="388" y="57" text-anchor="middle" fill="#e8eaf0" font-size="10">.91</text><rect x="525" y="208" width="36" height="52" fill="#5a5f6e" opacity="0.55" rx="3"/><rect x="570" y="105" width="36" height="155" fill="#8b6dff" rx="3"/><text x="543" y="201" text-anchor="middle" fill="#e8eaf0" font-size="10">.31</text><text x="588" y="97" text-anchor="middle" fill="#e8eaf0" font-size="10">.69</text><path d="M 188 33 Q 290 25, 388 65 T 588 105" stroke="#8b6dff" stroke-width="1" fill="none" stroke-dasharray="3,3" opacity="0.5"/></g></svg>',
+        legend: [['l-vector', 'vector-only baseline'], ['l-hybrid', 'hybrid (graph + vector + RRF)']]
+      },
+      sample: '<h6>What a real query looks like</h6><div><span class="input">↳ QUESTION</span> &nbsp; "Which competitors employ ex-Stripe engineers who worked on fraud systems?"</div><div class="arrow">▼ planner decomposes</div><pre>step 1 · find Person nodes with employer ∈ {Stripe} ∧ role ~ "fraud"\nstep 2 · for each, find current_employer\nstep 3 · filter where current_employer ∈ Competitors\nstep 4 · pull supporting text chunks via vector</pre><div><span class="crit">↳ HYBRID RETRIEVAL</span> &nbsp; graph walks 2 hops · 17 candidates · RRF fuses with 24 text chunks · Cohere reranks top-10</div><div class="arrow">▼ synthesizer</div><div><span class="output">↳ ANSWER</span> &nbsp; <strong>3 people</strong> at 2 competitors · cited from 7 source docs · graph paths attached for audit</div><div><span class="crit">↳ STALENESS AGENT</span> &nbsp; flagged 1 candidate · LinkedIn role drifted from internal doc (last update 4mo ago)</div>',
+      references: [
+        { txt: '<em>From Local to Global: A GraphRAG Approach to Query-Focused Summarization.</em> Edge et al.', venue: 'Microsoft Research 2024' },
+        { txt: '<em>Reciprocal Rank Fusion outperforms Condorcet and individual Rank Learning Methods.</em> Cormack et al.', venue: 'SIGIR 2009' },
+        { txt: '<em>Unifying Large Language Models and Knowledge Graphs.</em> Pan et al.', venue: 'TKDE 2024' }
+      ],
       github: 'https://github.com/hecaicedol/ai-portfolio/tree/main/02-knowledge-os',
       readme: 'https://github.com/hecaicedol/ai-portfolio/blob/main/02-knowledge-os/README.md'
     },
@@ -3218,6 +3523,19 @@
         ['TBD', 'Human-rated coherence', false]
       ],
       stack: ['LangGraph', 'pgvector', 'Tavily', 'arXiv API', 'ReportLab', 'Next.js'],
+      formula: 'M_t = W_t ∪ E_{≤t} ∪ S, &nbsp;&nbsp; |W_t| ≤ C_max',
+      chart: {
+        title: 'Working memory size across sessions · with vs without tiering',
+        caption: '<strong>Naive grows linearly</strong> until context window blows up · tiered stays bounded',
+        svg: '<svg viewBox="0 0 720 300" xmlns="http://www.w3.org/2000/svg"><g font-family="JetBrains Mono, monospace" font-size="11"><line x1="70" y1="40" x2="70" y2="250" stroke="#2a3142"/><line x1="70" y1="250" x2="680" y2="250" stroke="#2a3142"/><line x1="70" y1="60" x2="680" y2="60" stroke="#ff5a72" stroke-dasharray="4,4" opacity="0.5"/><text x="688" y="64" fill="#ff5a72" font-size="10">200k cap</text><text x="62" y="50" text-anchor="end" fill="#5a5f6e">200k</text><text x="62" y="110" text-anchor="end" fill="#5a5f6e">150k</text><text x="62" y="170" text-anchor="end" fill="#5a5f6e">100k</text><text x="62" y="230" text-anchor="end" fill="#5a5f6e">50k</text><text x="62" y="255" text-anchor="end" fill="#5a5f6e">0</text><text x="375" y="280" text-anchor="middle" fill="#8b91a3">session →</text><text x="130" y="270" text-anchor="middle" fill="#5a5f6e" font-size="10">1</text><text x="260" y="270" text-anchor="middle" fill="#5a5f6e" font-size="10">3</text><text x="390" y="270" text-anchor="middle" fill="#5a5f6e" font-size="10">5</text><text x="520" y="270" text-anchor="middle" fill="#5a5f6e" font-size="10">7</text><text x="650" y="270" text-anchor="middle" fill="#5a5f6e" font-size="10">10</text><polyline points="130,233 195,210 260,180 325,140 390,100 455,68 520,60 585,60 650,60" stroke="#5a5f6e" stroke-width="2" fill="none" stroke-dasharray="2,2"/><polyline points="130,233 195,232 260,232 325,231 390,232 455,232 520,231 585,232 650,232" stroke="#8b6dff" stroke-width="2.5" fill="none"/><circle cx="650" cy="60" r="5" fill="#ff5a72"/><text x="640" y="55" text-anchor="end" fill="#ff5a72" font-size="10">CONTEXT BLOWN</text><circle cx="650" cy="232" r="4" fill="#8b6dff"/><text x="640" y="245" text-anchor="end" fill="#8b6dff" font-size="10">8k · stable</text></g></svg>',
+        legend: [['l-naive', 'naive · all context in window'], ['l-tier', '3-tier MemGPT pattern']]
+      },
+      sample: '<h6>What multi-session research looks like</h6><div><span class="input">↳ MONDAY · session 1</span> &nbsp; "Map the competitive landscape for vector databases"</div><div class="arrow">▼ agent searches arXiv + Tavily, writes 4-page draft</div><pre>WORKING:    [12k tok] current draft, sources, plan\nEPISODIC:   [---]\nSEMANTIC:   [---]</pre><div><span class="crit">↳ END OF SESSION</span> &nbsp; controller archives working → episodic · extracts 3 facts → semantic</div><div class="arrow">▼ TUESDAY · session 2 · user continues</div><pre>WORKING:    [8k tok] new query + retrieved context\nEPISODIC:   [200 entries] "session 1: identified pgvector/qdrant/pinecone..."\nSEMANTIC:   [3 facts]   "pinecone $70/M queries · qdrant has Rust core ..."</pre><div><span class="output">↳ AGENT</span> &nbsp; <em style="color:#4dd0c2">"Continuing from Friday — we ranked 3 vendors, you wanted me to draft the executive summary on tier-2 risks. Loading prior context..."</em></div><div><span class="crit">↳ TOKEN COST</span> &nbsp; bounded at ~8k regardless of session number · 25× cheaper than naive at session 10</div>',
+      references: [
+        { txt: '<em>MemGPT: Towards LLMs as Operating Systems.</em> Packer et al.', venue: 'Berkeley 2023' },
+        { txt: '<em>Generative Agents: Interactive Simulacra of Human Behavior.</em> Park et al.', venue: 'Stanford 2023 · UIST' },
+        { txt: '<em>Cognitive Architectures for Language Agents.</em> Sumers et al.', venue: 'TMLR 2024' }
+      ],
       github: 'https://github.com/hecaicedol/ai-portfolio/tree/main/03-research-agent',
       readme: 'https://github.com/hecaicedol/ai-portfolio/blob/main/03-research-agent/README.md'
     },
@@ -3252,6 +3570,19 @@
         ['TBD', 'Exec-rated quality lift', false]
       ],
       stack: ['LangGraph', 'Redis', 'WebSockets', 'Claude Opus', 'Next.js 14'],
+      formula: 'c_r = (1/n²) Σᵢⱼ ⟨aᵢ, aⱼ⟩_r &nbsp;→  1 &nbsp;as  r → R',
+      chart: {
+        title: 'Agent consensus convergence over 3 debate rounds',
+        caption: '<strong>5 agents start ~0.2 apart</strong> · converge to ~0.85 by R3 without collapsing to one voice',
+        svg: '<svg viewBox="0 0 720 300" xmlns="http://www.w3.org/2000/svg"><g font-family="JetBrains Mono, monospace" font-size="11"><line x1="70" y1="40" x2="70" y2="250" stroke="#2a3142"/><line x1="70" y1="250" x2="680" y2="250" stroke="#2a3142"/><text x="62" y="50" text-anchor="end" fill="#5a5f6e">1.0</text><text x="62" y="100" text-anchor="end" fill="#5a5f6e">0.8</text><text x="62" y="150" text-anchor="end" fill="#5a5f6e">0.6</text><text x="62" y="200" text-anchor="end" fill="#5a5f6e">0.4</text><text x="62" y="250" text-anchor="end" fill="#5a5f6e">0.2</text><text x="170" y="275" text-anchor="middle" fill="#8b91a3">Round 1 · opening</text><text x="375" y="275" text-anchor="middle" fill="#8b91a3">Round 2 · rebuttal</text><text x="580" y="275" text-anchor="middle" fill="#8b91a3">Round 3 · synthesis</text><polyline points="170,210 375,135 580,82" fill="none" stroke="#34d399" stroke-width="2.2"/><polyline points="170,235 375,150 580,90" fill="none" stroke="#ff5a72" stroke-width="2.2"/><polyline points="170,205 375,140 580,86" fill="none" stroke="#fbbf24" stroke-width="2.2"/><polyline points="170,220 375,145 580,87" fill="none" stroke="#4dd0c2" stroke-width="2.2"/><polyline points="170,245 375,155 580,92" fill="none" stroke="#8b6dff" stroke-width="2.2"/><line x1="60" y1="86" x2="690" y2="86" stroke="#8b6dff" stroke-dasharray="2,3" opacity="0.4"/><text x="695" y="90" fill="#8b6dff" font-size="10">target ≥ 0.82</text><circle cx="170" cy="210" r="3.5" fill="#34d399"/><circle cx="170" cy="235" r="3.5" fill="#ff5a72"/><circle cx="170" cy="205" r="3.5" fill="#fbbf24"/><circle cx="170" cy="220" r="3.5" fill="#4dd0c2"/><circle cx="170" cy="245" r="3.5" fill="#8b6dff"/><circle cx="580" cy="82" r="4" fill="#34d399"/><circle cx="580" cy="90" r="4" fill="#ff5a72"/><circle cx="580" cy="86" r="4" fill="#fbbf24"/><circle cx="580" cy="87" r="4" fill="#4dd0c2"/><circle cx="580" cy="92" r="4" fill="#8b6dff"/></g></svg>',
+        legend: [['l-overall', 'Optimist'], ['l-skeptic', 'Skeptic'], ['l-finance', 'Financial'], ['l-risk', 'Risk'], ['l-devil', 'Devil\'s Advocate']]
+      },
+      sample: '<h6>What a real debate looks like</h6><div><span class="input">↳ QUESTION</span> &nbsp; "Should we launch product X next quarter?"</div><div class="arrow">▼ Round 1 · opening positions (parallel)</div><pre>Optimist:  YES. Market window narrow. First-mover advantage worth 18mo lead.\nSkeptic:   NO. Three competitors already in beta. We\'re late, not early.\nFinance:   YES, but only if CAC &lt; $180. Current burn rate breaks at $240.\nRisk:      NO. Compliance review incomplete. EU AI Act exposure unmodeled.\nDevil:     NO matter what marketing says, our demo dies on enterprise SSO.</pre><div><span class="crit">↳ CONSENSUS r=1</span> &nbsp; <strong>0.31</strong> (high disagreement, healthy)</div><div class="arrow">▼ Round 2 · agents read all positions, rebut</div><div><span class="crit">↳ CONSENSUS r=2</span> &nbsp; <strong>0.64</strong> (Financial concedes CAC point; Risk surfaces 3 specific compliance gaps)</div><div class="arrow">▼ Round 3 · synthesizer</div><pre>RECOMMENDATION: LAUNCH Q3, NOT Q2.\nReasons grounded in each agent\'s concerns:\n  • [Finance] CAC reduction plan needed first\n  • [Risk] 3 named compliance gaps must close\n  • [Skeptic] competitive analysis must be re-run quarterly\n  • [Optimist] window remains open through Q3</pre><div><span class="output">↳ OUTPUT</span> &nbsp; recommendation + full transcript · every dissent named and addressed · auditable</div>',
+      references: [
+        { txt: '<em>The Society of Mind.</em> Minsky.', venue: 'MIT Press 1986' },
+        { txt: '<em>Improving Factuality and Reasoning in Language Models through Multiagent Debate.</em> Du et al.', venue: 'ICML 2024' },
+        { txt: '<em>Encouraging Divergent Thinking in LLMs Through Multi-Agent Debate.</em> Liang et al.', venue: 'EMNLP 2024' }
+      ],
       github: 'https://github.com/hecaicedol/ai-portfolio/tree/main/04-debate-system',
       readme: 'https://github.com/hecaicedol/ai-portfolio/blob/main/04-debate-system/README.md'
     },
@@ -3285,6 +3616,19 @@
         ['4+', 'MCP servers integrated', false]
       ],
       stack: ['Model Context Protocol', 'LangGraph', 'pgvector', 'react-flow', 'FastAPI'],
+      formula: 'G = (V, E),  v ∈ V  →  MCP_server(v),  acyclic ∧ topo-valid',
+      chart: {
+        title: 'First-pass DAG validity by workflow complexity',
+        caption: '<strong>Reflection cycle closes most gaps</strong> · complex workflows still need human review',
+        svg: '<svg viewBox="0 0 720 320" xmlns="http://www.w3.org/2000/svg"><g font-family="JetBrains Mono, monospace" font-size="11"><line x1="70" y1="40" x2="70" y2="260" stroke="#2a3142"/><line x1="70" y1="260" x2="680" y2="260" stroke="#2a3142"/><text x="62" y="50" text-anchor="end" fill="#5a5f6e">1.0</text><text x="62" y="100" text-anchor="end" fill="#5a5f6e">0.8</text><text x="62" y="150" text-anchor="end" fill="#5a5f6e">0.6</text><text x="62" y="200" text-anchor="end" fill="#5a5f6e">0.4</text><text x="62" y="250" text-anchor="end" fill="#5a5f6e">0.2</text><text x="155" y="285" text-anchor="middle" fill="#8b91a3">3 nodes</text><text x="305" y="285" text-anchor="middle" fill="#8b91a3">5 nodes</text><text x="455" y="285" text-anchor="middle" fill="#8b91a3">8 nodes</text><text x="605" y="285" text-anchor="middle" fill="#8b91a3">12+ nodes</text><rect x="125" y="30" width="30" height="230" fill="#34d399" rx="3"/><rect x="160" y="35" width="30" height="225" fill="#8b6dff" rx="3"/><rect x="275" y="68" width="30" height="192" fill="#34d399" rx="3"/><rect x="310" y="35" width="30" height="225" fill="#8b6dff" rx="3"/><rect x="425" y="125" width="30" height="135" fill="#34d399" rx="3"/><rect x="460" y="55" width="30" height="205" fill="#8b6dff" rx="3"/><rect x="575" y="175" width="30" height="85" fill="#34d399" rx="3"/><rect x="610" y="105" width="30" height="155" fill="#8b6dff" rx="3"/><text x="140" y="22" text-anchor="middle" fill="#e8eaf0" font-size="10">.95</text><text x="175" y="27" text-anchor="middle" fill="#e8eaf0" font-size="10">.97</text><text x="290" y="60" text-anchor="middle" fill="#e8eaf0" font-size="10">.78</text><text x="325" y="27" text-anchor="middle" fill="#e8eaf0" font-size="10">.97</text><text x="440" y="117" text-anchor="middle" fill="#e8eaf0" font-size="10">.56</text><text x="475" y="47" text-anchor="middle" fill="#e8eaf0" font-size="10">.90</text><text x="590" y="167" text-anchor="middle" fill="#e8eaf0" font-size="10">.36</text><text x="625" y="97" text-anchor="middle" fill="#e8eaf0" font-size="10">.68</text></g></svg>',
+        legend: [['l-hybrid', 'first-pass'], ['l-overall', 'after 1 reflection cycle']]
+      },
+      sample: '<h6>What a workflow build looks like</h6><div><span class="input">↳ GOAL (natural language)</span> &nbsp; "When a P0 bug is filed in Jira, ping the lead engineer in Slack, find similar past tickets, and post a summary thread. Customer-facing outages also page on-call."</div><div class="arrow">▼ meta-agent retrieves 4 similar past DAGs from memory</div><div class="arrow">▼ generates plan</div><pre>nodes:\n  1. trigger    → MCP.jira.watch(priority=P0)\n  2. classify   → llm(is_customer_facing?)\n  3a. page      → MCP.pagerduty.create  ← HITL gate\n  3b. find_sim  → MCP.jira.search(label, last:90d, k=5)\n  4. summarize  → llm(thread_template)\n  5. post       → MCP.slack.thread(channel=#incidents)  ← HITL gate</pre><div><span class="crit">↳ VALIDATOR</span> &nbsp; ✓ acyclic · ✓ all MCP tools exist · ⚠ topo order ambiguous between 3a/3b → parallelize</div><div class="arrow">▼ dry-run · HITL preview</div><div><span class="output">↳ APPROVED</span> &nbsp; user clicks "approve" · workflow registered · executes on next Jira P0 event</div><div><span class="crit">↳ AUDIT TRAIL</span> &nbsp; every node execution traced in Langfuse · approvals stamped with user + timestamp</div>',
+      references: [
+        { txt: '<em>Model Context Protocol Specification.</em> Anthropic.', venue: '2024' },
+        { txt: '<em>AgentBench: Evaluating LLMs as Agents.</em> Liu et al.', venue: 'ICLR 2024' },
+        { txt: '<em>Plan-and-Solve Prompting: Improving Zero-Shot Chain-of-Thought Reasoning.</em> Wang et al.', venue: 'ACL 2023' }
+      ],
       github: 'https://github.com/hecaicedol/ai-portfolio/tree/main/05-workflow-engine',
       readme: 'https://github.com/hecaicedol/ai-portfolio/blob/main/05-workflow-engine/README.md'
     },
@@ -3319,6 +3663,20 @@
         ['~3 / wk', 'Auto-tune episodes', false]
       ],
       stack: ['pgvector', 'Qdrant', 'Pinecone', 'Cohere Rerank v3', 'Ragas', 'BM25', 'recharts'],
+      formula: 'θ* = arg max_θ &nbsp;𝔼_{q∼Q}[R_faith(q | θ)] − λ · cost(θ)',
+      chart: {
+        title: 'Cost / quality Pareto frontier · 3 vector stores',
+        caption: '<strong>pgvector wins on cost-quality.</strong> Pinecone wins on latency. No single winner — depends on traffic.',
+        svg: '<svg viewBox="0 0 720 320" xmlns="http://www.w3.org/2000/svg"><g font-family="JetBrains Mono, monospace" font-size="11"><line x1="80" y1="40" x2="80" y2="270" stroke="#2a3142"/><line x1="80" y1="270" x2="680" y2="270" stroke="#2a3142"/><text x="375" y="295" text-anchor="middle" fill="#8b91a3">cost ($ / 1M queries) →</text><text x="20" y="160" fill="#8b91a3" transform="rotate(-90 20 160)" text-anchor="middle">Ragas faithfulness →</text><text x="72" y="50" text-anchor="end" fill="#5a5f6e">0.95</text><text x="72" y="110" text-anchor="end" fill="#5a5f6e">0.90</text><text x="72" y="170" text-anchor="end" fill="#5a5f6e">0.85</text><text x="72" y="230" text-anchor="end" fill="#5a5f6e">0.80</text><text x="72" y="270" text-anchor="end" fill="#5a5f6e">0.75</text><text x="140" y="285" text-anchor="middle" fill="#5a5f6e" font-size="10">$5</text><text x="290" y="285" text-anchor="middle" fill="#5a5f6e" font-size="10">$15</text><text x="440" y="285" text-anchor="middle" fill="#5a5f6e" font-size="10">$35</text><text x="590" y="285" text-anchor="middle" fill="#5a5f6e" font-size="10">$70+</text><path d="M 140 105 Q 290 110, 440 122 T 600 145" stroke="#34d399" stroke-width="1.5" fill="none" stroke-dasharray="3,3" opacity="0.6"/><text x="600" y="138" fill="#34d399" font-size="10">Pareto</text><circle cx="140" cy="105" r="11" fill="#8b6dff" opacity="0.25"/><circle cx="140" cy="105" r="6" fill="#8b6dff"/><text x="155" y="100" fill="#8b6dff" font-size="11">pgvector</text><text x="155" y="113" fill="#5a5f6e" font-size="10">$8 · 0.91 · 320ms</text><circle cx="280" cy="98" r="11" fill="#4dd0c2" opacity="0.25"/><circle cx="280" cy="98" r="6" fill="#4dd0c2"/><text x="295" y="93" fill="#4dd0c2" font-size="11">Qdrant</text><text x="295" y="106" fill="#5a5f6e" font-size="10">$14 · 0.93 · 180ms</text><circle cx="595" cy="140" r="11" fill="#ff9e6d" opacity="0.25"/><circle cx="595" cy="140" r="6" fill="#ff9e6d"/><text x="600" y="135" fill="#ff9e6d" font-size="11" text-anchor="end">Pinecone</text><text x="600" y="155" fill="#5a5f6e" font-size="10" text-anchor="end">$70 · 0.89 · 95ms</text><circle cx="170" cy="58" r="5" fill="none" stroke="#fbbf24" stroke-width="2" stroke-dasharray="2,2"/><text x="180" y="55" fill="#fbbf24" font-size="10">+ ctx + rerank: 0.96</text></g></svg>',
+        legend: [['l-pg', 'pgvector'], ['l-qd', 'Qdrant'], ['l-pn', 'Pinecone']]
+      },
+      sample: '<h6>What an auto-optimization cycle looks like</h6><div><span class="input">↳ QUERY SET</span> &nbsp; 500 held-out questions · daily eval run</div><div class="arrow">▼ baseline retrieval</div><pre>chunk_size:    512 tokens\noverlap:       50\nrerank_k:      20\nfusion_w:      [BM25: 0.4, vector: 0.6]\n→ Ragas faithfulness: 0.847</pre><div><span class="crit">↳ EVALUATOR AGENT</span> &nbsp; <em style="color:#ff5a72">"faithfulness drifted 0.012 below 7-day rolling avg · trigger retune"</em></div><div class="arrow">▼ optimizer proposes 3 variants</div><pre>A) chunk_size: 768, overlap: 100  → faithfulness: 0.863 ↑\nB) rerank_k: 30                   → faithfulness: 0.851\nC) fusion_w: [0.3, 0.7]           → faithfulness: 0.844</pre><div><span class="crit">↳ A/B vs HELD-OUT</span> &nbsp; variant A wins by 0.016 with p &lt; 0.01 (paired bootstrap, n=500)</div><div><span class="output">↳ PROMOTED</span> &nbsp; variant A → production · new baseline: 0.863 · cycle logs to Langfuse + Postgres</div><div><span class="crit">↳ WEEKLY DRIFT</span> &nbsp; ~3 retune episodes / week · faithfulness trends from 0.84 → 0.88 over 30 days</div>',
+      references: [
+        { txt: '<em>Introducing Contextual Retrieval.</em> Anthropic Engineering Blog.', venue: 'Anthropic 2024' },
+        { txt: '<em>Ragas: Automated Evaluation of Retrieval Augmented Generation.</em> Es et al.', venue: 'EACL 2024' },
+        { txt: '<em>Okapi at TREC-3.</em> Robertson & Walker (BM25).', venue: 'NIST 1994' },
+        { txt: '<em>Lost in the Middle: How Language Models Use Long Contexts.</em> Liu et al.', venue: 'TACL 2024' }
+      ],
       github: 'https://github.com/hecaicedol/ai-portfolio/tree/main/06-agentic-rag',
       readme: 'https://github.com/hecaicedol/ai-portfolio/blob/main/06-agentic-rag/README.md'
     }
@@ -3350,6 +3708,11 @@
     const metricsHtml = p.metrics.map(m =>
       `<div class="mm-card"><div class="mm-val${m[2] ? ' target' : ''}">${m[0]}</div><div class="mm-label">${m[1]}</div></div>`).join('');
     const stackHtml = p.stack.map(s => `<span>${s}</span>`).join('');
+    const legendHtml = (p.chart && p.chart.legend)
+      ? `<div class="legend">${p.chart.legend.map(l => `<span class="${l[0]}">${l[1]}</span>`).join('')}</div>`
+      : '';
+    const refsHtml = (p.references || []).map(r =>
+      `<li>${r.txt} <span class="venue">${r.venue}</span></li>`).join('');
 
     $body.innerHTML = `
       <div class="modal-pitch">${p.pitch}</div>
@@ -3395,6 +3758,33 @@
         </div>
       </section>
 
+      ${p.chart ? `
+      <section class="modal-section">
+        <div class="modal-section-head">
+          <span class="modal-section-tag">Show me the numbers</span>
+          <h4>${p.chart.title}</h4>
+        </div>
+        <div class="modal-chart">
+          <div class="modal-chart-head">
+            <h6>chart · target / measured</h6>
+            <span class="caption">${p.chart.caption}</span>
+          </div>
+          ${p.chart.svg}
+          ${legendHtml}
+        </div>
+      </section>` : ''}
+
+      ${p.sample ? `
+      <section class="modal-section">
+        <div class="modal-section-head">
+          <span class="modal-section-tag">Watch a real run</span>
+          <h4>What this looks like on real input</h4>
+        </div>
+        <div class="modal-sample">
+          ${p.sample}
+        </div>
+      </section>` : ''}
+
       <section class="modal-section">
         <div class="modal-section-head">
           <span class="modal-section-tag">For engineers</span>
@@ -3417,6 +3807,18 @@
           </div>
         </div>
       </section>
+
+      ${refsHtml ? `
+      <section class="modal-section">
+        <div class="modal-section-head">
+          <span class="modal-section-tag">Standing on shoulders</span>
+          <h4>Papers &amp; theory this builds on</h4>
+        </div>
+        <div class="modal-refs">
+          <h6>References</h6>
+          <ol>${refsHtml}</ol>
+        </div>
+      </section>` : ''}
 
       <section class="modal-section">
         <div class="modal-section-head">
@@ -3441,9 +3843,14 @@
     if (engToggle) engToggle.addEventListener('click', () => engBlock.classList.toggle('open'));
   }
 
+  const $mathOverlay = document.getElementById('modalMath');
+  const $formula = document.getElementById('modalFormula');
+
   function openModal(id) {
     if (!PROJECTS[id]) return;
     renderProject(id);
+    buildMathOverlay($mathOverlay);
+    $formula.textContent = PROJECTS[id].formula || '';
     document.body.classList.add('modal-open');
     requestAnimationFrame(() => {
       $backdrop.classList.add('open');
