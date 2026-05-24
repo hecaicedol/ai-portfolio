@@ -1,7 +1,6 @@
 import json
 from typing import Any
 
-from langchain_anthropic import ChatAnthropic
 from langchain_core.messages import HumanMessage, SystemMessage
 
 EXTRACTOR_SYSTEM_PROMPT = """You are a strict structured-data extraction agent.
@@ -16,9 +15,11 @@ Rules:
 - If a "critic_feedback" section is present in the user message, address each point.
 """
 
+MAX_PARSE_ATTEMPTS = 3
+
 
 class ExtractorAgent:
-    def __init__(self, model: ChatAnthropic) -> None:
+    def __init__(self, model: Any) -> None:
         self.model = model
 
     async def run(
@@ -37,13 +38,31 @@ class ExtractorAgent:
             user_parts.append(f"<critic_feedback>\n{joined}\n</critic_feedback>")
         user_message = "\n\n".join(user_parts)
 
-        response = await self.model.ainvoke(
-            [
-                SystemMessage(content=EXTRACTOR_SYSTEM_PROMPT),
-                HumanMessage(content=user_message),
-            ]
-        )
-        return _safe_json(response.content)
+        last_exc: Exception | None = None
+        for attempt in range(MAX_PARSE_ATTEMPTS):
+            extra_system = ""
+            if attempt > 0:
+                extra_system = (
+                    "\n\nIMPORTANT: your previous response was not valid JSON. "
+                    "Output ONLY the JSON object now — no prose, no fences."
+                )
+            response = await self.model.ainvoke(
+                [
+                    SystemMessage(content=EXTRACTOR_SYSTEM_PROMPT + extra_system),
+                    HumanMessage(content=user_message),
+                ]
+            )
+            try:
+                return _safe_json(response.content)
+            except (json.JSONDecodeError, ValueError) as exc:
+                last_exc = exc
+        raise ExtractorParseError(
+            f"Extractor could not produce valid JSON after {MAX_PARSE_ATTEMPTS} attempts"
+        ) from last_exc
+
+
+class ExtractorParseError(RuntimeError):
+    """Raised when the extractor cannot produce valid JSON after retries."""
 
 
 def _safe_json(text: str) -> dict[str, Any]:

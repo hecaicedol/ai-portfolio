@@ -42,6 +42,9 @@ desktop.ini
 *.log
 logs/
 
+# Eval outputs (large, regeneratable)
+01-self-healing-pipeline/backend/eval/results/
+
 # Docker
 docker-data/
 postgres-data/

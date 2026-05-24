@@ -1,0 +1,13 @@
+{
+  "id": "invoice_002_clean",
+  "document_type": "invoice",
+  "difficulty": "easy",
+  "notes": "Clean invoice with line items, fields all clearly labeled",
+  "content": "INVOICE #INV-2026-0118\nDate: 2026-04-02\n\nVendor: Northwind Logistics LLC\nClient: Contoso Ltd.\n\nLine items:\n  1. Pallet shipping (Berlin → Madrid)   €1,200.00\n  2. Customs handling                      €180.00\n  3. Insurance                             €95.00\n\nTotal: €1,475.00\n",
+  "ground_truth": {
+    "invoice_number": "INV-2026-0118",
+    "vendor": "Northwind Logistics LLC",
+    "total": 1475.00,
+    "issue_date": "2026-04-02"
+  }
+}

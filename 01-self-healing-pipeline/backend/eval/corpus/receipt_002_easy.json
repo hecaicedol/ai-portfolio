@@ -1,0 +1,12 @@
+{
+  "id": "receipt_002_easy",
+  "document_type": "receipt",
+  "difficulty": "easy",
+  "notes": "Restaurant receipt with tip line",
+  "content": "Café Luna\nTable 7 — Server: Maya\nDate: 2026-04-18\n\n2 x Americano       $9.00\n1 x Bagel           $4.50\n1 x Avocado toast   $11.50\n----------------------------\nSubtotal           $25.00\nTip (20%)           $5.00\nTOTAL              $30.00\n\nThank you!\n",
+  "ground_truth": {
+    "merchant": "Café Luna",
+    "total": 30.00,
+    "date": "2026-04-18"
+  }
+}

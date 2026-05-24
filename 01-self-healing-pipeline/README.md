@@ -73,13 +73,15 @@ This project shows what production agentic systems should look like instead: eve
 
 | Layer | Choice |
 |---|---|
-| Orchestration | LangGraph |
+| Orchestration | LangGraph 0.2 |
 | LLM | Claude `claude-sonnet-4-5` via `langchain-anthropic` |
 | Memory | PostgreSQL 16 + `pgvector` extension |
-| Observability | Langfuse (self-hosted via docker-compose) |
-| API | FastAPI (async, SSE for live pipeline progress) |
-| Frontend | Next.js 14, Tailwind, shadcn/ui |
-| Infra | Docker Compose |
+| Embeddings | Voyage AI (`voyage-3`, 1024 dims) with deterministic hash fallback for dev |
+| API | FastAPI (async) + sse-starlette for live pipeline streaming |
+| Frontend | Next.js 14 (App Router) + Tailwind + lucide-react |
+| Testing | pytest + pytest-asyncio (15 tests, no Docker / no API key needed) |
+| Infra | Docker Compose (Postgres + API + frontend) |
+| Observability | Langfuse — deps installed, callback wiring pending (see `BUILD.md`) |
 
 ---
 
@@ -92,45 +94,74 @@ This project shows what production agentic systems should look like instead: eve
 ├── README.md
 ├── backend/
 │   ├── Dockerfile
-│   ├── requirements.txt
+│   ├── requirements.txt          # runtime deps
+│   ├── requirements-dev.txt      # adds pytest + pytest-asyncio
+│   ├── pytest.ini
 │   ├── config.py
 │   ├── api/
-│   │   ├── main.py              # FastAPI app + SSE
-│   │   └── schemas.py           # Request/response Pydantic models
+│   │   ├── main.py               # FastAPI app + SSE endpoints
+│   │   └── schemas.py            # Pydantic request / response models
 │   ├── agents/
-│   │   ├── orchestrator.py      # LangGraph StateGraph
-│   │   ├── extractor.py
-│   │   ├── validator.py
-│   │   ├── critic.py            # Constitutional AI
+│   │   ├── orchestrator.py       # LangGraph StateGraph
+│   │   ├── extractor.py          # JSON-retry hardened
+│   │   ├── validator.py          # deterministic, no LLM
+│   │   ├── critic.py             # Constitutional AI + memory lookup
 │   │   └── synthesizer.py
 │   ├── memory/
-│   │   ├── episodic.py          # pgvector CRUD + similarity
+│   │   ├── episodic.py           # pgvector CRUD + similarity
 │   │   └── schemas.py
-│   └── db/
-│       └── init.sql             # pgvector + schema
-└── frontend/
+│   ├── db/
+│   │   └── init.sql              # pgvector + schema
+│   ├── tests/                    # 15 tests — `pytest tests`
+│   │   ├── conftest.py           # FakeMemory + ScriptedLLM fixtures
+│   │   ├── test_validator.py
+│   │   ├── test_agents.py
+│   │   └── test_orchestrator.py
+│   └── eval/
+│       ├── corpus/               # 15 hand-written synthetic docs
+│       ├── benchmark.py          # runner + grader + aggregator
+│       └── README.md             # how to run dry-run vs real
+└── frontend/                     # Next.js 14 SPA — see frontend/README.md
     ├── package.json
-    └── README.md
+    ├── src/app/                  # layout + page (SSE consumer)
+    ├── src/components/           # Header, DocumentInput, Pipeline, Critic, Memory…
+    └── src/lib/                  # api client, types, helpers
 ```
 
 ---
 
 ## Quick start
 
-**Prerequisites:** Docker Desktop, an Anthropic API key.
+Two ways to run, depending on what you want to check.
+
+### A. No Docker, no API key — just want to see the code is correct
+
+```bash
+cd backend
+python -m venv .venv
+.venv/Scripts/activate            # PowerShell: .venv\Scripts\Activate.ps1
+pip install -r requirements-dev.txt
+pytest tests                      # 15 tests, ~2 seconds
+python -m eval.benchmark --mode dry-run   # exercises the full pipeline with a stub LLM
+```
+
+This runs the entire orchestrator graph on the 15-document corpus using a deterministic stub LLM and an in-memory fake of the pgvector layer. `$0` cost, no Docker required.
+
+### B. Full stack — see it work against real Claude
 
 ```bash
 cp .env.example .env
-# Edit .env and set ANTHROPIC_API_KEY
+# set ANTHROPIC_API_KEY in .env
 
 docker compose up --build
 ```
 
-Services:
-- API → `http://localhost:8000` (docs at `/docs`)
+Services after `up`:
+- API → `http://localhost:8000` (interactive docs at `/docs`)
 - Postgres → `localhost:5432` (auto-initialized with pgvector + schema)
-- Langfuse → `http://localhost:3001`
 - Frontend → `http://localhost:3000`
+
+(Langfuse self-hosting is commented out in `docker-compose.yml` — see notes in that file.)
 
 ### Try it
 
@@ -177,16 +208,49 @@ Full schema at `http://localhost:8000/docs`.
 
 ---
 
-## Metrics to track
+## Testing
 
-> These slots are populated once the project has been running against a real corpus. The README treats them as first-class — recruiters read metrics, not adjectives.
+15 automated tests live in `backend/tests/`. They use `FakeMemory` (in-memory stand-in for the pgvector layer) and `ScriptedLLM` (deterministic LLM that replays pre-written responses) so the suite needs **no Docker, no API key, and no money** to run — `pytest tests` finishes in about two seconds.
 
-| Metric | Without reflection | With reflection | Improvement |
+What's covered:
+
+| File | What it verifies |
+|---|---|
+| `test_validator.py` | Required-field detection per document type, edge cases (unknown types, empty values, generic) |
+| `test_agents.py` | `Extractor` / `Critic` JSON-retry behavior, markdown-fence stripping, retry exhaustion → typed parse errors, critic prompt actually includes past similar errors |
+| `test_orchestrator.py` | All four LangGraph paths end-to-end: pass on first attempt, self-heal on second attempt, exhaust max iterations, SSE streaming emits the expected events. Also verifies `record_run` is called exactly once per pipeline invocation. |
+
+The orchestrator tests were what surfaced a latent LangGraph bug (a node name colliding with a state-key reserved word) that had never been observed because the system had never actually been run against the real library version. That fix is in the commit history.
+
+## Evaluation harness
+
+`backend/eval/` contains a 15-document synthetic corpus (8 invoices + 4 receipts + 3 contracts, split across easy / medium / hard) plus `benchmark.py`, which:
+
+1. Loads every corpus item, runs it through the pipeline with reflection enabled (max=3 iterations).
+2. Grades the extracted output field-by-field against ground truth (numeric tolerance 0.01; string compare is case-insensitive after strip; lists/dicts compared recursively).
+3. Aggregates pass rate, average iterations, accuracy, latency — broken down by `document_type` and `difficulty`.
+4. Writes `results/<label>_results.json`, `<label>_summary.json`, and `<label>_summary.md` (the last one is what gets pasted into this README).
+
+Two modes:
+
+```bash
+python -m eval.benchmark --mode dry-run     # OracleStub LLM, $0
+python -m eval.benchmark --mode real --label baseline-2026-05
+```
+
+Worst-case cost for the real run on the 15-doc corpus is ≈ **$1.20 USD** (15 docs × up to 6 LLM calls per doc at Claude Sonnet 4.5 list pricing). See `backend/eval/README.md`.
+
+## Metrics (pending real benchmark run)
+
+The slots below are populated by `eval/benchmark.py` once the real-mode run has been executed. The dry-run produces 100% by construction (the stub returns ground truth verbatim) — those numbers are not posted here on purpose.
+
+| Metric | Without reflection | With reflection | Δ |
 |---|---|---|---|
-| Extraction accuracy (invoice) | _TODO_ | _TODO_ | _TODO_ |
-| Average retries per document | n/a | _TODO_ | — |
-| Tokens per successful extraction | _TODO_ | _TODO_ | _TODO_ |
-| Critic agreement with human reviewer | n/a | _TODO_ | — |
+| Pass rate (overall) | _pending_ | _pending_ | — |
+| Avg accuracy across required fields | — | _pending_ | — |
+| Avg iterations on successful runs | 1.00 | _pending_ | — |
+| Documents healed by reflection | n/a | _pending_ | — |
+| Avg latency per doc (s) | — | _pending_ | — |
 
 ---
 

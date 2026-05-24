@@ -1,0 +1,12 @@
+{
+  "id": "receipt_004_hard_split",
+  "document_type": "receipt",
+  "difficulty": "hard",
+  "notes": "Hard: total appears only as 'amount charged' at the bottom, merchant inferred from URL footer",
+  "content": "Order confirmation\nThank you for shopping with us!\n\nItem(s):\n  Bluetooth headphones (model XR-7)\n  Quantity: 1\n  Unit price: $79.95\n  Shipping: $8.05\n\nAmount charged to your card on 2026-07-03: $88.00\n\nReturn within 30 days at audiomart.com/returns\n",
+  "ground_truth": {
+    "merchant": "audiomart.com",
+    "total": 88.00,
+    "date": "2026-07-03"
+  }
+}

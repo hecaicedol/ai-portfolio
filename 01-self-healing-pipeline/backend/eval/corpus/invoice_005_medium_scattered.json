@@ -1,0 +1,13 @@
+{
+  "id": "invoice_005_medium_scattered",
+  "document_type": "invoice",
+  "difficulty": "medium",
+  "notes": "Fields scattered, header at the bottom — tests extraction over unstructured layout",
+  "content": "Dear customer,\n\nThank you for your business. Please find below the details of our recent transaction.\n\nWe billed your account for the amount of FIVE HUNDRED FIFTY-FIVE dollars and zero cents ($555.00) on April 9, 2026 for the items listed in your order #ORD-22.\n\nThis invoice (reference: INV-PG-2026-04-09-A) was issued by Penguin Goods.\n\nBest regards,\nPenguin Goods Accounts Team\n",
+  "ground_truth": {
+    "invoice_number": "INV-PG-2026-04-09-A",
+    "vendor": "Penguin Goods",
+    "total": 555.00,
+    "issue_date": "2026-04-09"
+  }
+}

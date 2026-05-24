@@ -1,0 +1,13 @@
+{
+  "id": "contract_002_medium_service",
+  "document_type": "contract",
+  "difficulty": "medium",
+  "notes": "Service agreement with longer prose, dates and term embedded in clauses",
+  "content": "MASTER SERVICES AGREEMENT\n\nThis Master Services Agreement is made between Globex Corporation ('Provider') and Initech LLC ('Customer'), and becomes effective March 1, 2026.\n\nSection 1. Term. The initial term of this Agreement is twelve (12) months commencing on the effective date, and shall automatically renew for successive one-year periods unless either party gives ninety (90) days' written notice of non-renewal.\n\nSection 2. Scope of Services. [...]\n\nSection 14. Governing Law. The validity, interpretation, and performance of this Agreement shall be governed by the laws of the State of New York, without regard to its conflict of laws principles.\n\n[remainder omitted]\n",
+  "ground_truth": {
+    "parties": ["Globex Corporation", "Initech LLC"],
+    "effective_date": "2026-03-01",
+    "term": "12 months",
+    "governing_law": "New York"
+  }
+}

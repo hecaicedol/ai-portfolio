@@ -1,11 +1,16 @@
 import json
 from typing import Any
 
-from langchain_anthropic import ChatAnthropic
 from langchain_core.messages import HumanMessage, SystemMessage
 
 from api.schemas import CriticReport, PrincipleScore
 from memory.episodic import EpisodicMemory
+
+MAX_PARSE_ATTEMPTS = 3
+
+
+class CriticParseError(RuntimeError):
+    """Raised when the critic cannot produce valid JSON after retries."""
 
 CRITIC_SYSTEM_PROMPT = """You are a Critic agent grounded in Constitutional AI.
 You evaluate an Extractor's output against four principles and return JSON only.
@@ -35,7 +40,7 @@ Output schema (strict):
 
 
 class CriticAgent:
-    def __init__(self, model: ChatAnthropic, memory: EpisodicMemory, pass_threshold: float) -> None:
+    def __init__(self, model: Any, memory: EpisodicMemory, pass_threshold: float) -> None:
         self.model = model
         self.memory = memory
         self.pass_threshold = pass_threshold
@@ -60,10 +65,31 @@ class CriticAgent:
             f"<past_similar_errors>\n{past_block}\n</past_similar_errors>"
         )
 
-        response = await self.model.ainvoke(
-            [SystemMessage(content=CRITIC_SYSTEM_PROMPT), HumanMessage(content=user_message)]
-        )
-        raw = _safe_json(response.content)
+        last_exc: Exception | None = None
+        raw: dict[str, Any] | None = None
+        for attempt in range(MAX_PARSE_ATTEMPTS):
+            extra_system = ""
+            if attempt > 0:
+                extra_system = (
+                    "\n\nIMPORTANT: your previous response was not valid JSON. "
+                    "Output ONLY the JSON object now — strictly matching the schema above."
+                )
+            response = await self.model.ainvoke(
+                [
+                    SystemMessage(content=CRITIC_SYSTEM_PROMPT + extra_system),
+                    HumanMessage(content=user_message),
+                ]
+            )
+            try:
+                raw = _safe_json(response.content)
+                break
+            except (json.JSONDecodeError, ValueError) as exc:
+                last_exc = exc
+        if raw is None:
+            raise CriticParseError(
+                f"Critic could not produce valid JSON after {MAX_PARSE_ATTEMPTS} attempts"
+            ) from last_exc
+
         principles = [PrincipleScore(**p) for p in raw["principles"]]
         overall = float(raw.get("overall_score", sum(p.score for p in principles) / len(principles)))
         return CriticReport(

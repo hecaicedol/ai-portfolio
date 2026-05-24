@@ -1,0 +1,12 @@
+{
+  "id": "receipt_001_easy",
+  "document_type": "receipt",
+  "difficulty": "easy",
+  "notes": "Standard retail receipt",
+  "content": "*** Whole Foods Market ***\n2210 Bay St, San Francisco\nReceipt #88421\n2026-03-12 14:33\n\nOrganic bananas (1.2 lb)   $1.98\nAlmond milk 32oz           $4.49\nSourdough loaf             $5.99\n--------------------------------\nSubtotal                  $12.46\nTax                        $1.06\nTOTAL                     $13.52\n\nVISA ****4221  APPROVED\n",
+  "ground_truth": {
+    "merchant": "Whole Foods Market",
+    "total": 13.52,
+    "date": "2026-03-12"
+  }
+}

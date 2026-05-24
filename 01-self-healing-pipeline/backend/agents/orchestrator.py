@@ -26,13 +26,14 @@ class PipelineState(TypedDict, total=False):
     last_feedback: list[str]
 
 
-def build_graph(memory: EpisodicMemory, settings: Settings):
-    model = ChatAnthropic(
-        model=settings.anthropic_model,
-        api_key=settings.anthropic_api_key,
-        temperature=0,
-        max_tokens=2048,
-    )
+def build_graph(memory: EpisodicMemory, settings: Settings, model: Any | None = None):
+    if model is None:
+        model = ChatAnthropic(
+            model=settings.anthropic_model,
+            api_key=settings.anthropic_api_key,
+            temperature=0,
+            max_tokens=2048,
+        )
 
     extractor = ExtractorAgent(model=model)
     validator = ValidatorAgent()
@@ -100,17 +101,19 @@ def build_graph(memory: EpisodicMemory, settings: Settings):
             return "synthesize"
         return "reflect"
 
+    # Note: LangGraph forbids node names that collide with state keys; the state
+    # already has a `critic: CriticReport` field, so the node is named "critique".
     graph = StateGraph(PipelineState)
     graph.add_node("extract", extract_node)
     graph.add_node("validate", validate_node)
-    graph.add_node("critic", critic_node)
+    graph.add_node("critique", critic_node)
     graph.add_node("reflect", reflection_node)
     graph.add_node("synthesize", synthesize_node)
 
     graph.set_entry_point("extract")
     graph.add_edge("extract", "validate")
-    graph.add_edge("validate", "critic")
-    graph.add_conditional_edges("critic", route_after_critic, {"reflect": "reflect", "synthesize": "synthesize"})
+    graph.add_edge("validate", "critique")
+    graph.add_conditional_edges("critique", route_after_critic, {"reflect": "reflect", "synthesize": "synthesize"})
     graph.add_edge("reflect", "extract")
     graph.add_edge("synthesize", END)
 
@@ -120,6 +123,7 @@ def build_graph(memory: EpisodicMemory, settings: Settings):
 async def run_pipeline(
     *,
     graph,
+    memory: EpisodicMemory,
     document_type: str,
     content: str,
     metadata: dict[str, Any],
@@ -132,6 +136,16 @@ async def run_pipeline(
         "errors_history": [],
     }
     state = await graph.ainvoke(initial)
+
+    await memory.record_run(
+        document_type=document_type,
+        document_hash=_doc_hash(content),
+        final_score=state["critic"].overall_score,
+        retry_count=max(state["iterations"] - 1, 0),
+        success=state["critic"].passes,
+        final_output=state["final"]["data"],
+        errors_history=state.get("errors_history", []),
+    )
 
     return ProcessResponse(
         success=state["critic"].passes,
@@ -146,6 +160,7 @@ async def run_pipeline(
 async def stream_pipeline(
     *,
     graph,
+    memory: EpisodicMemory,
     document_type: str,
     content: str,
     metadata: dict[str, Any],
@@ -159,14 +174,27 @@ async def stream_pipeline(
     }
     yield PipelineEvent(type="run_started", payload={"document_type": document_type})
 
+    final_state: dict[str, Any] = {}
     async for chunk in graph.astream(initial):
         for node_name, node_state in chunk.items():
+            final_state.update(node_state)
             yield PipelineEvent(
                 type="agent_finished",
                 agent=node_name,
-                iteration=node_state.get("iterations", 0),
+                iteration=node_state.get("iterations", final_state.get("iterations", 0)),
                 payload={k: _serializable(v) for k, v in node_state.items()},
             )
+
+    if "critic" in final_state and "final" in final_state:
+        await memory.record_run(
+            document_type=document_type,
+            document_hash=_doc_hash(content),
+            final_score=final_state["critic"].overall_score,
+            retry_count=max(final_state.get("iterations", 1) - 1, 0),
+            success=final_state["critic"].passes,
+            final_output=final_state["final"]["data"],
+            errors_history=final_state.get("errors_history", []),
+        )
 
     yield PipelineEvent(type="run_completed")
 

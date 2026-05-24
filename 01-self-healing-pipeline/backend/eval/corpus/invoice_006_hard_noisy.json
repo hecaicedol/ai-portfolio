@@ -1,0 +1,13 @@
+{
+  "id": "invoice_006_hard_noisy",
+  "document_type": "invoice",
+  "difficulty": "hard",
+  "notes": "OCR-style noise on letters that look alike (O/0, I/l/1) but information is still recoverable",
+  "content": "lNVOlCE\nN0: 1NV-2026-O071\nD@te: 2026-O5-O3\n\nFr0m: W1dget Industr1es lnc.\nT0: Tar9et C0\n\nQu@ntity   Descr1pt1on            Pr1ce\n  5        S1de panel             $120.OO\n  2        H1nge assembly         $ 75.OO\n\nT0t@l: $750.OO\n",
+  "ground_truth": {
+    "invoice_number": "INV-2026-0071",
+    "vendor": "Widget Industries Inc.",
+    "total": 750.00,
+    "issue_date": "2026-05-03"
+  }
+}

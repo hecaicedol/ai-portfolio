@@ -1,0 +1,12 @@
+{
+  "id": "receipt_003_medium_handwritten",
+  "document_type": "receipt",
+  "difficulty": "medium",
+  "notes": "Informal-style receipt with inconsistent capitalization, abbreviated date",
+  "content": "joe's hardware\n123 main\n04/22/26\n\nhammer       12.99\nnails (x2)    3.50\ntape          4.99\n---------------\ntot   21.48\ncash\n",
+  "ground_truth": {
+    "merchant": "joe's hardware",
+    "total": 21.48,
+    "date": "2026-04-22"
+  }
+}

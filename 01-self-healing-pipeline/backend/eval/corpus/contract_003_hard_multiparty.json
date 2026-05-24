@@ -1,0 +1,13 @@
+{
+  "id": "contract_003_hard_multiparty",
+  "document_type": "contract",
+  "difficulty": "hard",
+  "notes": "Three parties, governing law mentioned in passing, term as 'until terminated'",
+  "content": "JOINT DEVELOPMENT AGREEMENT\n\nThe parties to this agreement are Hooli Inc., Pied Piper LLC, and Aviato Corp. (collectively the 'Participants'). This document takes effect on the date of last signature, which is October 4, 2026.\n\nThe Participants agree to jointly develop the 'Project' as defined in Schedule A.\n\nThis Agreement shall continue in force until terminated by mutual written consent of all Participants, or upon material breach as set forth in Section 9.\n\nAll disputes arising hereunder shall be resolved under the laws of England and Wales, with venue in London.\n",
+  "ground_truth": {
+    "parties": ["Hooli Inc.", "Pied Piper LLC", "Aviato Corp."],
+    "effective_date": "2026-10-04",
+    "term": "until terminated by mutual consent",
+    "governing_law": "England and Wales"
+  }
+}

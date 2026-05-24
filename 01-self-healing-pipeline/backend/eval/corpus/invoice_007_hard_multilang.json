@@ -1,0 +1,13 @@
+{
+  "id": "invoice_007_hard_multilang",
+  "document_type": "invoice",
+  "difficulty": "hard",
+  "notes": "Spanish-language invoice, decimal comma, currency in EUR — tests locale handling",
+  "content": "FACTURA\n\nNúmero de factura: FAC-2026-0214\nFecha de emisión: 11/06/2026\n\nEmisor: Aceitunas García S.L.\n  Calle Mayor 12, 28013 Madrid\n\nCliente: Distribuidora Norte\n\nConcepto: Suministro mensual aceitunas premium\nBase imponible: 2.450,00 €\nIVA (21%):       514,50 €\nTOTAL:         2.964,50 €\n",
+  "ground_truth": {
+    "invoice_number": "FAC-2026-0214",
+    "vendor": "Aceitunas García S.L.",
+    "total": 2964.50,
+    "issue_date": "2026-06-11"
+  }
+}

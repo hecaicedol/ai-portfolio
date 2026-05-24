@@ -1,0 +1,13 @@
+{
+  "id": "invoice_008_easy_minimal",
+  "document_type": "invoice",
+  "difficulty": "easy",
+  "notes": "Minimal but complete invoice — all required fields obvious",
+  "content": "Invoice INV-555 | Acme Repairs | 2026-01-08 | Total: $87.40",
+  "ground_truth": {
+    "invoice_number": "INV-555",
+    "vendor": "Acme Repairs",
+    "total": 87.40,
+    "issue_date": "2026-01-08"
+  }
+}

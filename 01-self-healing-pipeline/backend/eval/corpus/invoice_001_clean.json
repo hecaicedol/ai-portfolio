@@ -1,0 +1,13 @@
+{
+  "id": "invoice_001_clean",
+  "document_type": "invoice",
+  "difficulty": "easy",
+  "notes": "Standard clean invoice, every field labeled clearly",
+  "content": "INVOICE\n\nInvoice number: INV-2026-0042\nIssue date: 2026-03-15\n\nFrom: Acme Corp\n  100 Main St, San Francisco, CA 94103\n\nTo: Beta Industries Inc.\n  500 Market St, San Francisco, CA 94105\n\nDescription: Consulting services Q1 2026\nSubtotal: $4,500.00\nTax (8.5%): $382.50\nTotal: $4,882.50\n\nPayment due: 2026-04-15\n",
+  "ground_truth": {
+    "invoice_number": "INV-2026-0042",
+    "vendor": "Acme Corp",
+    "total": 4882.50,
+    "issue_date": "2026-03-15"
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "id": "invoice_003_clean",
+  "document_type": "invoice",
+  "difficulty": "easy",
+  "notes": "Single-line clean invoice from a SaaS vendor",
+  "content": "FOOBAR ANALYTICS INC.\nInvoice INV-9931 | Issued 2026-02-01\n\nMonthly subscription (Pro plan) ... $99.00\n\nAmount due: $99.00\n",
+  "ground_truth": {
+    "invoice_number": "INV-9931",
+    "vendor": "FOOBAR ANALYTICS INC.",
+    "total": 99.00,
+    "issue_date": "2026-02-01"
+  }
+}

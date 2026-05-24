@@ -1,0 +1,13 @@
+{
+  "id": "invoice_004_medium_date_format",
+  "document_type": "invoice",
+  "difficulty": "medium",
+  "notes": "Unusual date format (long form English), forces normalization to ISO-8601",
+  "content": "Globex Corporation\n----------------\nInvoice: GLX-2026-554\nIssued on: March 22nd, 2026\n\nProfessional services:\n  Architecture review                $3,500\n  Implementation support              $7,200\n\nTotal due: $10,700.00\nNet 30\n",
+  "ground_truth": {
+    "invoice_number": "GLX-2026-554",
+    "vendor": "Globex Corporation",
+    "total": 10700.00,
+    "issue_date": "2026-03-22"
+  }
+}

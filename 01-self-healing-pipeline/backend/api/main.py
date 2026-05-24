@@ -49,6 +49,7 @@ async def process_document(req: ProcessRequest) -> ProcessResponse:
     try:
         result = await run_pipeline(
             graph=app.state.graph,
+            memory=app.state.memory,
             document_type=req.document_type,
             content=req.content,
             metadata=req.metadata,
@@ -63,6 +64,7 @@ async def process_document_stream(req: ProcessRequest):
     async def event_generator():
         async for event in stream_pipeline(
             graph=app.state.graph,
+            memory=app.state.memory,
             document_type=req.document_type,
             content=req.content,
             metadata=req.metadata,

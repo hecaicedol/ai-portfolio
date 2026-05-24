@@ -34,20 +34,22 @@ services:
       - ./backend:/app
     command: uvicorn api.main:app --host 0.0.0.0 --port 8000 --reload
 
-  langfuse:
-    image: langfuse/langfuse:2
-    restart: unless-stopped
-    depends_on:
-      postgres:
-        condition: service_healthy
-    environment:
-      DATABASE_URL: postgresql://${POSTGRES_USER:-pipeline}:${POSTGRES_PASSWORD:-pipeline_dev}@postgres:5432/${POSTGRES_DB:-pipeline}
-      NEXTAUTH_SECRET: dev-secret-change-me
-      NEXTAUTH_URL: http://localhost:3001
-      SALT: dev-salt-change-me
-      TELEMETRY_ENABLED: "false"
-    ports:
-      - "3001:3000"
+  # Langfuse self-hosting v2 needs ClickHouse + Redis services as well.
+  # Disabled until properly wired (see task #5: "Cablear Langfuse para observabilidad").
+  # langfuse:
+  #   image: langfuse/langfuse:2
+  #   restart: unless-stopped
+  #   depends_on:
+  #     postgres:
+  #       condition: service_healthy
+  #   environment:
+  #     DATABASE_URL: postgresql://${POSTGRES_USER:-pipeline}:${POSTGRES_PASSWORD:-pipeline_dev}@postgres:5432/${POSTGRES_DB:-pipeline}
+  #     NEXTAUTH_SECRET: dev-secret-change-me
+  #     NEXTAUTH_URL: http://localhost:3001
+  #     SALT: dev-salt-change-me
+  #     TELEMETRY_ENABLED: "false"
+  #   ports:
+  #     - "3001:3000"
 
   frontend:
     image: node:20-alpine
