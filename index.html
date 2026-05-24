@@ -2658,6 +2658,33 @@
     text-transform: uppercase;
     letter-spacing: 0.04em;
   }
+  .map-tooltip-continue {
+    display: none;
+    margin-top: 12px;
+    background: var(--accent);
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    cursor: pointer;
+    pointer-events: auto;
+    box-shadow: 0 0 18px rgba(139, 109, 255, 0.5);
+    transition: background 0.15s, transform 0.1s;
+    width: 100%;
+  }
+  .map-tooltip-continue:hover { background: var(--accent-2, #a78bfa); }
+  .map-tooltip-continue:active { transform: scale(0.97); }
+  .map-tooltip.is-flow-mode {
+    pointer-events: auto;
+    border-color: rgba(77, 208, 194, 0.7);
+    box-shadow: 0 8px 28px rgba(0, 0, 0, 0.5), 0 0 36px rgba(77, 208, 194, 0.35);
+  }
+  .map-tooltip.is-flow-mode .map-tooltip-continue { display: block; }
+  .map-tooltip.is-flow-mode .map-tooltip-cta { display: none; }
 
   /* ── RRF live calculator (math-in-motion II) ────────────────────────── */
   .rrf-demo {
@@ -3565,7 +3592,8 @@
       <div class="map-tooltip" id="map-tooltip" role="tooltip">
         <div class="map-tooltip-title"></div>
         <div class="map-tooltip-body"></div>
-        <div class="map-tooltip-cta">click to open the full project →</div>
+        <div class="map-tooltip-cta" id="map-tooltip-cta"></div>
+        <button class="map-tooltip-continue" id="map-tooltip-continue" type="button"></button>
       </div>
     </div>
   </div>
@@ -6814,6 +6842,18 @@
       'mathMap.tour.1': '<strong>1.</strong> click anywhere on the map → particle drops & descends',
       'mathMap.tour.2': '<strong>2.</strong> watch which project\'s basin captures it',
       'mathMap.tour.3': '<strong>3.</strong> click any labeled attractor to open the full project',
+      'mathMap.readoutDefault': 'click anywhere to drop a particle — it will descend the gradient toward the closest project',
+      'mathMap.tooltipCta': 'click to open the full project →',
+      'mathMap.tooltipContinue': 'continue →',
+      'mathMap.particleArrivedInfo': 'particle arrived at <strong>{name}</strong>\'s explanation · read it then click <em>continue</em> to proceed to the project',
+      'mathMap.particleContinuing': 'continuing toward <strong>{name}</strong> …',
+      'mathMap.particleArrived': 'particle landed in <strong>{name}</strong> · opening project …',
+      'mathMap.info.01': 'LangGraph orchestrates 5 nodes (extract → validate → critique → reflect → synthesize). A Constitutional AI critic scores extractions across 4 principles; failures trigger a bounded reflection loop, and every error is persisted to pgvector episodic memory so the critic gets stricter over time. 22 pytest tests, 15-doc eval corpus, Next.js demo frontend.',
+      'mathMap.info.02': 'Hybrid retrieval that joins a Neo4j knowledge graph with vector search. Cypher pattern matching for multi-hop questions, RRF fusion for unstructured chunks, plus a background staleness agent that flags entities whose embeddings drift from their source documents.',
+      'mathMap.info.03': 'Autonomous research agent with three-tier memory (working / episodic / semantic). A memory controller node handles promotion and eviction explicitly. Pulls from arXiv API + Tavily + scraped web, synthesizes ReportLab PDFs.',
+      'mathMap.info.04': 'Society-of-Mind pattern with 5 specialized agents (Optimist, Skeptic, Financial, Risk, Devil\'s Advocate) running a structured 3-round protocol. Per-round cosine similarity of positions measures convergence. WebSocket streaming surfaces each agent\'s reasoning live.',
+      'mathMap.info.05': 'Meta-agent generates execution DAGs at runtime from natural-language goals, then executes them via Model Context Protocol servers (GitHub, Jira, Slack, GDrive). Human-in-the-loop approvals on critical nodes; the planner retrieves similar past DAGs before generating.',
+      'mathMap.info.06': 'Three vector stores (pgvector / Qdrant / Pinecone) indexed with the same Anthropic-contextual-retrieval chunks, queried with RRF hybrid of BM25 + vector + Cohere rerank. An auto-optimizer agent watches Ragas scores and tunes parameters when faithfulness drops. 43 tests, in-memory backends for cheap dev.',
 
       'caps.eyebrow': '03 · Capabilities',
       'caps.h2': 'Six axes of production AI',
@@ -7122,6 +7162,18 @@
       'mathMap.tour.1': '<strong>1.</strong> clic en cualquier punto del mapa → cae una partícula y desciende',
       'mathMap.tour.2': '<strong>2.</strong> observa en qué cuenca de proyecto cae',
       'mathMap.tour.3': '<strong>3.</strong> clic en cualquier atractor etiquetado para abrir el proyecto completo',
+      'mathMap.readoutDefault': 'haz clic en cualquier punto para soltar una partícula — descenderá el gradiente hacia el proyecto más cercano',
+      'mathMap.tooltipCta': 'haz clic para abrir el proyecto completo →',
+      'mathMap.tooltipContinue': 'continuar →',
+      'mathMap.particleArrivedInfo': 'la partícula llegó a la explicación de <strong>{name}</strong> · léela y dale a <em>continuar</em> para seguir al proyecto',
+      'mathMap.particleContinuing': 'siguiendo hacia <strong>{name}</strong> …',
+      'mathMap.particleArrived': 'la partícula aterrizó en <strong>{name}</strong> · abriendo proyecto …',
+      'mathMap.info.01': 'LangGraph orquesta 5 nodos (extract → validate → critique → reflect → synthesize). Un crítico de Constitutional AI puntúa las extracciones en 4 principios; los fallos disparan un loop de reflexión acotado, y cada error se persiste en memoria episódica pgvector así el crítico se vuelve más estricto con el tiempo. 22 tests pytest, corpus de eval de 15 docs, frontend Next.js demo.',
+      'mathMap.info.02': 'Retrieval híbrido que junta un knowledge graph en Neo4j con búsqueda vectorial. Pattern matching con Cypher para preguntas multi-hop, fusión RRF para chunks no estructurados, más un agente de obsolescencia en background que marca entidades cuyos embeddings divergen de los documentos fuente.',
+      'mathMap.info.03': 'Agente de investigación autónomo con memoria de tres capas (working / episodic / semantic). Un nodo controlador de memoria maneja la promoción y desalojo explícitamente. Toma de API de arXiv + Tavily + web scrapeada, sintetiza PDFs con ReportLab.',
+      'mathMap.info.04': 'Patrón Society-of-Mind con 5 agentes especializados (Optimista, Escéptico, Financiero, Risk, Abogado del Diablo) corriendo un protocolo estructurado de 3 rondas. Similitud coseno por ronda mide la convergencia. Streaming WebSocket muestra el razonamiento de cada agente en vivo.',
+      'mathMap.info.05': 'Meta-agente genera DAGs de ejecución en runtime desde objetivos en lenguaje natural, luego los ejecuta vía servidores Model Context Protocol (GitHub, Jira, Slack, GDrive). Aprobaciones Human-in-the-loop en nodos críticos; el planner recupera DAGs pasados similares antes de generar.',
+      'mathMap.info.06': 'Tres vector stores (pgvector / Qdrant / Pinecone) indexados con los mismos chunks de retrieval contextual de Anthropic, consultados con híbrido RRF de BM25 + vector + rerank Cohere. Un agente auto-optimizer observa los scores de Ragas y ajusta parámetros cuando baja la faithfulness. 43 tests, backends in-memory para dev barato.',
 
       'caps.eyebrow': '03 · Capacidades',
       'caps.h2': 'Seis ejes de la IA de producción',
@@ -7430,6 +7482,18 @@
       'mathMap.tour.1': '<strong>1.</strong> clique em qualquer ponto do mapa → uma partícula cai e desce',
       'mathMap.tour.2': '<strong>2.</strong> observe em qual bacia de projeto ela cai',
       'mathMap.tour.3': '<strong>3.</strong> clique em qualquer atrator rotulado para abrir o projeto completo',
+      'mathMap.readoutDefault': 'clique em qualquer ponto para soltar uma partícula — ela vai descer o gradiente até o projeto mais próximo',
+      'mathMap.tooltipCta': 'clique para abrir o projeto completo →',
+      'mathMap.tooltipContinue': 'continuar →',
+      'mathMap.particleArrivedInfo': 'a partícula chegou na explicação de <strong>{name}</strong> · leia e clique em <em>continuar</em> para seguir até o projeto',
+      'mathMap.particleContinuing': 'seguindo em direção a <strong>{name}</strong> …',
+      'mathMap.particleArrived': 'a partícula pousou em <strong>{name}</strong> · abrindo projeto …',
+      'mathMap.info.01': 'O LangGraph orquestra 5 nós (extract → validate → critique → reflect → synthesize). Um crítico Constitutional AI pontua as extrações em 4 princípios; falhas disparam um loop de reflexão limitado, e cada erro é persistido na memória episódica pgvector pra que o crítico fique mais rigoroso com o tempo. 22 testes pytest, corpus de eval de 15 docs, frontend Next.js de demo.',
+      'mathMap.info.02': 'Retrieval híbrido que junta um knowledge graph Neo4j com busca vetorial. Pattern matching com Cypher para perguntas multi-hop, fusão RRF para chunks não-estruturados, mais um agente de obsolescência em background que sinaliza entidades cujos embeddings divergem dos documentos-fonte.',
+      'mathMap.info.03': 'Agente de pesquisa autônomo com memória de três camadas (working / episodic / semantic). Um nó controlador de memória cuida de promoção e descarte explicitamente. Puxa da API do arXiv + Tavily + web scrapeada, sintetiza PDFs com ReportLab.',
+      'mathMap.info.04': 'Padrão Society-of-Mind com 5 agentes especializados (Otimista, Cético, Financeiro, Risk, Advogado do Diabo) rodando um protocolo estruturado de 3 rounds. Similaridade cosseno por round mede a convergência. Streaming WebSocket mostra o raciocínio de cada agente ao vivo.',
+      'mathMap.info.05': 'Meta-agente gera DAGs de execução em runtime a partir de objetivos em linguagem natural, e os executa via servidores Model Context Protocol (GitHub, Jira, Slack, GDrive). Aprovações Human-in-the-loop em nós críticos; o planner recupera DAGs passados similares antes de gerar.',
+      'mathMap.info.06': 'Três vector stores (pgvector / Qdrant / Pinecone) indexados com os mesmos chunks de retrieval contextual da Anthropic, consultados com híbrido RRF de BM25 + vetor + rerank Cohere. Um agente auto-optimizer observa os scores do Ragas e ajusta parâmetros quando a faithfulness cai. 43 testes, backends in-memory para dev barato.',
 
       'caps.eyebrow': '03 · Capacidades',
       'caps.h2': 'Seis eixos da IA de produção',
@@ -7583,9 +7647,15 @@
     },
   };
 
+  // Expose the dictionary + current language so other scripts (portfolio map
+  // tooltip, RRF synthesizer answers, etc.) can read from it at runtime.
+  window.__I18N = I18N;
+  window.__LANG = 'en';
+
   function applyLang(lang) {
     if (!I18N[lang]) lang = 'en';
     document.documentElement.lang = lang;
+    window.__LANG = lang;
     try { localStorage.setItem('lang', lang); } catch (e) {}
 
     document.querySelectorAll('[data-i18n]').forEach(el => {
@@ -7599,6 +7669,9 @@
     document.querySelectorAll('.lang-btn').forEach(btn => {
       btn.classList.toggle('is-active', btn.dataset.lang === lang);
     });
+
+    // Let other scripts re-render any text they manage themselves
+    window.dispatchEvent(new CustomEvent('langchange', { detail: { lang } }));
   }
 
   // Wire up the switcher
@@ -8215,9 +8288,38 @@
     }
   }
 
+  // Helper: translate a key with optional {name} placeholder; falls back to EN.
+  function t(key, vars) {
+    const lang = (window.__LANG && window.__I18N && window.__I18N[window.__LANG]) ? window.__LANG : 'en';
+    let val = (window.__I18N && window.__I18N[lang] && window.__I18N[lang][key])
+      || (window.__I18N && window.__I18N.en && window.__I18N.en[key])
+      || key;
+    if (vars) for (const k in vars) val = val.split('{' + k + '}').join(vars[k]);
+    return val;
+  }
+  function infoFor(project) {
+    return t('mathMap.info.' + project.id) || project.info;
+  }
+
+  // Convert info icon screen position back to world coordinates so the
+  // particle (which lives in world space) can target it precisely.
+  function infoIconWorld(p) {
+    const ip = infoIconPos(p);
+    return {
+      x: (ip.x / W) * (2 * WORLD_X) - WORLD_X,
+      y: (ip.y / H) * (2 * WORLD_Y) - WORLD_Y,
+    };
+  }
+
   const particles = [];
   function dropParticle(wx, wy) {
-    particles.push({ x: wx, y: wy, trail: [], captured: null, ttl: 600 });
+    particles.push({
+      x: wx, y: wy,
+      trail: [],
+      state: 'descending', // descending → atInfo → continuing → done
+      targetProjectId: null,
+      ttl: 1500,
+    });
   }
 
   function nearestAttractor(wx, wy) {
@@ -8258,35 +8360,110 @@
   const tooltipEl = document.getElementById('map-tooltip');
   const tooltipTitle = tooltipEl ? tooltipEl.querySelector('.map-tooltip-title') : null;
   const tooltipBody = tooltipEl ? tooltipEl.querySelector('.map-tooltip-body') : null;
+  const tooltipCta = document.getElementById('map-tooltip-cta');
+  const tooltipContinue = document.getElementById('map-tooltip-continue');
+
+  let pausedFlowParticle = null;
+
+  // Pin the tooltip centered on the canvas while a particle is waiting at
+  // an info icon. The "continue →" button releases the particle.
+  function showFlowTooltip(project, particle) {
+    if (!tooltipEl) return;
+    tooltipTitle.textContent = project.label;
+    tooltipBody.textContent = infoFor(project);
+    if (tooltipCta) tooltipCta.textContent = t('mathMap.tooltipCta');
+    if (tooltipContinue) tooltipContinue.textContent = t('mathMap.tooltipContinue');
+    tooltipEl.classList.add('is-flow-mode', 'is-open');
+    // Center the tooltip in the map-card
+    const wrapRect = canvas.parentElement.getBoundingClientRect();
+    tooltipEl.style.left = (wrapRect.width / 2 - 170) + 'px';
+    tooltipEl.style.top = '40px';
+    pausedFlowParticle = particle;
+  }
+
+  if (tooltipContinue) {
+    tooltipContinue.addEventListener('click', () => {
+      if (pausedFlowParticle) {
+        pausedFlowParticle.state = 'continuing';
+        pausedFlowParticle.ttl = 800;
+        const proj = PROJECTS.find(x => x.id === pausedFlowParticle.targetProjectId);
+        if (proj) readout.innerHTML = t('mathMap.particleContinuing', { name: proj.label });
+        pausedFlowParticle = null;
+      }
+      tooltipEl.classList.remove('is-flow-mode', 'is-open');
+    });
+  }
 
   function frame() {
     ctx.putImageData(surface, 0, 0);
     drawVectorField();
     drawAttractors(hoveredId, hoveredInfoId);
 
+    // Step particles — three-stage flow: descending → goingToInfo →
+    // atInfo (frozen, tooltip shown) → continuing → done.
     for (let i = particles.length - 1; i >= 0; i--) {
       const p = particles[i];
-      if (p.captured) continue;
-      const g = grad(p.x, p.y);
-      const mag = Math.sqrt(g.gx * g.gx + g.gy * g.gy);
-      const stepLen = Math.min(0.06, 0.10 * mag);
-      if (mag > 1e-4) {
-        p.x -= (g.gx / mag) * stepLen;
-        p.y -= (g.gy / mag) * stepLen;
+
+      if (p.state === 'atInfo' || p.state === 'done') {
+        p.ttl -= 1;
+        if (p.ttl <= 0) particles.splice(i, 1);
+        continue;
       }
-      p.trail.push({ x: p.x, y: p.y });
-      if (p.trail.length > 80) p.trail.shift();
-      p.ttl -= 1;
-      const { project, dist } = nearestAttractor(p.x, p.y);
-      if (dist < 0.22) {
-        p.captured = project;
-        readout.innerHTML = `particle descended into <strong>${project.label}</strong> · status: <em>${project.status}</em> · <a href="javascript:void(0)" id="map-open-${project.id}" style="color:var(--accent);text-decoration:underline">open project →</a>`;
-        const openEl = document.getElementById(`map-open-${project.id}`);
-        if (openEl) openEl.addEventListener('click', () => {
-          if (typeof openModal === 'function') openModal(project.id);
-        });
+
+      if (p.state === 'descending') {
+        const g = grad(p.x, p.y);
+        const mag = Math.sqrt(g.gx * g.gx + g.gy * g.gy);
+        const stepLen = Math.min(0.05, 0.10 * mag);
+        if (mag > 1e-4) {
+          p.x -= (g.gx / mag) * stepLen;
+          p.y -= (g.gy / mag) * stepLen;
+        }
+        p.trail.push({ x: p.x, y: p.y });
+        if (p.trail.length > 80) p.trail.shift();
+        p.ttl -= 1;
+
+        const { project, dist } = nearestAttractor(p.x, p.y);
+        if (dist < 0.55) {
+          p.targetProjectId = project.id;
+          p.state = 'goingToInfo';
+        }
+      } else if (p.state === 'goingToInfo') {
+        const proj = PROJECTS.find(x => x.id === p.targetProjectId);
+        const target = infoIconWorld(proj);
+        const dx = target.x - p.x, dy = target.y - p.y;
+        const d = Math.sqrt(dx * dx + dy * dy);
+        if (d < 0.10) {
+          p.x = target.x; p.y = target.y;
+          p.state = 'atInfo';
+          showFlowTooltip(proj, p);
+          readout.innerHTML = t('mathMap.particleArrivedInfo', { name: proj.label });
+        } else {
+          const speed = 0.045;
+          p.x += (dx / d) * speed;
+          p.y += (dy / d) * speed;
+          p.trail.push({ x: p.x, y: p.y });
+          if (p.trail.length > 80) p.trail.shift();
+        }
+      } else if (p.state === 'continuing') {
+        const proj = PROJECTS.find(x => x.id === p.targetProjectId);
+        const dx = proj.x - p.x, dy = proj.y - p.y;
+        const d = Math.sqrt(dx * dx + dy * dy);
+        if (d < 0.10) {
+          p.x = proj.x; p.y = proj.y;
+          p.state = 'done';
+          p.ttl = 60;
+          readout.innerHTML = t('mathMap.particleArrived', { name: proj.label });
+          if (typeof openModal === 'function') {
+            setTimeout(() => openModal(proj.id), 250);
+          }
+        } else {
+          const speed = 0.055;
+          p.x += (dx / d) * speed;
+          p.y += (dy / d) * speed;
+          p.trail.push({ x: p.x, y: p.y });
+          if (p.trail.length > 80) p.trail.shift();
+        }
       }
-      if (p.ttl <= 0) particles.splice(i, 1);
     }
 
     drawParticles();
@@ -8317,19 +8494,21 @@
       }
     }
 
+    // If a particle is waiting at an info icon, don't override the tooltip
+    if (tooltipEl && tooltipEl.classList.contains('is-flow-mode')) return;
+
     if (infoHit) {
       hoveredInfoId = infoHit.id;
       hoveredId = null;
       canvas.style.cursor = 'pointer';
       if (tooltipEl) {
         tooltipTitle.textContent = infoHit.label;
-        tooltipBody.textContent = infoHit.info;
-        // Anchor tooltip relative to wrap, not viewport
+        tooltipBody.textContent = infoFor(infoHit);
+        if (tooltipCta) tooltipCta.textContent = t('mathMap.tooltipCta');
         const wrapRect = canvas.parentElement.getBoundingClientRect();
         const ipScreen = { x: e.clientX, y: e.clientY };
         let tx = ipScreen.x - wrapRect.left + 14;
         let ty = ipScreen.y - wrapRect.top + 14;
-        // Don't run off the right edge
         if (tx + 360 > wrapRect.width) tx = ipScreen.x - wrapRect.left - 360;
         if (ty + 200 > wrapRect.height) ty = ipScreen.y - wrapRect.top - 200;
         tooltipEl.style.left = tx + 'px';
@@ -8339,7 +8518,6 @@
       return;
     }
 
-    // Otherwise check if over an attractor
     const world = toWorld(sx, sy);
     let nearest = null, bestD = Infinity;
     for (const p of PROJECTS) {
@@ -8350,12 +8528,16 @@
     hoveredId = bestD < 0.4 ? nearest.id : null;
     hoveredInfoId = null;
     canvas.style.cursor = hoveredId ? 'pointer' : 'crosshair';
-    if (tooltipEl) tooltipEl.classList.remove('is-open');
+    if (tooltipEl && !tooltipEl.classList.contains('is-flow-mode')) {
+      tooltipEl.classList.remove('is-open');
+    }
   });
 
   canvas.addEventListener('mouseleave', () => {
     hoveredInfoId = null;
-    if (tooltipEl) tooltipEl.classList.remove('is-open');
+    if (tooltipEl && !tooltipEl.classList.contains('is-flow-mode')) {
+      tooltipEl.classList.remove('is-open');
+    }
   });
 
   canvas.addEventListener('click', (e) => {
