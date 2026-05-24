@@ -2020,6 +2020,85 @@
   }
   .scarcity-bar strong { color: var(--accent-3); font-weight: 600; }
 
+  /* ── interactive P1 architecture diagram ────────────────────────────── */
+  .arch-card h5 .arch-live-dot {
+    display: inline-block;
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 8px var(--accent), 0 0 16px var(--accent);
+    margin-left: 10px;
+    vertical-align: middle;
+    animation: liveBlink 1.4s ease-in-out infinite;
+  }
+  .arch-card h5 .arch-live-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--text-faint);
+    font-weight: 400;
+    margin-left: 6px;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+  }
+  @keyframes liveBlink {
+    0%, 100% { opacity: 0.45; }
+    50% { opacity: 1; }
+  }
+  .p1-flow .p1-node rect {
+    transition: stroke 0.2s ease, stroke-width 0.2s ease, filter 0.2s ease;
+  }
+  .p1-flow .p1-node:hover { cursor: help; }
+  .p1-flow .p1-node:hover rect {
+    stroke: var(--accent);
+    stroke-width: 2;
+    filter: drop-shadow(0 0 10px rgba(139, 109, 255, 0.55));
+  }
+  .p1-flow .p1-node text { pointer-events: none; }
+  .p1-flow .p1-arrow,
+  .p1-flow .p1-arrow-reflect,
+  .p1-flow .p1-arrow-pass,
+  .p1-flow .p1-arrow-mem {
+    stroke-dasharray: 6 4;
+    animation: dashFlow 1.4s linear infinite;
+  }
+  .p1-flow .p1-arrow-reflect,
+  .p1-flow .p1-arrow-mem {
+    animation-duration: 1.8s;
+  }
+  @keyframes dashFlow {
+    to { stroke-dashoffset: -10; }
+  }
+  .p1-flow .p1-pulse {
+    filter: url(#p1-glow);
+  }
+
+  /* ── interactive P6 architecture diagram ────────────────────────────── */
+  .p6-flow .p6-node rect {
+    transition: stroke 0.2s ease, stroke-width 0.2s ease, filter 0.2s ease;
+  }
+  .p6-flow .p6-node:hover { cursor: help; }
+  .p6-flow .p6-node:hover rect {
+    stroke-width: 2;
+    filter: drop-shadow(0 0 10px currentColor);
+  }
+  .p6-flow .p6-node-pg:hover rect    { stroke: #8b6dff; filter: drop-shadow(0 0 10px rgba(139, 109, 255, 0.6)); }
+  .p6-flow .p6-node-qd:hover rect    { stroke: #4dd0c2; filter: drop-shadow(0 0 10px rgba(77, 208, 194, 0.6)); }
+  .p6-flow .p6-node-pc:hover rect    { stroke: #ff9e6d; filter: drop-shadow(0 0 10px rgba(255, 158, 109, 0.6)); }
+  .p6-flow .p6-node-rrf:hover rect   { stroke: #fbbf24; filter: drop-shadow(0 0 10px rgba(251, 191, 36, 0.6)); }
+  .p6-flow .p6-node-eval:hover rect,
+  .p6-flow .p6-node-opt:hover rect   { stroke: #34d399; filter: drop-shadow(0 0 10px rgba(52, 211, 153, 0.6)); }
+  .p6-flow .p6-node text { pointer-events: none; }
+  .p6-flow .p6-arrow,
+  .p6-flow .p6-arrow-eval,
+  .p6-flow .p6-arrow-opt,
+  .p6-flow .p6-arrow-retune {
+    stroke-dasharray: 6 4;
+    animation: dashFlow 1.6s linear infinite;
+  }
+  .p6-flow .p6-arrow-retune {
+    animation-duration: 2.4s;
+  }
+
   /* ── gradient-descent demo (math-in-motion) ─────────────────────────── */
   .grad-descent-wrap {
     margin-top: 28px;
@@ -2097,6 +2176,235 @@
   @media (max-width: 720px) {
     .grad-descent-overlay { flex-direction: column; }
   }
+
+  /* ── RRF live calculator (math-in-motion II) ────────────────────────── */
+  .rrf-demo {
+    margin-top: 28px;
+    display: grid;
+    gap: 18px;
+  }
+  .rrf-formula,
+  .attention-formula {
+    background: linear-gradient(180deg, rgba(139, 109, 255, 0.08), rgba(77, 208, 194, 0.04));
+    border: 1px solid rgba(139, 109, 255, 0.22);
+    border-radius: 14px;
+    padding: 22px 26px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .rrf-formula .formula-line,
+  .attention-formula .formula-line {
+    font-size: 20px;
+    color: var(--accent);
+    letter-spacing: 0.02em;
+    margin-bottom: 8px;
+  }
+  .rrf-formula .formula-line code,
+  .rrf-formula .formula-line sub,
+  .attention-formula .formula-line code,
+  .attention-formula .formula-line sub,
+  .attention-formula .formula-line sup {
+    color: var(--accent-3);
+  }
+  .rrf-formula .formula-where,
+  .attention-formula .formula-where {
+    font-family: inherit;
+    font-size: 12px;
+    line-height: 1.55;
+    color: var(--text-dim);
+  }
+  .rrf-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 16px;
+  }
+  @media (max-width: 900px) {
+    .rrf-grid { grid-template-columns: 1fr; }
+  }
+  .rrf-list {
+    background: rgba(15, 17, 24, 0.7);
+    border: 1px solid rgba(139, 109, 255, 0.15);
+    border-radius: 12px;
+    padding: 16px 16px 12px;
+  }
+  .rrf-list h6 {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--text-dim);
+    margin: 0 0 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .rrf-list h6 .dot {
+    display: inline-block;
+    width: 9px; height: 9px;
+    border-radius: 50%;
+    box-shadow: 0 0 6px currentColor;
+  }
+  .rrf-list ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .rrf-list li {
+    display: grid;
+    grid-template-columns: 24px 1fr auto auto;
+    gap: 10px;
+    align-items: center;
+    padding: 9px 12px;
+    background: rgba(10, 12, 18, 0.6);
+    border: 1px solid rgba(139, 109, 255, 0.08);
+    border-radius: 8px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    transition: background 0.2s ease, border-color 0.2s ease, transform 0.3s ease;
+  }
+  .rrf-list li[data-doc].rrf-highlighted {
+    border-color: var(--accent);
+    background: rgba(139, 109, 255, 0.1);
+  }
+  .rrf-list li .rrf-rank {
+    color: var(--text-faint);
+    text-align: right;
+  }
+  .rrf-list li .rrf-title {
+    color: var(--text);
+  }
+  .rrf-list li .rrf-score {
+    color: var(--accent-3);
+    font-size: 10.5px;
+    white-space: nowrap;
+  }
+  .rrf-list li .rrf-actions {
+    display: flex;
+    gap: 2px;
+  }
+  .rrf-list li .rrf-actions button {
+    background: transparent;
+    border: 1px solid rgba(139, 109, 255, 0.18);
+    color: var(--text-dim);
+    width: 22px; height: 22px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 11px;
+    padding: 0;
+    line-height: 1;
+    transition: border-color 0.15s, color 0.15s;
+  }
+  .rrf-list li .rrf-actions button:hover:not(:disabled) {
+    color: var(--accent);
+    border-color: var(--accent);
+  }
+  .rrf-list li .rrf-actions button:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+  }
+  .rrf-fused li {
+    border-color: rgba(251, 191, 36, 0.2);
+  }
+  .rrf-fused li .rrf-score {
+    color: #fbbf24;
+  }
+  .rrf-list-note {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--text-faint);
+    text-align: center;
+    margin-top: 10px;
+    letter-spacing: 0.04em;
+  }
+  .rrf-explanation,
+  .attention-explanation {
+    font-size: 13.5px;
+    line-height: 1.7;
+    color: var(--text-dim);
+    background: rgba(15, 17, 24, 0.5);
+    border-left: 3px solid var(--accent);
+    border-radius: 0 8px 8px 0;
+    padding: 14px 20px;
+  }
+  .rrf-explanation strong,
+  .attention-explanation strong {
+    color: var(--text);
+  }
+  .attention-explanation { border-left-color: var(--accent-3); }
+
+  /* ── Attention demo (math-in-motion III) ────────────────────────────── */
+  .attention-demo {
+    margin-top: 28px;
+    display: grid;
+    gap: 18px;
+  }
+  .attention-viz {
+    background: #0a0c12;
+    border: 1px solid rgba(139, 109, 255, 0.2);
+    border-radius: 14px;
+    padding: 16px;
+  }
+  .attention-controls {
+    display: flex;
+    align-items: center;
+    margin-bottom: 8px;
+    padding: 0 8px;
+  }
+  .attention-viz svg {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+  .attention-viz svg .attn-token {
+    cursor: pointer;
+  }
+  .attention-viz svg .attn-token rect {
+    fill: #12141c;
+    stroke: rgba(139, 109, 255, 0.4);
+    stroke-width: 1.2;
+    transition: stroke 0.2s, fill 0.2s, stroke-width 0.2s;
+    rx: 6;
+  }
+  .attention-viz svg .attn-token text {
+    fill: var(--text);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    text-anchor: middle;
+    pointer-events: none;
+  }
+  .attention-viz svg .attn-token-input rect {
+    stroke: rgba(77, 208, 194, 0.5);
+  }
+  .attention-viz svg .attn-token.is-active rect {
+    fill: rgba(139, 109, 255, 0.18);
+    stroke: var(--accent);
+    stroke-width: 2;
+  }
+  .attention-viz svg .attn-token.is-highlighted rect {
+    stroke: var(--accent-3);
+    stroke-width: 2;
+    fill: rgba(77, 208, 194, 0.1);
+  }
+  .attention-viz svg .attn-edge {
+    fill: none;
+    stroke: url(#attn-edge);
+    transition: stroke-width 0.2s ease, opacity 0.2s ease;
+  }
+  .attention-readout {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--text-dim);
+    background: rgba(15, 17, 24, 0.5);
+    border: 1px solid rgba(139, 109, 255, 0.12);
+    border-radius: 8px;
+    padding: 10px 14px;
+    margin-top: 10px;
+    min-height: 38px;
+    line-height: 1.6;
+  }
+  .attention-readout strong { color: var(--accent); }
+  .attention-readout .pct { color: var(--accent-3); }
 
   /* ── hero meta strip ────────────────────────────────────────────────── */
   .hero-meta {
@@ -2416,6 +2724,93 @@
   </div>
 </section>
 
+<!-- ============ MATH IN MOTION II · RRF ============ -->
+<section id="rrf-math">
+  <div class="container">
+    <div class="section-eyebrow">02c · Mathematics in motion · Reciprocal Rank Fusion</div>
+    <h2>Two parameter-free lines of math beat a model that costs a million dollars to train</h2>
+    <p class="section-sub">
+      P6 fuses keyword (BM25) and vector (cosine) retrieval with <strong>Reciprocal Rank Fusion</strong>. The rule has one constant <code>k = 60</code> (recommended in the original 2009 paper and never seriously challenged), no training, no parameters to tune. It consistently beats both signals alone on every published benchmark — and on every internal one I've run. Reorder either list and watch the fused output update live.
+    </p>
+
+    <div class="rrf-demo reveal">
+      <div class="rrf-formula">
+        <div class="formula-line">score(d) = Σ<sub>i</sub> &nbsp;1 / (k + rank<sub>i</sub>(d))</div>
+        <div class="formula-where">d ranks higher when it appears near the top of multiple lists. The reciprocal damps the contribution of any single list, so one strong signal can't completely overrule another. k = 60 sets the "patience" — bigger k means a document at rank 20 still gets meaningful credit.</div>
+      </div>
+
+      <div class="rrf-grid">
+        <div class="rrf-list">
+          <h6><span class="dot" style="background:#8b6dff"></span>Vector similarity · Voyage AI</h6>
+          <ul id="rrf-list-vec"></ul>
+          <div class="rrf-list-note">drag any item ↑↓ to reorder</div>
+        </div>
+        <div class="rrf-list">
+          <h6><span class="dot" style="background:#4dd0c2"></span>BM25 keyword</h6>
+          <ul id="rrf-list-kw"></ul>
+          <div class="rrf-list-note">drag any item ↑↓ to reorder</div>
+        </div>
+        <div class="rrf-list rrf-fused">
+          <h6><span class="dot" style="background:#fbbf24"></span>RRF-fused output</h6>
+          <ul id="rrf-list-fused"></ul>
+          <div class="rrf-list-note">computed live · k = 60</div>
+        </div>
+      </div>
+
+      <div class="rrf-explanation">
+        <p><strong>Why this matters for production RAG.</strong> Vector embeddings are good at <em>semantic</em> matches: "auth token" ≈ "JWT" ≈ "session credential". BM25 is good at <em>exact</em> matches: product codes, version numbers, acronyms, the names of internal services. Real corpora need both; the rest of the field treats this as "easy" by snapping to vector-only, which is why so many RAG demos work on a curated wiki and fall over on real enterprise documents. Choosing the fusion math is the actual engineering decision.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ MATH IN MOTION III · ATTENTION ============ -->
+<section id="attention-math">
+  <div class="container">
+    <div class="section-eyebrow">02d · Mathematics in motion · Self-attention</div>
+    <h2>The 49-character formula behind every model in this portfolio</h2>
+    <p class="section-sub">
+      Every LLM you've heard of — Claude, GPT, Llama — is built on stacked layers of one tiny operation: scaled dot-product attention. Below, hover any output token to see which input tokens contributed to it and by how much. The line weight is literally the attention weight after softmax. Click <kbd>shuffle</kbd> for a fresh pattern.
+    </p>
+
+    <div class="attention-demo reveal">
+      <div class="attention-formula">
+        <div class="formula-line">Attention(Q, K, V) = softmax(QK<sup>T</sup> / √d<sub>k</sub>) · V</div>
+        <div class="formula-where">
+          Q, K, V are linear projections of the input (queries, keys, values). The dot product QK<sup>T</sup> measures alignment; dividing by √d<sub>k</sub> keeps the variance ≈ 1 so softmax doesn't saturate as the embedding dimension grows; the softmax row turns alignments into a probability distribution that weights V. The whole portfolio is layers of this on top of each other.
+        </div>
+      </div>
+
+      <div class="attention-viz">
+        <div class="attention-controls">
+          <button class="btn" id="attn-shuffle" style="padding:7px 14px; font-size:12px">↻ Shuffle attention</button>
+          <span style="margin-left:auto;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text-faint)">hover an output token →</span>
+        </div>
+        <svg id="attn-svg" viewBox="0 0 900 320" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="attn-edge" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stop-color="#8b6dff" stop-opacity="0"/>
+              <stop offset="50%" stop-color="#8b6dff" stop-opacity="1"/>
+              <stop offset="100%" stop-color="#4dd0c2" stop-opacity="0"/>
+            </linearGradient>
+          </defs>
+          <g id="attn-edges"></g>
+          <g id="attn-input-row"></g>
+          <g id="attn-output-row"></g>
+        </svg>
+        <div class="attention-readout" id="attn-readout">
+          Hover a token in the bottom row to see its attention distribution.
+        </div>
+      </div>
+
+      <div class="attention-explanation">
+        <p><strong>What you're seeing.</strong> The bottom row is the model "generating" each output token; the top row is what it "looked at". For a translation task, you'd expect the model to attend to a roughly diagonal pattern (each output token aligns with one or two input tokens) — but for actual language, attention is often surprisingly distributed: pronouns attend to their antecedents many tokens away, verbs attend to subjects, articles barely attend to anything. This is why attention is the mechanism that lets a model handle long-range dependencies <em>without</em> a recurrent state.</p>
+        <p><strong>Why the √d<sub>k</sub> matters.</strong> Without it, as you scale embedding dimension d<sub>k</sub> from 64 to 1024, the variance of Q·K grows linearly, the softmax saturates (one weight becomes ≈1, all others ≈0), and gradients vanish. The √d<sub>k</sub> normalization preserves a healthy gradient signal across model scales. It's a one-character fix, and it's why the 2017 "Attention is All You Need" paper works at all.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- ============ CAPABILITIES ============ -->
 <section id="capabilities">
   <div class="container">
@@ -2577,43 +2972,94 @@
 
         <div>
           <div class="arch-card">
-            <h5>Architecture · LangGraph state machine</h5>
-            <svg viewBox="0 0 400 280" xmlns="http://www.w3.org/2000/svg">
+            <h5>Architecture · LangGraph state machine <span class="arch-live-dot"></span><span class="arch-live-label">animated · hover the nodes</span></h5>
+            <svg class="p1-flow" viewBox="0 0 400 280" xmlns="http://www.w3.org/2000/svg">
               <defs>
                 <marker id="arr1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#8b6dff"/></marker>
                 <marker id="arrR" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#ff9e6d"/></marker>
+                <marker id="arrG" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#34d399"/></marker>
+                <filter id="p1-glow" x="-50%" y="-50%" width="200%" height="200%">
+                  <feGaussianBlur in="SourceGraphic" stdDeviation="3"/>
+                  <feComponentTransfer><feFuncA type="linear" slope="1.6"/></feComponentTransfer>
+                  <feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>
+                </filter>
+                <!-- Invisible path the pulse follows: full self-healing journey.
+                     extract → validate → critic → reflect → back to extract →
+                     validate → critic → synthesizer. Mirrors the actual arrows. -->
+                <path id="p1-pulse-path" fill="none" stroke="none" d="
+                  M 70 38 L 200 38 L 330 38
+                  L 330 148 L 70 38
+                  L 200 38 L 330 38
+                  L 200 240"/>
+                <!-- Memory consult ping path: critic ↔ episodic memory -->
+                <path id="p1-mem-path" fill="none" stroke="none" d="M 330 38 L 70 148 L 330 38"/>
               </defs>
+
               <g font-family="JetBrains Mono, monospace" font-size="11" fill="#e8eaf0">
-                <!-- nodes -->
-                <rect x="20" y="20" width="100" height="36" rx="6" fill="#0f1118" stroke="#2a3142"/>
-                <text x="70" y="42" text-anchor="middle">Extractor</text>
-
-                <rect x="150" y="20" width="100" height="36" rx="6" fill="#0f1118" stroke="#2a3142"/>
-                <text x="200" y="42" text-anchor="middle">Validator</text>
-
-                <rect x="280" y="20" width="100" height="36" rx="6" fill="#0f1118" stroke="#8b6dff" stroke-width="1.5"/>
-                <text x="330" y="42" text-anchor="middle" fill="#8b6dff">Critic</text>
-
-                <rect x="280" y="130" width="100" height="36" rx="6" fill="#0f1118" stroke="#fbbf24"/>
-                <text x="330" y="152" text-anchor="middle" fill="#fbbf24">Reflection</text>
-
-                <rect x="150" y="220" width="100" height="36" rx="6" fill="#0f1118" stroke="#34d399"/>
-                <text x="200" y="242" text-anchor="middle" fill="#34d399">Synthesizer</text>
-
-                <rect x="20" y="130" width="100" height="36" rx="6" fill="#0f1118" stroke="#4dd0c2" stroke-dasharray="3,3"/>
-                <text x="70" y="148" text-anchor="middle" fill="#4dd0c2" font-size="10">Episodic Mem</text>
-                <text x="70" y="162" text-anchor="middle" fill="#5a5f6e" font-size="9">(pgvector)</text>
-
-                <!-- arrows -->
-                <line x1="120" y1="38" x2="148" y2="38" stroke="#8b6dff" marker-end="url(#arr1)"/>
-                <line x1="250" y1="38" x2="278" y2="38" stroke="#8b6dff" marker-end="url(#arr1)"/>
-                <line x1="330" y1="56" x2="330" y2="128" stroke="#ff9e6d" marker-end="url(#arrR)" stroke-dasharray="4,3"/>
-                <line x1="278" y1="148" x2="120" y2="38" stroke="#ff9e6d" marker-end="url(#arrR)" stroke-dasharray="4,3" fill="none"/>
+                <!-- arrows (drawn first so nodes overlay them) -->
+                <line class="p1-arrow" x1="120" y1="38" x2="148" y2="38" stroke="#8b6dff" marker-end="url(#arr1)"/>
+                <line class="p1-arrow" x1="250" y1="38" x2="278" y2="38" stroke="#8b6dff" marker-end="url(#arr1)"/>
+                <line class="p1-arrow-reflect" x1="330" y1="56" x2="330" y2="128" stroke="#ff9e6d" marker-end="url(#arrR)" stroke-dasharray="4,3"/>
+                <line class="p1-arrow-reflect" x1="278" y1="148" x2="120" y2="38" stroke="#ff9e6d" marker-end="url(#arrR)" stroke-dasharray="4,3" fill="none"/>
                 <text x="200" y="100" fill="#ff9e6d" font-size="9" text-anchor="middle">reflect (≤3)</text>
-                <line x1="280" y1="148" x2="125" y2="148" stroke="#4dd0c2" marker-end="url(#arr1)" stroke-dasharray="2,2"/>
+                <line class="p1-arrow-mem" x1="280" y1="148" x2="125" y2="148" stroke="#4dd0c2" marker-end="url(#arr1)" stroke-dasharray="2,2"/>
                 <text x="200" y="142" fill="#4dd0c2" font-size="9" text-anchor="middle">consults / writes</text>
-                <line x1="330" y1="56" x2="240" y2="220" stroke="#34d399" marker-end="url(#arr1)"/>
+                <line class="p1-arrow-pass" x1="330" y1="56" x2="240" y2="220" stroke="#34d399" marker-end="url(#arrG)"/>
                 <text x="295" y="140" fill="#34d399" font-size="9">pass ≥ 0.85</text>
+
+                <!-- nodes (with hoverable rects + native tooltips) -->
+                <g class="p1-node">
+                  <rect x="20" y="20" width="100" height="36" rx="6" fill="#0f1118" stroke="#2a3142"/>
+                  <text x="70" y="42" text-anchor="middle">Extractor</text>
+                  <title>Extractor — Claude Sonnet 4.5. Reads the document plus (if present) the critic's previous feedback. Returns a structured JSON object. 3-attempt retry on invalid JSON.</title>
+                </g>
+                <g class="p1-node">
+                  <rect x="150" y="20" width="100" height="36" rx="6" fill="#0f1118" stroke="#2a3142"/>
+                  <text x="200" y="42" text-anchor="middle">Validator</text>
+                  <title>Validator — pure Python, no LLM. Checks that every required field for the document type is non-empty. Cheapest gate in the pipeline.</title>
+                </g>
+                <g class="p1-node p1-node-critic">
+                  <rect x="280" y="20" width="100" height="36" rx="6" fill="#0f1118" stroke="#8b6dff" stroke-width="1.5"/>
+                  <text x="330" y="42" text-anchor="middle" fill="#8b6dff">Critic</text>
+                  <title>Critic — Constitutional AI scoring across 4 principles (completeness / accuracy / consistency / format), 0–1 each. Consults the 3 nearest past errors from episodic memory BEFORE scoring, so it learns failure patterns over time. Passes if overall ≥ 0.85.</title>
+                </g>
+                <g class="p1-node p1-node-reflect">
+                  <rect x="280" y="130" width="100" height="36" rx="6" fill="#0f1118" stroke="#fbbf24"/>
+                  <text x="330" y="152" text-anchor="middle" fill="#fbbf24">Reflection</text>
+                  <title>Reflection — persists every failing principle's feedback into episodic memory, then routes back to the Extractor with the feedback attached. Hard-capped to 3 iterations to avoid runaway token spend (lesson learned: $40 burnt on one malformed PDF).</title>
+                </g>
+                <g class="p1-node p1-node-synth">
+                  <rect x="150" y="220" width="100" height="36" rx="6" fill="#0f1118" stroke="#34d399"/>
+                  <text x="200" y="242" text-anchor="middle" fill="#34d399">Synthesizer</text>
+                  <title>Synthesizer — pure logic. Wraps the extraction with an audit envelope: critic scores, iteration count, errors_history, self_healed flag. The output is what downstream systems consume.</title>
+                </g>
+                <g class="p1-node p1-node-mem">
+                  <rect x="20" y="130" width="100" height="36" rx="6" fill="#0f1118" stroke="#4dd0c2" stroke-dasharray="3,3"/>
+                  <text x="70" y="148" text-anchor="middle" fill="#4dd0c2" font-size="10">Episodic Mem</text>
+                  <text x="70" y="162" text-anchor="middle" fill="#5a5f6e" font-size="9">(pgvector)</text>
+                  <title>Episodic memory — Postgres + pgvector (1024-dim Voyage AI embeddings). Stores every reflection event so the critic can retrieve the k=3 most-similar past failures before scoring the current document. The memory makes the critic strictly monotone in coverage: it never gets dumber.</title>
+                </g>
+
+                <!-- Animated data pulse: traces the full self-healing journey -->
+                <circle class="p1-pulse" r="4.5" fill="#c4b5fd" filter="url(#p1-glow)">
+                  <animateMotion dur="7s" repeatCount="indefinite" rotate="auto">
+                    <mpath href="#p1-pulse-path"/>
+                  </animateMotion>
+                  <animate attributeName="opacity"
+                    values="0;1;1;1;1;1;1;1;1;0"
+                    keyTimes="0;0.02;0.15;0.3;0.45;0.6;0.75;0.9;0.97;1"
+                    dur="7s" repeatCount="indefinite"/>
+                  <animate attributeName="r"
+                    values="3.5;4.5;3.5;5.5;3.5;4.5;3.5;6;3.5"
+                    dur="7s" repeatCount="indefinite"/>
+                </circle>
+
+                <!-- Memory consult ping: travels critic ↔ episodic mem in a separate beat -->
+                <circle class="p1-mem-ping" r="3" fill="#4dd0c2" filter="url(#p1-glow)" opacity="0.85">
+                  <animateMotion dur="3.5s" repeatCount="indefinite" begin="1s">
+                    <mpath href="#p1-mem-path"/>
+                  </animateMotion>
+                </circle>
               </g>
             </svg>
           </div>
@@ -2955,29 +3401,112 @@
         </div>
         <div>
           <div class="arch-card">
-            <h5>Architecture · parallel retrieval + closed-loop tuning</h5>
-            <svg viewBox="0 0 400 240" xmlns="http://www.w3.org/2000/svg">
-              <defs><marker id="arr6" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#8b6dff"/></marker></defs>
+            <h5>Architecture · parallel retrieval + closed-loop tuning <span class="arch-live-dot"></span><span class="arch-live-label">animated · hover the nodes</span></h5>
+            <svg class="p6-flow" viewBox="0 0 400 250" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <marker id="arr6" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#8b6dff"/></marker>
+                <marker id="arr6g" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#34d399"/></marker>
+                <filter id="p6-glow" x="-50%" y="-50%" width="200%" height="200%">
+                  <feGaussianBlur in="SourceGraphic" stdDeviation="2.5"/>
+                  <feComponentTransfer><feFuncA type="linear" slope="1.6"/></feComponentTransfer>
+                  <feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>
+                </filter>
+                <!-- Three parallel paths Query → store → RRF fuser -->
+                <path id="p6-path-pg"   fill="none" stroke="none" d="M 200 25 L 70 85 L 200 145"/>
+                <path id="p6-path-qd"   fill="none" stroke="none" d="M 200 25 L 200 85 L 200 145"/>
+                <path id="p6-path-pc"   fill="none" stroke="none" d="M 200 25 L 330 85 L 200 145"/>
+                <!-- RRF → eval/optimizer → retune loop -->
+                <path id="p6-path-eval" fill="none" stroke="none" d="M 200 160 L 130 195"/>
+                <path id="p6-path-opt"  fill="none" stroke="none" d="M 200 160 L 270 195"/>
+                <path id="p6-path-retune" fill="none" stroke="none" d="M 270 210 L 270 230 L 60 230 L 60 85 L 70 85"/>
+              </defs>
+
               <g font-family="JetBrains Mono, monospace" font-size="11" fill="#e8eaf0">
-                <rect x="150" y="10" width="100" height="30" rx="6" fill="#0f1118" stroke="#2a3142"/><text x="200" y="30" text-anchor="middle">Query</text>
-                <rect x="20" y="70" width="100" height="30" rx="6" fill="#0f1118" stroke="#8b6dff"/><text x="70" y="90" text-anchor="middle" fill="#8b6dff">pgvector</text>
-                <rect x="150" y="70" width="100" height="30" rx="6" fill="#0f1118" stroke="#4dd0c2"/><text x="200" y="90" text-anchor="middle" fill="#4dd0c2">Qdrant</text>
-                <rect x="280" y="70" width="100" height="30" rx="6" fill="#0f1118" stroke="#ff9e6d"/><text x="330" y="90" text-anchor="middle" fill="#ff9e6d">Pinecone</text>
-                <rect x="120" y="130" width="160" height="30" rx="6" fill="#0f1118" stroke="#fbbf24"/><text x="200" y="150" text-anchor="middle" fill="#fbbf24">RRF + Cohere rerank</text>
-                <rect x="80" y="180" width="100" height="30" rx="6" fill="#0f1118" stroke="#34d399"/><text x="130" y="200" text-anchor="middle" fill="#34d399">Ragas eval</text>
-                <rect x="220" y="180" width="100" height="30" rx="6" fill="#0f1118" stroke="#34d399"/><text x="270" y="200" text-anchor="middle" fill="#34d399">Optimizer</text>
-                <line x1="200" y1="40" x2="70" y2="68" stroke="#8b6dff" marker-end="url(#arr6)"/>
-                <line x1="200" y1="40" x2="200" y2="68" stroke="#8b6dff" marker-end="url(#arr6)"/>
-                <line x1="200" y1="40" x2="330" y2="68" stroke="#8b6dff" marker-end="url(#arr6)"/>
-                <line x1="70" y1="100" x2="160" y2="128" stroke="#8b6dff" marker-end="url(#arr6)"/>
-                <line x1="200" y1="100" x2="200" y2="128" stroke="#8b6dff" marker-end="url(#arr6)"/>
-                <line x1="330" y1="100" x2="240" y2="128" stroke="#8b6dff" marker-end="url(#arr6)"/>
-                <line x1="180" y1="160" x2="130" y2="178" stroke="#34d399" marker-end="url(#arr6)"/>
-                <line x1="220" y1="160" x2="270" y2="178" stroke="#34d399" marker-end="url(#arr6)"/>
-                <line x1="270" y1="210" x2="270" y2="225" stroke="#34d399" stroke-dasharray="2,2"/>
-                <line x1="270" y1="225" x2="60" y2="225" stroke="#34d399" stroke-dasharray="2,2"/>
-                <line x1="60" y1="225" x2="60" y2="85" stroke="#34d399" stroke-dasharray="2,2" marker-end="url(#arr6)"/>
-                <text x="60" y="240" fill="#5a5f6e" font-size="9">retune params</text>
+                <!-- arrows -->
+                <line class="p6-arrow" x1="200" y1="40" x2="70" y2="68" stroke="#8b6dff" marker-end="url(#arr6)"/>
+                <line class="p6-arrow" x1="200" y1="40" x2="200" y2="68" stroke="#8b6dff" marker-end="url(#arr6)"/>
+                <line class="p6-arrow" x1="200" y1="40" x2="330" y2="68" stroke="#8b6dff" marker-end="url(#arr6)"/>
+                <line class="p6-arrow" x1="70" y1="100" x2="160" y2="128" stroke="#8b6dff" marker-end="url(#arr6)"/>
+                <line class="p6-arrow" x1="200" y1="100" x2="200" y2="128" stroke="#8b6dff" marker-end="url(#arr6)"/>
+                <line class="p6-arrow" x1="330" y1="100" x2="240" y2="128" stroke="#8b6dff" marker-end="url(#arr6)"/>
+                <line class="p6-arrow-eval" x1="180" y1="160" x2="130" y2="178" stroke="#34d399" marker-end="url(#arr6g)"/>
+                <line class="p6-arrow-opt"  x1="220" y1="160" x2="270" y2="178" stroke="#34d399" marker-end="url(#arr6g)"/>
+                <line class="p6-arrow-retune" x1="270" y1="210" x2="270" y2="225" stroke="#34d399" stroke-dasharray="2,2"/>
+                <line class="p6-arrow-retune" x1="270" y1="225" x2="60" y2="225" stroke="#34d399" stroke-dasharray="2,2"/>
+                <line class="p6-arrow-retune" x1="60" y1="225" x2="60" y2="85" stroke="#34d399" stroke-dasharray="2,2" marker-end="url(#arr6g)"/>
+                <text x="60" y="245" fill="#5a5f6e" font-size="9">retune params</text>
+
+                <!-- nodes with tooltips -->
+                <g class="p6-node">
+                  <rect x="150" y="10" width="100" height="30" rx="6" fill="#0f1118" stroke="#2a3142"/>
+                  <text x="200" y="30" text-anchor="middle">Query</text>
+                  <title>User question. The pipeline first sends it to the query rewriter (Claude generates N alternative phrasings) before any store is touched, so each backend gets multiple lexically diverse formulations.</title>
+                </g>
+                <g class="p6-node p6-node-pg">
+                  <rect x="20" y="70" width="100" height="30" rx="6" fill="#0f1118" stroke="#8b6dff"/>
+                  <text x="70" y="90" text-anchor="middle" fill="#8b6dff">pgvector</text>
+                  <title>Postgres + pgvector. Cosine similarity over 1024-dim Voyage AI embeddings plus BM25 keyword search via tsvector. Same Postgres also stores `pipeline_runs` and `tuning_events` — one infra footprint.</title>
+                </g>
+                <g class="p6-node p6-node-qd">
+                  <rect x="150" y="70" width="100" height="30" rx="6" fill="#0f1118" stroke="#4dd0c2"/>
+                  <text x="200" y="90" text-anchor="middle" fill="#4dd0c2">Qdrant</text>
+                  <title>Self-hosted Qdrant. HNSW index, native payload filtering, supports sparse vectors for hybrid out of the box. Wins on latency and hybrid-search semantics in published benchmarks.</title>
+                </g>
+                <g class="p6-node p6-node-pc">
+                  <rect x="280" y="70" width="100" height="30" rx="6" fill="#0f1118" stroke="#ff9e6d"/>
+                  <text x="330" y="90" text-anchor="middle" fill="#ff9e6d">Pinecone</text>
+                  <title>Managed Pinecone serverless. Pay-per-query, near-zero ops, but no BM25 native — we union with a sidecar BM25 index. Wins on operational simplicity at scale.</title>
+                </g>
+                <g class="p6-node p6-node-rrf">
+                  <rect x="120" y="130" width="160" height="30" rx="6" fill="#0f1118" stroke="#fbbf24"/>
+                  <text x="200" y="150" text-anchor="middle" fill="#fbbf24">RRF + Cohere rerank</text>
+                  <title>Reciprocal Rank Fusion combines the (vector, keyword) lists per store using score(d) = Σ 1/(k + rank_i(d)) with k=60. Cohere Rerank v3 then cross-encodes the top-K against the query and reorders. The math is shown live in the section below.</title>
+                </g>
+                <g class="p6-node p6-node-eval">
+                  <rect x="80" y="180" width="100" height="30" rx="6" fill="#0f1118" stroke="#34d399"/>
+                  <text x="130" y="200" text-anchor="middle" fill="#34d399">Ragas eval</text>
+                  <title>Ragas computes faithfulness, answer_relevancy, and context_recall on every query. Scores feed a rolling window in InMemoryMetricsStore (or Postgres in production).</title>
+                </g>
+                <g class="p6-node p6-node-opt">
+                  <rect x="220" y="180" width="100" height="30" rx="6" fill="#0f1118" stroke="#34d399"/>
+                  <text x="270" y="200" text-anchor="middle" fill="#34d399">Optimizer</text>
+                  <title>If a metric's rolling avg dips below threshold (default 0.75 over window=20), the optimizer applies a per-metric remediation: low faithfulness ⇒ smaller k + higher similarity threshold; low recall ⇒ bigger k + looser threshold; low relevancy ⇒ trust the reranker more. Reverts after the next window if no improvement.</title>
+                </g>
+
+                <!-- 3 parallel pulses query → stores → fuser, staggered -->
+                <circle class="p6-pulse" r="3.5" fill="#a5b4fc" filter="url(#p6-glow)">
+                  <animateMotion dur="3.6s" repeatCount="indefinite">
+                    <mpath href="#p6-path-pg"/>
+                  </animateMotion>
+                </circle>
+                <circle class="p6-pulse" r="3.5" fill="#4dd0c2" filter="url(#p6-glow)">
+                  <animateMotion dur="3.6s" begin="0.4s" repeatCount="indefinite">
+                    <mpath href="#p6-path-qd"/>
+                  </animateMotion>
+                </circle>
+                <circle class="p6-pulse" r="3.5" fill="#ff9e6d" filter="url(#p6-glow)">
+                  <animateMotion dur="3.6s" begin="0.8s" repeatCount="indefinite">
+                    <mpath href="#p6-path-pc"/>
+                  </animateMotion>
+                </circle>
+
+                <!-- Eval / Optimizer pulses -->
+                <circle class="p6-pulse" r="3" fill="#34d399" filter="url(#p6-glow)" opacity="0.85">
+                  <animateMotion dur="2.2s" begin="2s" repeatCount="indefinite">
+                    <mpath href="#p6-path-eval"/>
+                  </animateMotion>
+                </circle>
+                <circle class="p6-pulse" r="3" fill="#34d399" filter="url(#p6-glow)" opacity="0.85">
+                  <animateMotion dur="2.2s" begin="2.3s" repeatCount="indefinite">
+                    <mpath href="#p6-path-opt"/>
+                  </animateMotion>
+                </circle>
+                <!-- Slow retune loop, fires occasionally -->
+                <circle class="p6-pulse" r="3" fill="#34d399" filter="url(#p6-glow)" opacity="0.8">
+                  <animateMotion dur="8s" repeatCount="indefinite">
+                    <mpath href="#p6-path-retune"/>
+                  </animateMotion>
+                </circle>
               </g>
             </svg>
           </div>
@@ -4101,6 +4630,293 @@
     const id = location.hash.replace('#/p/', '').padStart(2, '0');
     if (PROJECTS[id]) setTimeout(() => openModal(id), 300);
   }
+</script>
+
+<!-- ============ RRF LIVE CALCULATOR ============ -->
+<script>
+/**
+ * Interactive Reciprocal Rank Fusion demo.
+ * Two sortable lists (vector, keyword) and a fused output computed live:
+ *   score(d) = Σ_i 1 / (k + rank_i(d))    with k = 60
+ * Users press ↑/↓ on any item to move it within its list — the fused
+ * column reorders smoothly. Whichever item the user is hovering gets
+ * highlighted across all three columns so the cross-list contribution
+ * is visible at a glance.
+ */
+(function () {
+  const vecRoot = document.getElementById('rrf-list-vec');
+  const kwRoot  = document.getElementById('rrf-list-kw');
+  const fusedRoot = document.getElementById('rrf-list-fused');
+  if (!vecRoot || !kwRoot || !fusedRoot) return;
+
+  const K = 60;
+  const DOCS = [
+    { id: 'A', title: 'transformer architecture' },
+    { id: 'B', title: 'reciprocal rank fusion paper' },
+    { id: 'C', title: 'pgvector ivfflat setup' },
+    { id: 'D', title: 'asyncio event loop' },
+    { id: 'E', title: 'JSON schema validation' },
+  ];
+
+  // Two distinct rankings — vector finds semantics, BM25 finds exact terms.
+  let vectorOrder  = ['D', 'A', 'B', 'E', 'C'];
+  let keywordOrder = ['B', 'D', 'A', 'C', 'E'];
+
+  function rankIn(order, id) { return order.indexOf(id) + 1; }
+
+  function scoreFor(id) {
+    const rv = rankIn(vectorOrder, id);
+    const rk = rankIn(keywordOrder, id);
+    return {
+      total: 1 / (K + rv) + 1 / (K + rk),
+      rv, rk,
+    };
+  }
+
+  function fusedOrder() {
+    return DOCS
+      .map(d => ({ id: d.id, ...scoreFor(d.id) }))
+      .sort((a, b) => b.total - a.total);
+  }
+
+  function titleFor(id) {
+    return DOCS.find(d => d.id === id).title;
+  }
+
+  function renderList(root, order, listName) {
+    root.innerHTML = '';
+    order.forEach((id, idx) => {
+      const rank = idx + 1;
+      const li = document.createElement('li');
+      li.dataset.doc = id;
+      li.dataset.list = listName;
+      const { rv, rk, total } = scoreFor(id);
+      li.innerHTML = `
+        <span class="rrf-rank">#${rank}</span>
+        <span class="rrf-title">doc ${id} · ${titleFor(id)}</span>
+        <span class="rrf-score">contrib  1/(60+${rank}) = ${(1/(60+rank)).toFixed(5)}</span>
+        <span class="rrf-actions">
+          <button data-act="up"   data-doc="${id}" data-list="${listName}" ${idx === 0 ? 'disabled' : ''}>↑</button>
+          <button data-act="down" data-doc="${id}" data-list="${listName}" ${idx === order.length - 1 ? 'disabled' : ''}>↓</button>
+        </span>`;
+      root.appendChild(li);
+    });
+  }
+
+  function renderFused() {
+    fusedRoot.innerHTML = '';
+    fusedOrder().forEach((row, idx) => {
+      const li = document.createElement('li');
+      li.dataset.doc = row.id;
+      li.innerHTML = `
+        <span class="rrf-rank">#${idx + 1}</span>
+        <span class="rrf-title">doc ${row.id} · ${titleFor(row.id)}</span>
+        <span class="rrf-score">1/(60+${row.rv}) + 1/(60+${row.rk}) = ${row.total.toFixed(5)}</span>
+        <span class="rrf-actions"></span>`;
+      fusedRoot.appendChild(li);
+    });
+  }
+
+  function renderAll() {
+    renderList(vecRoot, vectorOrder, 'vector');
+    renderList(kwRoot,  keywordOrder, 'keyword');
+    renderFused();
+    wireActions();
+    wireHover();
+  }
+
+  function move(listName, id, dir) {
+    const order = listName === 'vector' ? vectorOrder : keywordOrder;
+    const idx = order.indexOf(id);
+    const target = idx + dir;
+    if (target < 0 || target >= order.length) return;
+    [order[idx], order[target]] = [order[target], order[idx]];
+    renderAll();
+  }
+
+  function wireActions() {
+    document.querySelectorAll('.rrf-list .rrf-actions button').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const dir = btn.dataset.act === 'up' ? -1 : 1;
+        move(btn.dataset.list, btn.dataset.doc, dir);
+      });
+    });
+  }
+
+  function wireHover() {
+    document.querySelectorAll('.rrf-list li[data-doc]').forEach(li => {
+      li.addEventListener('mouseenter', () => {
+        document
+          .querySelectorAll(`.rrf-list li[data-doc="${li.dataset.doc}"]`)
+          .forEach(el => el.classList.add('rrf-highlighted'));
+      });
+      li.addEventListener('mouseleave', () => {
+        document
+          .querySelectorAll('.rrf-list li.rrf-highlighted')
+          .forEach(el => el.classList.remove('rrf-highlighted'));
+      });
+    });
+  }
+
+  renderAll();
+})();
+</script>
+
+<!-- ============ ATTENTION VISUALIZATION ============ -->
+<script>
+/**
+ * Self-attention visualization. The "model" is fake (precomputed weights),
+ * but the rendering shows how Attention(Q,K,V) = softmax(QK^T/√d_k)·V
+ * distributes a probability mass across input tokens for each output token.
+ *
+ * Hovering an output token re-draws the edges with stroke-width proportional
+ * to its attention row, and updates the readout with the top-3 contributing
+ * input tokens and their percentages.
+ */
+(function () {
+  const svg = document.getElementById('attn-svg');
+  if (!svg) return;
+  const inputRow = document.getElementById('attn-input-row');
+  const outputRow = document.getElementById('attn-output-row');
+  const edgesGroup = document.getElementById('attn-edges');
+  const readout = document.getElementById('attn-readout');
+  const shuffleBtn = document.getElementById('attn-shuffle');
+
+  const INPUTS  = ['The',  'reliability', 'of',  'a',  'system', 'is',  'a',  'theorem'];
+  const OUTPUTS = ['La',   'fiabilidad',  'de',  'un', 'sistema', 'es', 'un', 'teorema'];
+
+  const N_IN = INPUTS.length;
+  const N_OUT = OUTPUTS.length;
+
+  // Bounds (matches viewBox 900 × 320)
+  const SVG_W = 900;
+  const INPUT_Y = 60;
+  const OUTPUT_Y = 230;
+  const TOKEN_W = 96;
+  const TOKEN_H = 30;
+  const PAD = (SVG_W - N_IN * TOKEN_W) / (N_IN + 1);
+
+  function xFor(i, n) {
+    const pad = (SVG_W - n * TOKEN_W) / (n + 1);
+    return pad + i * (TOKEN_W + pad);
+  }
+
+  // Precomputed attention rows (one per output token, sums to 1).
+  // Each row is N_IN floats — mostly diagonal-ish with some spread,
+  // simulating a real translation attention pattern.
+  function defaultPattern() {
+    const rows = [];
+    for (let o = 0; o < N_OUT; o++) {
+      const row = new Array(N_IN).fill(0);
+      // Diagonal-like base with neighborhood softness
+      for (let i = 0; i < N_IN; i++) {
+        const d = Math.abs(i - o);
+        row[i] = Math.exp(-d * d / 2.5);
+      }
+      // Tiny random sprinkle so it doesn't look mechanical
+      for (let i = 0; i < N_IN; i++) row[i] += Math.random() * 0.08;
+      // Softmax-normalise to a real probability distribution
+      const max = Math.max(...row);
+      const exps = row.map(v => Math.exp((v - max) * 2.2));
+      const total = exps.reduce((a, b) => a + b, 0);
+      rows.push(exps.map(v => v / total));
+    }
+    return rows;
+  }
+
+  let weights = defaultPattern();
+  let activeOutput = -1;
+
+  function renderTokens() {
+    inputRow.innerHTML = '';
+    outputRow.innerHTML = '';
+    INPUTS.forEach((tok, i) => {
+      const x = xFor(i, N_IN);
+      inputRow.insertAdjacentHTML(
+        'beforeend',
+        `<g class="attn-token attn-token-input" data-i="${i}">
+           <rect x="${x}" y="${INPUT_Y}" width="${TOKEN_W}" height="${TOKEN_H}"/>
+           <text x="${x + TOKEN_W / 2}" y="${INPUT_Y + 20}">${tok}</text>
+         </g>`
+      );
+    });
+    OUTPUTS.forEach((tok, o) => {
+      const x = xFor(o, N_OUT);
+      outputRow.insertAdjacentHTML(
+        'beforeend',
+        `<g class="attn-token attn-token-output" data-o="${o}">
+           <rect x="${x}" y="${OUTPUT_Y}" width="${TOKEN_W}" height="${TOKEN_H}"/>
+           <text x="${x + TOKEN_W / 2}" y="${OUTPUT_Y + 20}">${tok}</text>
+         </g>`
+      );
+    });
+    wireTokens();
+  }
+
+  function renderEdges(o) {
+    edgesGroup.innerHTML = '';
+    if (o < 0) return;
+    const row = weights[o];
+    const ox = xFor(o, N_OUT) + TOKEN_W / 2;
+    const oy = OUTPUT_Y;
+    for (let i = 0; i < N_IN; i++) {
+      const w = row[i];
+      if (w < 0.02) continue;
+      const ix = xFor(i, N_IN) + TOKEN_W / 2;
+      const iy = INPUT_Y + TOKEN_H;
+      // Cubic-bezier curve for a softer edge
+      const cy1 = iy + 50;
+      const cy2 = oy - 50;
+      const path = `M ${ix} ${iy} C ${ix} ${cy1}, ${ox} ${cy2}, ${ox} ${oy}`;
+      const strokeWidth = 0.6 + w * 8;
+      const opacity = 0.4 + w * 0.55;
+      edgesGroup.insertAdjacentHTML(
+        'beforeend',
+        `<path class="attn-edge" d="${path}" stroke-width="${strokeWidth.toFixed(2)}" opacity="${opacity.toFixed(3)}"/>`
+      );
+    }
+    // Highlight the top-3 input tokens
+    const ranked = row.map((w, i) => ({ i, w })).sort((a, b) => b.w - a.w);
+    document.querySelectorAll('.attn-token-input').forEach(el => el.classList.remove('is-highlighted'));
+    ranked.slice(0, 3).forEach(({ i }) => {
+      const el = document.querySelector(`.attn-token-input[data-i="${i}"]`);
+      if (el) el.classList.add('is-highlighted');
+    });
+
+    const top3 = ranked.slice(0, 3)
+      .map(r => `<strong>${INPUTS[r.i]}</strong> <span class="pct">${(r.w * 100).toFixed(1)}%</span>`)
+      .join(' · ');
+    readout.innerHTML = `output token <strong>${OUTPUTS[o]}</strong> attends mostly to ${top3}`;
+  }
+
+  function wireTokens() {
+    document.querySelectorAll('.attn-token-output').forEach(el => {
+      el.addEventListener('mouseenter', () => {
+        const o = parseInt(el.dataset.o, 10);
+        activeOutput = o;
+        document.querySelectorAll('.attn-token-output').forEach(t => t.classList.remove('is-active'));
+        el.classList.add('is-active');
+        renderEdges(o);
+      });
+    });
+    svg.addEventListener('mouseleave', () => {
+      activeOutput = -1;
+      document.querySelectorAll('.attn-token-output').forEach(t => t.classList.remove('is-active'));
+      document.querySelectorAll('.attn-token-input').forEach(t => t.classList.remove('is-highlighted'));
+      edgesGroup.innerHTML = '';
+      readout.innerHTML = 'Hover a token in the bottom row to see its attention distribution.';
+    });
+  }
+
+  if (shuffleBtn) {
+    shuffleBtn.addEventListener('click', () => {
+      weights = defaultPattern();
+      if (activeOutput >= 0) renderEdges(activeOutput);
+    });
+  }
+
+  renderTokens();
+})();
 </script>
 
 <!-- ============ GRADIENT DESCENT VISUALIZATION ============ -->
