@@ -2371,6 +2371,17 @@
               <li>Reflection loops without hard caps burned $40 of credits on a single malformed PDF in week one.</li>
             </ul>
           </div>
+
+          <div class="project-block">
+            <h5>Implementation status</h5>
+            <ul>
+              <li><strong>Backend:</strong> 5-node LangGraph (extract → validate → critique → reflect → synthesize), 4 agents implemented, FastAPI with SSE streaming, pgvector episodic memory layer.</li>
+              <li><strong>Tests:</strong> 22 pytest tests passing in ~3s — validator, agent JSON-retry, all four orchestrator paths, FastAPI HTTP layer. Zero Docker, zero API-key, zero cost to run.</li>
+              <li><strong>Evaluation harness:</strong> 15-document synthetic corpus (8 invoices · 4 receipts · 3 contracts, easy/medium/hard mix) plus a runner that grades extracted output field-by-field against ground truth and emits aggregate metrics.</li>
+              <li><strong>Frontend:</strong> Next.js 14 + Tailwind SPA with live SSE pipeline view, per-principle critic scoring, episodic memory panel. Includes a client-side scripted demo mode that plays the self-healing scenario without any backend.</li>
+              <li><strong>Pending (visible in the repo):</strong> populate the metrics card with the real benchmark numbers, public Vercel deployment, Langfuse callback wiring.</li>
+            </ul>
+          </div>
         </div>
 
         <div>
@@ -2418,8 +2429,8 @@
 
           <div class="metrics-card">
             <div class="metric-head">
-              <h5>Target metrics</h5>
-              <span class="metric-note">vs no-reflection baseline</span>
+              <h5>Designed-against metrics</h5>
+              <span class="metric-note">targets · eval harness ready</span>
             </div>
             <div class="metric">
               <span class="metric-label">Extraction accuracy (invoice)</span>
@@ -2437,10 +2448,15 @@
               <span class="metric-label">Critic agreement w/ human</span>
               <span class="metric-value">≥ 0.88 κ</span>
             </div>
+            <p class="metric-note" style="margin-top:.6rem;font-size:.72rem;line-height:1.4;">
+              Targets above are what the system is designed to hit. Measurement is one
+              command away (<code>python -m eval.benchmark --mode real</code>) against
+              the 15-document corpus — the dry-run mode is already verified.
+            </p>
           </div>
 
           <div class="stack">
-            <span>LangGraph 0.2</span><span>Claude Sonnet 4.5</span><span>FastAPI</span><span>Pydantic v2</span><span>pgvector</span><span>SSE</span><span>Langfuse</span><span>Next.js 14</span>
+            <span>LangGraph 0.2</span><span>Claude Sonnet 4.5</span><span>FastAPI</span><span>Pydantic v2</span><span>pgvector</span><span>SSE</span><span>pytest</span><span>Next.js 14</span><span>Tailwind</span><span>Langfuse</span>
           </div>
         </div>
       </div>

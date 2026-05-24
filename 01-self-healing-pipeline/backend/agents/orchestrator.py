@@ -28,11 +28,29 @@ class PipelineState(TypedDict, total=False):
 
 def build_graph(memory: EpisodicMemory, settings: Settings, model: Any | None = None):
     if model is None:
+        callbacks: list[Any] = []
+        # Wire Langfuse only if both keys are configured. Missing creds → no
+        # callback registered, no network calls; production runs cleanly.
+        if settings.langfuse_public_key and settings.langfuse_secret_key:
+            try:
+                from langfuse.callback import CallbackHandler
+
+                callbacks.append(
+                    CallbackHandler(
+                        public_key=settings.langfuse_public_key,
+                        secret_key=settings.langfuse_secret_key,
+                        host=settings.langfuse_host,
+                    )
+                )
+            except Exception:
+                # Importable but misconfigured? Don't poison the pipeline.
+                callbacks = []
         model = ChatAnthropic(
             model=settings.anthropic_model,
             api_key=settings.anthropic_api_key,
             temperature=0,
             max_tokens=2048,
+            callbacks=callbacks or None,
         )
 
     extractor = ExtractorAgent(model=model)

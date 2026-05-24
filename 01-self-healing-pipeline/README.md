@@ -81,7 +81,7 @@ This project shows what production agentic systems should look like instead: eve
 | Frontend | Next.js 14 (App Router) + Tailwind + lucide-react |
 | Testing | pytest + pytest-asyncio (15 tests, no Docker / no API key needed) |
 | Infra | Docker Compose (Postgres + API + frontend) |
-| Observability | Langfuse — deps installed, callback wiring pending (see `BUILD.md`) |
+| Observability | Langfuse — callback wired into the ChatAnthropic client; activates iff `LANGFUSE_PUBLIC_KEY`/`LANGFUSE_SECRET_KEY` are set, otherwise no-op |
 
 ---
 

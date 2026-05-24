@@ -50,7 +50,7 @@ Each project answers a question recruiters in EU/USA actually ask: *"Can this pe
 **Pending (and honest about it):**
 - Real benchmark run against Claude (script is ready; needs an API key + ~$1 budget).
 - Public deployment (Railway / Fly.io for API, Vercel for frontend).
-- Langfuse observability integration (deps installed, callback not yet wired).
+- Langfuse observability integration is wired in `build_graph`: the callback handler is registered with `ChatAnthropic` when `LANGFUSE_PUBLIC_KEY`/`LANGFUSE_SECRET_KEY` are present, and is a no-op otherwise. The Langfuse server itself is intentionally not bundled in `docker-compose.yml` because the v2 self-host requires extra services; the slot is open for a managed Langfuse Cloud account.
 
 ---
 
