@@ -43,7 +43,7 @@ Each project answers a question recruiters in EU/USA actually ask: *"Can this pe
 - 4 agents: Extractor + Critic (Claude Sonnet 4.5, with 3-attempt JSON-recovery retry), Validator + Synthesizer (deterministic, no LLM).
 - Episodic memory layer over pgvector — the critic retrieves the 3 most-similar past errors before scoring each new doc.
 - FastAPI backend with REST + SSE streaming endpoints.
-- **15 automated tests** passing (`pytest`), covering validator paths, agent JSON-retry behavior, and all four orchestrator paths (pass-on-first, self-heal, max-iter fail, streaming).
+- **22 automated tests** passing (`pytest`), covering validator paths, agent JSON-retry behavior, all four orchestrator paths (pass-on-first, self-heal, max-iter fail, streaming), and the FastAPI HTTP endpoints via `TestClient`.
 - **15-document synthetic evaluation corpus** + `eval/benchmark.py` harness that runs the pipeline against the corpus, grades each output field-by-field against ground truth, and emits aggregate metrics by document type and difficulty.
 - Next.js 14 + Tailwind frontend with live SSE pipeline visualization, per-principle critic scoring, and episodic memory viewer.
 

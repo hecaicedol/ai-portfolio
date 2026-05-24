@@ -210,7 +210,7 @@ Full schema at `http://localhost:8000/docs`.
 
 ## Testing
 
-15 automated tests live in `backend/tests/`. They use `FakeMemory` (in-memory stand-in for the pgvector layer) and `ScriptedLLM` (deterministic LLM that replays pre-written responses) so the suite needs **no Docker, no API key, and no money** to run — `pytest tests` finishes in about two seconds.
+22 automated tests live in `backend/tests/`. They use `FakeMemory` (in-memory stand-in for the pgvector layer) and `ScriptedLLM` (deterministic LLM that replays pre-written responses) so the suite needs **no Docker, no API key, and no money** to run — `pytest tests` finishes in about three seconds.
 
 What's covered:
 
@@ -219,6 +219,7 @@ What's covered:
 | `test_validator.py` | Required-field detection per document type, edge cases (unknown types, empty values, generic) |
 | `test_agents.py` | `Extractor` / `Critic` JSON-retry behavior, markdown-fence stripping, retry exhaustion → typed parse errors, critic prompt actually includes past similar errors |
 | `test_orchestrator.py` | All four LangGraph paths end-to-end: pass on first attempt, self-heal on second attempt, exhaust max iterations, SSE streaming emits the expected events. Also verifies `record_run` is called exactly once per pipeline invocation. |
+| `test_api.py` | FastAPI HTTP layer with TestClient: `/health`, `/api/process` happy path + request validation, `/api/process/stream` returns SSE, `/api/memory/errors`, `/api/memory/similar` happy path + missing-query 400. Lifespan is patched to a no-op so tests don't need Postgres. |
 
 The orchestrator tests were what surfaced a latent LangGraph bug (a node name colliding with a state-key reserved word) that had never been observed because the system had never actually been run against the real library version. That fix is in the commit history.
 
