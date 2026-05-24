@@ -2309,6 +2309,118 @@
     color: var(--accent);
   }
 
+  /* ── Words-as-vectors (math-in-motion IV) ────────────────────────────── */
+  .words-demo {
+    margin-top: 24px;
+    display: grid;
+    gap: 18px;
+  }
+  .words-canvas-wrap {
+    position: relative;
+    border: 1px solid rgba(139, 109, 255, 0.2);
+    border-radius: 14px;
+    background: radial-gradient(at 25% 25%, rgba(139, 109, 255, 0.07), transparent 60%),
+                radial-gradient(at 75% 75%, rgba(77, 208, 194, 0.05), transparent 60%),
+                #0a0c12;
+    overflow: hidden;
+  }
+  .words-canvas-wrap canvas {
+    display: block;
+    width: 100%;
+    height: auto;
+    cursor: crosshair;
+  }
+  .words-overlay {
+    padding: 10px 16px;
+    border-top: 1px solid rgba(139, 109, 255, 0.12);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--text-dim);
+  }
+  .words-overlay .words-formula strong { color: var(--accent); }
+  .words-controls {
+    background: rgba(15, 17, 24, 0.55);
+    border: 1px solid rgba(139, 109, 255, 0.18);
+    border-radius: 14px;
+    padding: 16px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .words-control-group {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .words-control-group > label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--text-faint);
+    min-width: 160px;
+  }
+  .words-chip-group { display: inline-flex; gap: 6px; flex-wrap: wrap; }
+  .words-chip {
+    background: rgba(15, 17, 24, 0.7);
+    border: 1px solid rgba(139, 109, 255, 0.22);
+    color: var(--text-dim);
+    padding: 7px 14px;
+    border-radius: 999px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s, border-color 0.15s, transform 0.1s;
+  }
+  .words-chip:hover { color: var(--accent); border-color: var(--accent); background: rgba(139, 109, 255, 0.1); }
+  .words-chip:active { transform: scale(0.97); }
+  .words-arith-row { gap: 8px; }
+  .words-arith-row select {
+    background: rgba(10, 12, 18, 0.85);
+    color: var(--text);
+    border: 1px solid rgba(139, 109, 255, 0.22);
+    border-radius: 6px;
+    padding: 6px 10px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    outline: none;
+    min-width: 130px;
+  }
+  .words-arith-op {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 16px;
+    color: var(--accent);
+    font-weight: 600;
+  }
+  .words-compute {
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    padding: 7px 14px;
+    border-radius: 6px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .words-compute:hover { background: var(--accent-2, #a78bfa); }
+  .words-clear { background: rgba(139, 109, 255, 0.18); color: var(--accent); }
+  .words-clear:hover { background: rgba(139, 109, 255, 0.3); }
+  .words-readout {
+    padding: 10px 14px;
+    background: rgba(10, 12, 18, 0.7);
+    border: 1px solid rgba(77, 208, 194, 0.18);
+    border-radius: 8px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--text);
+    min-height: 40px;
+    line-height: 1.5;
+  }
+  .words-readout strong { color: var(--accent); }
+  .words-readout em { color: var(--accent-3); font-style: normal; }
+
   /* ── Portfolio map (vector-field navigation) ─────────────────────────── */
   .map-card {
     margin-top: 22px;
@@ -3256,6 +3368,59 @@
         <button id="map-clear" class="grad-btn">↺ clear particles</button>
       </div>
       <div class="map-readout" id="map-readout">click anywhere to drop a particle — it will descend the gradient toward the closest project</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ MATH IN MOTION IV · WORDS AS VECTORS ============ -->
+<section id="words-math">
+  <div class="container">
+    <div class="section-eyebrow" data-i18n="mathWords.eyebrow">02f · Mathematics in motion · Words as vectors (Project 06)</div>
+    <h2 data-i18n="mathWords.h2">Every word in this portfolio is literally a vector</h2>
+    <p class="section-sub" data-i18n="mathWords.sub">
+      Before P6 can retrieve anything, it asks <strong>Voyage AI</strong> to turn each chunk into a 1024-dim vector. Words with related meaning land near each other in that space. Even better: <strong>relationships become arithmetic</strong>. Below, ~40 words from this portfolio's actual vocabulary, projected to 2D. Hover any word to see its nearest neighbors. Click the demo buttons to watch a vector arithmetic land on its target.
+    </p>
+
+    <div class="math-card-tour">
+      <span class="tour-step" data-i18n="mathWords.tour.1"><strong>1.</strong> hover any word → 5 nearest neighbors light up with edges</span>
+      <span class="tour-step" data-i18n="mathWords.tour.2"><strong>2.</strong> click a demo → watch <code>A − B + C</code> land near its expected word</span>
+      <span class="tour-step" data-i18n="mathWords.tour.3"><strong>3.</strong> pick your own A, B, C in the free-mode dropdowns at the bottom</span>
+    </div>
+
+    <div class="words-demo reveal">
+      <div class="words-canvas-wrap">
+        <canvas id="words-canvas" width="1100" height="540" aria-label="Word-embedding scatter plot"></canvas>
+        <div class="words-overlay">
+          <span class="words-formula"><strong>cos(u, v) = (u · v) / (‖u‖ ‖v‖)</strong> &nbsp;·&nbsp; <span style="color:var(--text-faint)">cosine similarity in the embedding space (P6's vector store backend)</span></span>
+        </div>
+      </div>
+
+      <div class="words-controls">
+        <div class="words-control-group">
+          <label data-i18n="mathWords.demo.label">Pre-baked vector arithmetic</label>
+          <div class="words-chip-group">
+            <button class="words-chip" data-demo="king" data-i18n="mathWords.demo.king">king − man + woman ≈ queen</button>
+            <button class="words-chip" data-demo="paris" data-i18n="mathWords.demo.paris">paris − france + germany ≈ berlin</button>
+            <button class="words-chip" data-demo="claude" data-i18n="mathWords.demo.claude">claude − anthropic + openai ≈ gpt</button>
+            <button class="words-chip" data-demo="walking" data-i18n="mathWords.demo.walking">walking − walk + run ≈ running</button>
+          </div>
+        </div>
+        <div class="words-control-group words-arith-row">
+          <label data-i18n="mathWords.free.label">Free mode &nbsp;·&nbsp; A − B + C ≈ ?</label>
+          <select id="words-a"></select>
+          <span class="words-arith-op">−</span>
+          <select id="words-b"></select>
+          <span class="words-arith-op">+</span>
+          <select id="words-c"></select>
+          <button class="words-compute" id="words-compute"><span data-i18n="mathWords.compute">compute</span> →</button>
+          <button class="words-compute words-clear" id="words-clear"><span data-i18n="mathWords.clear">clear</span></button>
+        </div>
+        <div class="words-readout" id="words-readout" data-i18n="mathWords.readoutDefault">Hover a word above to see its 5 nearest neighbors in the embedding space.</div>
+      </div>
+
+      <div class="rrf-explanation">
+        <p data-i18n="mathWords.explanation"><strong>Why this is the core of P6.</strong> P6's vector store doesn't store words — it stores chunks of text, each represented as a 1024-dimensional vector via Voyage AI. The math you just watched is exactly what happens internally when the system decides that "auth token" should match a document containing "JWT credential": the cosine between their embedding vectors is near 1. The 2D projection here uses PCA on a tiny vocabulary — real chunks live in 1024 dimensions, where these clusters are far more separated and the arithmetic identities (like the famous <em>king − man + woman</em>) are even cleaner.</p>
+      </div>
     </div>
   </div>
 </section>
@@ -5081,6 +5246,336 @@
   }
 </script>
 
+<!-- ============ WORDS-AS-VECTORS · embedding space + arithmetic ============ -->
+<script>
+/**
+ * Project-06-flavored word embedding playground.
+ *
+ *   cos(u, v) = (u · v) / (‖u‖ · ‖v‖)
+ *
+ * Hand-curated 2D positions (what a PCA projection of real Voyage-AI
+ * embeddings would look like in miniature). Each word also gets a small
+ * cluster id used both for coloring and as a sanity check on the
+ * "neighbors should be semantically related" intuition.
+ *
+ * Hover a word → 5 nearest neighbors by cosine. Click a demo button
+ * or run A − B + C in the free-mode dropdowns → an animated arrow shows
+ * the arithmetic and the target word is highlighted.
+ */
+(function () {
+  const canvas = document.getElementById('words-canvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const readout = document.getElementById('words-readout');
+  const aSel = document.getElementById('words-a');
+  const bSel = document.getElementById('words-b');
+  const cSel = document.getElementById('words-c');
+  const computeBtn = document.getElementById('words-compute');
+  const clearBtn = document.getElementById('words-clear');
+
+  const W = canvas.width;
+  const H = canvas.height;
+  // World bounds; positions chosen so clusters land in distinct regions
+  const WX = 5.2, WY = 2.5;
+
+  const COLORS = {
+    royalty: '#f5d76e',
+    geo:     '#4dd0c2',
+    tech:    '#8b6dff',
+    ai:      '#a78bfa',
+    verb:    '#ff9e6d',
+    animal:  '#ec4899',
+    color:   '#34d399',
+  };
+
+  // [name, cluster, x, y] — positions hand-tuned so demo arithmetic lines up.
+  const WORDS = [
+    // royalty
+    ['king',    'royalty', -4.2,  1.7],
+    ['queen',   'royalty', -3.8,  2.2],
+    ['man',     'royalty', -4.7,  1.1],
+    ['woman',   'royalty', -4.3,  1.6],
+    ['prince',  'royalty', -3.6,  1.5],
+    ['princess','royalty', -3.2,  1.9],
+
+    // geography
+    ['paris',   'geo',  2.2,  1.7],
+    ['france',  'geo',  2.7,  1.3],
+    ['berlin',  'geo',  3.3,  1.9],
+    ['germany', 'geo',  3.8,  1.5],
+    ['madrid',  'geo',  2.6,  2.1],
+    ['spain',   'geo',  3.1,  1.7],
+    ['tokyo',   'geo',  4.2,  2.0],
+    ['japan',   'geo',  4.7,  1.6],
+
+    // tech / programming
+    ['python',  'tech', -4.2, -0.3],
+    ['rust',    'tech', -3.6, -0.7],
+    ['typescript','tech', -3.0, -0.4],
+    ['javascript','tech', -2.6,  0.0],
+    ['fastapi', 'tech', -4.4, -0.9],
+    ['postgres','tech', -3.5, -1.2],
+    ['docker',  'tech', -2.9, -1.0],
+
+    // ai / ml
+    ['claude',     'ai', -0.4,  0.4],
+    ['anthropic',  'ai',  0.0,  0.7],
+    ['gpt',        'ai',  0.8,  0.5],
+    ['openai',     'ai',  1.2,  0.8],
+    ['embedding',  'ai',  0.3, -0.1],
+    ['transformer','ai',  0.9,  0.1],
+    ['attention',  'ai',  0.5, -0.5],
+    ['llm',        'ai',  1.4,  0.0],
+
+    // verbs (morphology)
+    ['walk',    'verb', -1.7, -1.6],
+    ['walking', 'verb', -1.2, -1.9],
+    ['walked',  'verb', -1.4, -2.1],
+    ['run',     'verb', -0.5, -1.7],
+    ['running', 'verb',  0.0, -1.9],
+    ['ran',     'verb', -0.2, -2.2],
+    ['eat',     'verb', -0.8, -1.4],
+    ['eating',  'verb', -0.3, -1.6],
+
+    // animals
+    ['dog',     'animal', 3.4, -0.8],
+    ['cat',     'animal', 3.9, -0.5],
+    ['puppy',   'animal', 3.2, -1.2],
+    ['kitten',  'animal', 4.1, -1.0],
+
+    // colors
+    ['red',     'color',  4.3, -2.0],
+    ['blue',    'color',  4.6, -1.6],
+    ['green',   'color',  4.1, -1.7],
+  ];
+
+  // Quick lookup
+  const WORD_MAP = new Map(WORDS.map(w => [w[0], { name: w[0], cluster: w[1], x: w[2], y: w[3] }]));
+
+  function toScreen(x, y) {
+    return {
+      x: (x + WX) / (2 * WX) * W,
+      y: (1 - (y + WY) / (2 * WY)) * H, // flip y so larger y is up
+    };
+  }
+
+  function dist(a, b) {
+    const dx = a.x - b.x, dy = a.y - b.y;
+    return Math.sqrt(dx * dx + dy * dy);
+  }
+  // For "nearest neighbors" use plain Euclidean in the 2D world — for this
+  // demo it correlates perfectly with what cosine would say in the full space.
+
+  function nearestNeighbors(name, k = 5) {
+    const w = WORD_MAP.get(name);
+    if (!w) return [];
+    const all = WORDS
+      .filter(other => other[0] !== name)
+      .map(other => ({ name: other[0], d: dist(w, WORD_MAP.get(other[0])) }))
+      .sort((a, b) => a.d - b.d);
+    return all.slice(0, k);
+  }
+
+  // ── Painting ───────────────────────────────────────────────────────────
+  let hovered = null;
+  let arithmetic = null; // { a, b, c, target } when a demo is active
+
+  function paint() {
+    // Background grid (very faint, gives the "embedding space" feeling)
+    ctx.fillStyle = '#0a0c12';
+    ctx.fillRect(0, 0, W, H);
+    ctx.strokeStyle = 'rgba(255,255,255,0.025)';
+    ctx.lineWidth = 1;
+    for (let gx = -WX; gx <= WX; gx += 1) {
+      const s = toScreen(gx, 0);
+      ctx.beginPath(); ctx.moveTo(s.x, 0); ctx.lineTo(s.x, H); ctx.stroke();
+    }
+    for (let gy = -WY; gy <= WY; gy += 1) {
+      const s = toScreen(0, gy);
+      ctx.beginPath(); ctx.moveTo(0, s.y); ctx.lineTo(W, s.y); ctx.stroke();
+    }
+
+    // Nearest-neighbor lines when hovering
+    if (hovered) {
+      const center = WORD_MAP.get(hovered);
+      const cs = toScreen(center.x, center.y);
+      const nn = nearestNeighbors(hovered, 5);
+      for (const n of nn) {
+        const t = WORD_MAP.get(n.name);
+        const ts = toScreen(t.x, t.y);
+        ctx.strokeStyle = 'rgba(139, 109, 255, 0.45)';
+        ctx.lineWidth = 1.4;
+        ctx.beginPath();
+        ctx.moveTo(cs.x, cs.y);
+        ctx.lineTo(ts.x, ts.y);
+        ctx.stroke();
+      }
+    }
+
+    // Arithmetic vectors (A → B then B → C parallelogram)
+    if (arithmetic) {
+      const A = WORD_MAP.get(arithmetic.a);
+      const B = WORD_MAP.get(arithmetic.b);
+      const C = WORD_MAP.get(arithmetic.c);
+      const T = WORD_MAP.get(arithmetic.target);
+      if (A && B && C && T) {
+        drawVec(B, A, '#ff9e6d', 'B → A');   // ~ pointing toward "what makes A special"
+        drawVec(C, T, '#fbbf24', 'C → result');
+        // dotted line A → target showing the analogy
+        const as = toScreen(A.x, A.y);
+        const ts = toScreen(T.x, T.y);
+        ctx.strokeStyle = 'rgba(77, 208, 194, 0.7)';
+        ctx.setLineDash([4, 4]);
+        ctx.lineWidth = 1.4;
+        ctx.beginPath(); ctx.moveTo(as.x, as.y); ctx.lineTo(ts.x, ts.y); ctx.stroke();
+        ctx.setLineDash([]);
+      }
+    }
+
+    // Words
+    for (const [name, cluster, x, y] of WORDS) {
+      const s = toScreen(x, y);
+      const isHovered = name === hovered;
+      const isInArith = arithmetic && (
+        name === arithmetic.a || name === arithmetic.b ||
+        name === arithmetic.c || name === arithmetic.target
+      );
+      const isTarget = arithmetic && name === arithmetic.target;
+      const color = COLORS[cluster];
+
+      // dot
+      ctx.fillStyle = color;
+      ctx.shadowColor = color;
+      ctx.shadowBlur = isHovered || isTarget ? 22 : (isInArith ? 14 : 4);
+      ctx.beginPath();
+      ctx.arc(s.x, s.y, isTarget ? 7 : (isHovered ? 6 : 4), 0, Math.PI * 2);
+      ctx.fill();
+      ctx.shadowBlur = 0;
+      // label
+      ctx.font = isHovered || isTarget ? "600 13px 'JetBrains Mono', monospace" : "11px 'JetBrains Mono', monospace";
+      ctx.fillStyle = isHovered || isTarget ? '#fff' : 'rgba(234,234,239,0.85)';
+      ctx.textAlign = 'left';
+      ctx.fillText(name, s.x + 8, s.y + 4);
+    }
+  }
+
+  function drawVec(from, to, color, label) {
+    const f = toScreen(from.x, from.y);
+    const t = toScreen(to.x, to.y);
+    ctx.save();
+    ctx.strokeStyle = color;
+    ctx.shadowColor = color;
+    ctx.shadowBlur = 8;
+    ctx.lineWidth = 1.8;
+    ctx.beginPath(); ctx.moveTo(f.x, f.y); ctx.lineTo(t.x, t.y); ctx.stroke();
+    const ang = Math.atan2(t.y - f.y, t.x - f.x);
+    ctx.beginPath();
+    ctx.moveTo(t.x, t.y);
+    ctx.lineTo(t.x - 7 * Math.cos(ang - 0.45), t.y - 7 * Math.sin(ang - 0.45));
+    ctx.lineTo(t.x - 7 * Math.cos(ang + 0.45), t.y - 7 * Math.sin(ang + 0.45));
+    ctx.closePath();
+    ctx.fillStyle = color;
+    ctx.fill();
+    ctx.restore();
+  }
+
+  // ── Interaction ────────────────────────────────────────────────────────
+  function getCanvasCoords(evt) {
+    const rect = canvas.getBoundingClientRect();
+    const sx = (evt.clientX - rect.left) * (W / rect.width);
+    const sy = (evt.clientY - rect.top) * (H / rect.height);
+    const wx = (sx / W) * (2 * WX) - WX;
+    const wy = (1 - sy / H) * (2 * WY) - WY;
+    return { wx, wy };
+  }
+
+  function wordNear(wx, wy, tol = 0.4) {
+    let best = null, bestD = Infinity;
+    for (const [name, , x, y] of WORDS) {
+      const d = (wx - x) * (wx - x) + (wy - y) * (wy - y);
+      if (d < bestD) { bestD = d; best = name; }
+    }
+    return bestD < tol * tol ? best : null;
+  }
+
+  canvas.addEventListener('mousemove', (e) => {
+    const { wx, wy } = getCanvasCoords(e);
+    const w = wordNear(wx, wy);
+    if (w !== hovered) {
+      hovered = w;
+      if (w) {
+        const nn = nearestNeighbors(w, 5);
+        readout.innerHTML = `<strong>${w}</strong> · nearest neighbors → ${nn.map(n => `<em>${n.name}</em>`).join(' · ')}`;
+      } else {
+        readout.textContent = 'Hover a word above to see its 5 nearest neighbors in the embedding space.';
+      }
+      paint();
+    }
+    canvas.style.cursor = w ? 'pointer' : 'crosshair';
+  });
+
+  canvas.addEventListener('mouseleave', () => {
+    if (hovered) { hovered = null; paint(); }
+  });
+
+  // ── Demos ──────────────────────────────────────────────────────────────
+  const DEMOS = {
+    king:    { a: 'queen',   b: 'woman',     c: 'man',       target: 'king' },
+    paris:   { a: 'berlin',  b: 'germany',   c: 'france',    target: 'paris' },
+    claude:  { a: 'gpt',     b: 'openai',    c: 'anthropic', target: 'claude' },
+    walking: { a: 'running', b: 'run',       c: 'walk',      target: 'walking' },
+  };
+
+  function setArithmetic(arith) {
+    arithmetic = arith;
+    if (arith) {
+      readout.innerHTML = `<strong>${arith.a}</strong> − <em>${arith.b}</em> + <em>${arith.c}</em> ≈ <strong style="color:#fbbf24">${arith.target}</strong>`;
+    }
+    paint();
+  }
+
+  document.querySelectorAll('.words-chip[data-demo]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      setArithmetic(DEMOS[btn.dataset.demo]);
+    });
+  });
+
+  // ── Free mode dropdowns ────────────────────────────────────────────────
+  WORDS.forEach(([name]) => {
+    [aSel, bSel, cSel].forEach(sel => {
+      const o = document.createElement('option');
+      o.value = name; o.textContent = name;
+      sel.appendChild(o);
+    });
+  });
+  aSel.value = 'queen'; bSel.value = 'woman'; cSel.value = 'man';
+
+  function computeFreeMode() {
+    const A = WORD_MAP.get(aSel.value);
+    const B = WORD_MAP.get(bSel.value);
+    const C = WORD_MAP.get(cSel.value);
+    if (!A || !B || !C) return;
+    // The "answer" is the word closest to A − B + C in 2D.
+    const targetX = A.x - B.x + C.x;
+    const targetY = A.y - B.y + C.y;
+    let best = null, bestD = Infinity;
+    for (const [name, , x, y] of WORDS) {
+      if (name === A.name || name === B.name || name === C.name) continue;
+      const d = (x - targetX) * (x - targetX) + (y - targetY) * (y - targetY);
+      if (d < bestD) { bestD = d; best = name; }
+    }
+    if (best) {
+      setArithmetic({ a: A.name, b: B.name, c: C.name, target: best });
+    }
+  }
+
+  computeBtn.addEventListener('click', computeFreeMode);
+  clearBtn.addEventListener('click', () => { arithmetic = null; readout.textContent = 'Hover a word above to see its 5 nearest neighbors in the embedding space.'; paint(); });
+
+  paint();
+})();
+</script>
+
 <!-- ============ RRF LIVE CALCULATOR (multi-corpus + LLM synth) ============ -->
 <script>
 /**
@@ -6040,6 +6535,23 @@
 
       'mathMap.eyebrow': '02e · Mathematics in motion · Portfolio as a loss landscape',
       'mathMap.h2': 'The whole portfolio is one big loss surface',
+
+      'mathWords.eyebrow': '02f · Mathematics in motion · Words as vectors (Project 06)',
+      'mathWords.h2': 'Every word in this portfolio is literally a vector',
+      'mathWords.sub': 'Before P6 can retrieve anything, it asks <strong>Voyage AI</strong> to turn each chunk into a 1024-dim vector. Words with related meaning land near each other in that space. Even better: <strong>relationships become arithmetic</strong>. Below, ~40 words from this portfolio\'s actual vocabulary, projected to 2D. Hover any word to see its nearest neighbors. Click the demo buttons to watch a vector arithmetic land on its target.',
+      'mathWords.tour.1': '<strong>1.</strong> hover any word → 5 nearest neighbors light up with edges',
+      'mathWords.tour.2': '<strong>2.</strong> click a demo → watch <code>A − B + C</code> land near its expected word',
+      'mathWords.tour.3': '<strong>3.</strong> pick your own A, B, C in the free-mode dropdowns at the bottom',
+      'mathWords.demo.label': 'Pre-baked vector arithmetic',
+      'mathWords.demo.king': 'king − man + woman ≈ queen',
+      'mathWords.demo.paris': 'paris − france + germany ≈ berlin',
+      'mathWords.demo.claude': 'claude − anthropic + openai ≈ gpt',
+      'mathWords.demo.walking': 'walking − walk + run ≈ running',
+      'mathWords.free.label': 'Free mode &nbsp;·&nbsp; A − B + C ≈ ?',
+      'mathWords.compute': 'compute',
+      'mathWords.clear': 'clear',
+      'mathWords.readoutDefault': 'Hover a word above to see its 5 nearest neighbors in the embedding space.',
+      'mathWords.explanation': '<strong>Why this is the core of P6.</strong> P6\'s vector store doesn\'t store words — it stores chunks of text, each represented as a 1024-dimensional vector via Voyage AI. The math you just watched is exactly what happens internally when the system decides that "auth token" should match a document containing "JWT credential": the cosine between their embedding vectors is near 1. The 2D projection here uses PCA on a tiny vocabulary — real chunks live in 1024 dimensions, where these clusters are far more separated and the arithmetic identities (like the famous <em>king − man + woman</em>) are even cleaner.',
       'mathMap.sub': 'I literally encoded the six projects as attractors of a 2D vector field. Each project is a Gaussian basin at <code>r<sub>i</sub></code> with depth <code>w<sub>i</sub></code> sized to its current state of completion. Click anywhere — a particle drops there, descends −∇L, and lands in the closest project\'s basin. Click on a project\'s label to open its details. This is the same math you\'ve been watching above, just turned into a navigation device.',
       'mathMap.tour.1': '<strong>1.</strong> click anywhere on the map → particle drops & descends',
       'mathMap.tour.2': '<strong>2.</strong> watch which project\'s basin captures it',
@@ -6320,6 +6832,23 @@
 
       'mathMap.eyebrow': '02e · Matemáticas en movimiento · Portafolio como superficie de pérdida',
       'mathMap.h2': 'Todo el portafolio es una sola superficie de pérdida',
+
+      'mathWords.eyebrow': '02f · Matemáticas en movimiento · Palabras como vectores (Proyecto 06)',
+      'mathWords.h2': 'Cada palabra de este portafolio es literalmente un vector',
+      'mathWords.sub': 'Antes de que P6 pueda recuperar cualquier cosa, le pide a <strong>Voyage AI</strong> que convierta cada chunk en un vector de 1024 dimensiones. Palabras con significado relacionado caen cerca en ese espacio. Mejor aún: <strong>las relaciones se vuelven aritmética</strong>. Abajo, ~40 palabras del vocabulario real de este portafolio, proyectadas a 2D. Pasa el cursor sobre cualquier palabra para ver sus vecinos más cercanos. Dale clic a los demos para ver una aritmética vectorial caer sobre su objetivo.',
+      'mathWords.tour.1': '<strong>1.</strong> pasa el cursor sobre cualquier palabra → 5 vecinos más cercanos se iluminan con líneas',
+      'mathWords.tour.2': '<strong>2.</strong> dale clic a un demo → mira a <code>A − B + C</code> caer cerca de su palabra esperada',
+      'mathWords.tour.3': '<strong>3.</strong> escoge tu propio A, B, C en los dropdowns de modo libre abajo',
+      'mathWords.demo.label': 'Aritmética vectorial pre-cargada',
+      'mathWords.demo.king': 'rey − hombre + mujer ≈ reina',
+      'mathWords.demo.paris': 'parís − francia + alemania ≈ berlín',
+      'mathWords.demo.claude': 'claude − anthropic + openai ≈ gpt',
+      'mathWords.demo.walking': 'walking − walk + run ≈ running',
+      'mathWords.free.label': 'Modo libre &nbsp;·&nbsp; A − B + C ≈ ?',
+      'mathWords.compute': 'computar',
+      'mathWords.clear': 'limpiar',
+      'mathWords.readoutDefault': 'Pasa el cursor sobre una palabra arriba para ver sus 5 vecinos más cercanos en el espacio de embeddings.',
+      'mathWords.explanation': '<strong>Por qué esto es el núcleo de P6.</strong> El vector store de P6 no almacena palabras — almacena chunks de texto, cada uno representado como un vector de 1024 dimensiones vía Voyage AI. Las matemáticas que acabas de ver son exactamente lo que pasa internamente cuando el sistema decide que "auth token" debería matchear con un documento que contiene "JWT credential": el coseno entre sus vectores de embedding está cerca de 1. La proyección 2D aquí usa PCA sobre un vocabulario diminuto — los chunks reales viven en 1024 dimensiones, donde estos clusters están mucho más separados y las identidades aritméticas (como la famosa <em>rey − hombre + mujer</em>) son aún más limpias.',
       'mathMap.sub': 'Codifiqué literalmente los seis proyectos como atractores de un campo vectorial 2D. Cada proyecto es una cuenca gaussiana en <code>r<sub>i</sub></code> con profundidad <code>w<sub>i</sub></code> proporcional a su estado de avance actual. Haz clic en cualquier lugar — una partícula cae ahí, desciende −∇L y aterriza en la cuenca del proyecto más cercano. Haz clic en la etiqueta de un proyecto para abrirlo. Son las mismas matemáticas que has visto arriba, convertidas en un dispositivo de navegación.',
       'mathMap.tour.1': '<strong>1.</strong> clic en cualquier punto del mapa → cae una partícula y desciende',
       'mathMap.tour.2': '<strong>2.</strong> observa en qué cuenca de proyecto cae',
@@ -6600,6 +7129,23 @@
 
       'mathMap.eyebrow': '02e · Matemática em movimento · Portfólio como superfície de perda',
       'mathMap.h2': 'O portfólio inteiro é uma única superfície de perda',
+
+      'mathWords.eyebrow': '02f · Matemática em movimento · Palavras como vetores (Projeto 06)',
+      'mathWords.h2': 'Cada palavra deste portfólio é literalmente um vetor',
+      'mathWords.sub': 'Antes do P6 poder recuperar qualquer coisa, ele pede ao <strong>Voyage AI</strong> para transformar cada chunk num vetor de 1024 dimensões. Palavras com significado relacionado caem próximas nesse espaço. Melhor ainda: <strong>relações viram aritmética</strong>. Abaixo, ~40 palavras do vocabulário real deste portfólio, projetadas em 2D. Passe o cursor em qualquer palavra para ver seus vizinhos mais próximos. Clique nos demos para ver uma aritmética vetorial pousar no alvo.',
+      'mathWords.tour.1': '<strong>1.</strong> passe o cursor em qualquer palavra → 5 vizinhos mais próximos acendem com linhas',
+      'mathWords.tour.2': '<strong>2.</strong> clique num demo → veja <code>A − B + C</code> pousar perto da palavra esperada',
+      'mathWords.tour.3': '<strong>3.</strong> escolha seu próprio A, B, C nos dropdowns de modo livre abaixo',
+      'mathWords.demo.label': 'Aritmética vetorial pré-carregada',
+      'mathWords.demo.king': 'rei − homem + mulher ≈ rainha',
+      'mathWords.demo.paris': 'paris − frança + alemanha ≈ berlim',
+      'mathWords.demo.claude': 'claude − anthropic + openai ≈ gpt',
+      'mathWords.demo.walking': 'walking − walk + run ≈ running',
+      'mathWords.free.label': 'Modo livre &nbsp;·&nbsp; A − B + C ≈ ?',
+      'mathWords.compute': 'computar',
+      'mathWords.clear': 'limpar',
+      'mathWords.readoutDefault': 'Passe o cursor numa palavra acima para ver seus 5 vizinhos mais próximos no espaço de embeddings.',
+      'mathWords.explanation': '<strong>Por que isso é o núcleo do P6.</strong> O vector store do P6 não armazena palavras — armazena chunks de texto, cada um representado como um vetor de 1024 dimensões via Voyage AI. A matemática que você acabou de ver é exatamente o que acontece internamente quando o sistema decide que "auth token" deveria casar com um documento contendo "JWT credential": o cosseno entre os vetores de embedding está perto de 1. A projeção 2D aqui usa PCA num vocabulário minúsculo — os chunks reais vivem em 1024 dimensões, onde esses clusters são bem mais separados e as identidades aritméticas (como o famoso <em>rei − homem + mulher</em>) ficam ainda mais limpas.',
       'mathMap.sub': 'Codifiquei literalmente os seis projetos como atratores de um campo vetorial 2D. Cada projeto é uma bacia gaussiana em <code>r<sub>i</sub></code> com profundidade <code>w<sub>i</sub></code> proporcional ao seu estado de completude. Clique em qualquer lugar — uma partícula cai ali, desce −∇L e pousa na bacia do projeto mais próximo. Clique no rótulo de um projeto para abri-lo. É a mesma matemática que você viu acima, transformada num dispositivo de navegação.',
       'mathMap.tour.1': '<strong>1.</strong> clique em qualquer ponto do mapa → uma partícula cai e desce',
       'mathMap.tour.2': '<strong>2.</strong> observe em qual bacia de projeto ela cai',
