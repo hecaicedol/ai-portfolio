@@ -2309,6 +2309,160 @@
     color: var(--accent);
   }
 
+  /* ── Concept map ────────────────────────────────────────────────────── */
+  .concepts-card {
+    margin-top: 22px;
+    border: 1px solid rgba(139, 109, 255, 0.2);
+    border-radius: 14px;
+    background: radial-gradient(at 30% 30%, rgba(139, 109, 255, 0.05), transparent 60%),
+                radial-gradient(at 70% 70%, rgba(77, 208, 194, 0.04), transparent 60%),
+                #0a0c12;
+    overflow: hidden;
+  }
+  .concepts-canvas-wrap {
+    position: relative;
+    display: grid;
+    grid-template-columns: 1fr 320px;
+    min-height: 600px;
+  }
+  @media (max-width: 900px) {
+    .concepts-canvas-wrap { grid-template-columns: 1fr; }
+    .concepts-detail { border-left: none !important; border-top: 1px solid rgba(139, 109, 255, 0.18); }
+  }
+  .concepts-canvas-wrap svg {
+    width: 100%;
+    height: auto;
+    display: block;
+    cursor: grab;
+  }
+  .concepts-canvas-wrap svg.is-dragging { cursor: grabbing; }
+  .concepts-canvas-wrap svg .concept-node circle {
+    transition: r 0.2s ease, stroke-width 0.2s ease, filter 0.2s ease;
+  }
+  .concepts-canvas-wrap svg .concept-node:hover { cursor: pointer; }
+  .concepts-canvas-wrap svg .concept-node.is-hover circle,
+  .concepts-canvas-wrap svg .concept-node.is-selected circle {
+    stroke-width: 2.5;
+    filter: drop-shadow(0 0 8px currentColor);
+  }
+  .concepts-canvas-wrap svg .concept-node text {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    fill: var(--text);
+    pointer-events: none;
+    text-anchor: middle;
+    user-select: none;
+  }
+  .concepts-canvas-wrap svg .concept-node.project text {
+    font-weight: 600;
+    font-size: 12px;
+  }
+  .concepts-canvas-wrap svg .concept-edge {
+    fill: none;
+    stroke: url(#edge-default);
+    stroke-width: 1.4;
+    opacity: 0.45;
+    transition: opacity 0.18s, stroke-width 0.18s;
+  }
+  .concepts-canvas-wrap svg .concept-edge.is-highlighted {
+    opacity: 1;
+    stroke-width: 2.4;
+  }
+  .concepts-canvas-wrap svg .concept-edge.is-dim {
+    opacity: 0.08;
+  }
+  .concepts-canvas-wrap svg .concept-spiral {
+    fill: none;
+    stroke: var(--accent-3);
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    filter: drop-shadow(0 0 6px var(--accent-3));
+  }
+
+  .concepts-detail {
+    background: rgba(15, 17, 24, 0.55);
+    border-left: 1px solid rgba(139, 109, 255, 0.18);
+    padding: 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    min-height: 100%;
+  }
+  .concepts-detail-empty {
+    color: var(--text-faint);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    line-height: 1.6;
+    margin: auto 0;
+  }
+  .concepts-detail .concept-name {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--accent-3);
+  }
+  .concepts-detail .concept-title {
+    font-size: 19px;
+    font-weight: 600;
+    color: var(--text);
+    margin: 4px 0 8px;
+  }
+  .concepts-detail .concept-body {
+    font-size: 13.5px;
+    line-height: 1.6;
+    color: var(--text-dim);
+  }
+  .concepts-detail .concept-body strong { color: var(--text); }
+  .concepts-detail .concept-uses {
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid rgba(139, 109, 255, 0.15);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--text-faint);
+  }
+  .concepts-detail .concept-uses-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 8px;
+  }
+  .concepts-detail .concept-use-chip {
+    background: rgba(139, 109, 255, 0.12);
+    color: var(--accent);
+    border: 1px solid rgba(139, 109, 255, 0.3);
+    border-radius: 999px;
+    padding: 4px 10px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    text-transform: none;
+    letter-spacing: 0;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .concepts-detail .concept-use-chip:hover { background: rgba(139, 109, 255, 0.25); }
+  .concepts-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 18px;
+    align-items: center;
+    padding: 12px 16px;
+    border-top: 1px solid rgba(139, 109, 255, 0.12);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11.5px;
+    color: var(--text-dim);
+  }
+  .concepts-legend .dot {
+    display: inline-block;
+    width: 9px; height: 9px;
+    border-radius: 50%;
+    margin-right: 7px;
+    vertical-align: middle;
+  }
+
   /* ── Words-as-vectors (math-in-motion IV) ────────────────────────────── */
   .words-demo {
     margin-top: 24px;
@@ -3412,6 +3566,54 @@
         <div class="map-tooltip-title"></div>
         <div class="map-tooltip-body"></div>
         <div class="map-tooltip-cta">click to open the full project →</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CONCEPT MAP · shared vocabulary across projects ============ -->
+<section id="concepts-map">
+  <div class="container">
+    <div class="section-eyebrow" data-i18n="concepts.eyebrow">02g · The portfolio's shared vocabulary</div>
+    <h2 data-i18n="concepts.h2">Concept map · the techniques that connect the six projects</h2>
+    <p class="section-sub" data-i18n="concepts.sub">
+      Each project answers a different question, but they share a small library of techniques: LangGraph, pgvector, BM25, MCP, RRF, Ragas. Below, that shared vocabulary is rendered as a force-directed graph — projects are the colored disks, concepts the smaller dots, edges show "this project uses this technique." Drag, zoom, click anything. The simulation runs live.
+    </p>
+
+    <div class="math-card-tour">
+      <span class="tour-step" data-i18n="concepts.tour.1"><strong>1.</strong> hover a concept → see which projects it powers</span>
+      <span class="tour-step" data-i18n="concepts.tour.2"><strong>2.</strong> click a concept → its edges erupt into a spiral / loop animation + the side panel explains it</span>
+      <span class="tour-step" data-i18n="concepts.tour.3"><strong>3.</strong> drag any node to perturb the simulation · scroll to zoom · drag empty space to pan</span>
+    </div>
+
+    <div class="concepts-card reveal">
+      <div class="concepts-canvas-wrap">
+        <svg id="concepts-svg" viewBox="0 0 1200 600" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <filter id="concept-glow" x="-50%" y="-50%" width="200%" height="200%">
+              <feGaussianBlur in="SourceGraphic" stdDeviation="2.5"/>
+              <feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>
+            </filter>
+            <linearGradient id="edge-default" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stop-color="#8b6dff" stop-opacity="0.2"/>
+              <stop offset="100%" stop-color="#4dd0c2" stop-opacity="0.4"/>
+            </linearGradient>
+          </defs>
+          <g id="concepts-viewport">
+            <g id="concepts-edges"></g>
+            <g id="concepts-spirals"></g>
+            <g id="concepts-nodes"></g>
+          </g>
+        </svg>
+        <div class="concepts-detail" id="concepts-detail">
+          <div class="concepts-detail-empty" data-i18n="concepts.detailDefault">Click any concept node to see what it does and which projects use it.</div>
+        </div>
+      </div>
+      <div class="concepts-legend">
+        <span><span class="dot" style="background:#8b6dff;box-shadow:0 0 8px #8b6dff"></span><span data-i18n="concepts.legend.project">project</span></span>
+        <span><span class="dot" style="background:#4dd0c2;box-shadow:0 0 8px #4dd0c2"></span><span data-i18n="concepts.legend.concept">technique / pattern</span></span>
+        <span><span class="dot" style="background:rgba(255,255,255,0.5)"></span><span data-i18n="concepts.legend.edge">"this project uses this technique"</span></span>
+        <span style="margin-left:auto;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text-faint)" id="concepts-zoom-readout">zoom 1.00× · scroll to zoom · drag empty space to pan</span>
       </div>
     </div>
   </div>
@@ -6581,6 +6783,17 @@
       'mathMap.eyebrow': '02e · Mathematics in motion · Portfolio as a loss landscape',
       'mathMap.h2': 'The whole portfolio is one big loss surface',
 
+      'concepts.eyebrow': '02g · The portfolio\'s shared vocabulary',
+      'concepts.h2': 'Concept map · the techniques that connect the six projects',
+      'concepts.sub': 'Each project answers a different question, but they share a small library of techniques: LangGraph, pgvector, BM25, MCP, RRF, Ragas. Below, that shared vocabulary is rendered as a force-directed graph — projects are the colored disks, concepts the smaller dots, edges show "this project uses this technique." Drag, zoom, click anything. The simulation runs live.',
+      'concepts.tour.1': '<strong>1.</strong> hover a concept → see which projects it powers',
+      'concepts.tour.2': '<strong>2.</strong> click a concept → its edges erupt into a spiral / loop animation + the side panel explains it',
+      'concepts.tour.3': '<strong>3.</strong> drag any node to perturb the simulation · scroll to zoom · drag empty space to pan',
+      'concepts.detailDefault': 'Click any concept node to see what it does and which projects use it.',
+      'concepts.legend.project': 'project',
+      'concepts.legend.concept': 'technique / pattern',
+      'concepts.legend.edge': '"this project uses this technique"',
+
       'mathWords.eyebrow': '02f · Mathematics in motion · Words as vectors (Project 06)',
       'mathWords.h2': 'Every word in this portfolio is literally a vector',
       'mathWords.sub': 'Before P6 can retrieve anything, it asks <strong>Voyage AI</strong> to turn each chunk into a 1024-dim vector. Words with related meaning land near each other in that space. Even better: <strong>relationships become arithmetic</strong>. Below, ~40 words from this portfolio\'s actual vocabulary, projected to 2D. Hover any word to see its nearest neighbors. Click the demo buttons to watch a vector arithmetic land on its target.',
@@ -6877,6 +7090,17 @@
 
       'mathMap.eyebrow': '02e · Matemáticas en movimiento · Portafolio como superficie de pérdida',
       'mathMap.h2': 'Todo el portafolio es una sola superficie de pérdida',
+
+      'concepts.eyebrow': '02g · El vocabulario compartido del portafolio',
+      'concepts.h2': 'Mapa conceptual · las técnicas que conectan los seis proyectos',
+      'concepts.sub': 'Cada proyecto responde una pregunta distinta, pero comparten una pequeña biblioteca de técnicas: LangGraph, pgvector, BM25, MCP, RRF, Ragas. Abajo, ese vocabulario compartido renderizado como un grafo dirigido por fuerzas — los proyectos son los discos coloreados, los conceptos los puntos más pequeños, las aristas indican "este proyecto usa esta técnica". Arrastra, zoom, dale clic a cualquier cosa. La simulación corre en vivo.',
+      'concepts.tour.1': '<strong>1.</strong> pasa el cursor sobre un concepto → mira qué proyectos lo usan',
+      'concepts.tour.2': '<strong>2.</strong> dale clic a un concepto → sus aristas erupcionan en una animación espiral/loop y el panel lateral lo explica',
+      'concepts.tour.3': '<strong>3.</strong> arrastra cualquier nodo para perturbar la simulación · scroll para zoom · arrastra el espacio vacío para pan',
+      'concepts.detailDefault': 'Dale clic a cualquier nodo de concepto para ver qué hace y qué proyectos lo usan.',
+      'concepts.legend.project': 'proyecto',
+      'concepts.legend.concept': 'técnica / patrón',
+      'concepts.legend.edge': '"este proyecto usa esta técnica"',
 
       'mathWords.eyebrow': '02f · Matemáticas en movimiento · Palabras como vectores (Proyecto 06)',
       'mathWords.h2': 'Cada palabra de este portafolio es literalmente un vector',
@@ -7175,6 +7399,17 @@
       'mathMap.eyebrow': '02e · Matemática em movimento · Portfólio como superfície de perda',
       'mathMap.h2': 'O portfólio inteiro é uma única superfície de perda',
 
+      'concepts.eyebrow': '02g · O vocabulário compartilhado do portfólio',
+      'concepts.h2': 'Mapa conceitual · as técnicas que conectam os seis projetos',
+      'concepts.sub': 'Cada projeto responde a uma pergunta diferente, mas eles compartilham uma pequena biblioteca de técnicas: LangGraph, pgvector, BM25, MCP, RRF, Ragas. Abaixo, esse vocabulário compartilhado renderizado como um grafo dirigido por forças — projetos são os discos coloridos, conceitos são os pontos menores, arestas mostram "este projeto usa esta técnica". Arraste, dê zoom, clique em qualquer coisa. A simulação roda ao vivo.',
+      'concepts.tour.1': '<strong>1.</strong> passe o cursor num conceito → veja quais projetos o usam',
+      'concepts.tour.2': '<strong>2.</strong> clique num conceito → suas arestas erupcionam numa animação em espiral/loop e o painel lateral o explica',
+      'concepts.tour.3': '<strong>3.</strong> arraste qualquer nó para perturbar a simulação · scroll para zoom · arraste o espaço vazio para pan',
+      'concepts.detailDefault': 'Clique em qualquer nó de conceito para ver o que ele faz e quais projetos o usam.',
+      'concepts.legend.project': 'projeto',
+      'concepts.legend.concept': 'técnica / padrão',
+      'concepts.legend.edge': '"este projeto usa esta técnica"',
+
       'mathWords.eyebrow': '02f · Matemática em movimento · Palavras como vetores (Projeto 06)',
       'mathWords.h2': 'Cada palavra deste portfólio é literalmente um vetor',
       'mathWords.sub': 'Antes do P6 poder recuperar qualquer coisa, ele pede ao <strong>Voyage AI</strong> para transformar cada chunk num vetor de 1024 dimensões. Palavras com significado relacionado caem próximas nesse espaço. Melhor ainda: <strong>relações viram aritmética</strong>. Abaixo, ~40 palavras do vocabulário real deste portfólio, projetadas em 2D. Passe o cursor em qualquer palavra para ver seus vizinhos mais próximos. Clique nos demos para ver uma aritmética vetorial pousar no alvo.',
@@ -7376,6 +7611,420 @@
   const browser = (navigator.language || 'en').slice(0, 2);
   const initial = saved || (['en', 'es', 'pt'].indexOf(browser) >= 0 ? browser : 'en');
   applyLang(initial);
+})();
+</script>
+
+<!-- ============ CONCEPT MAP · force-directed shared-vocabulary graph ============ -->
+<script>
+/**
+ * Force-directed concept graph.
+ *
+ * Two node types: PROJECTS (6) and CONCEPTS (techniques/patterns shared
+ * across the projects). An edge means "this project uses this technique."
+ *
+ * Forces per frame:
+ *   • repulsion between every pair (k / d²) — pushes nodes apart
+ *   • spring along every edge (target distance L) — keeps connected nodes together
+ *   • centering pull toward (cx, cy) — keeps the graph from drifting off-screen
+ *   • damping each tick
+ *
+ * Interactions:
+ *   • hover a node → highlight its edges, dim the rest
+ *   • click a concept → opens a side panel with its explanation + clickable
+ *     chips to the projects that use it. Edges from the concept get a
+ *     "spiral / loop" animation (a path that orbits the edge a few times
+ *     and then settles).
+ *   • drag any node → pin it temporarily, perturb the simulation
+ *   • mouse wheel → zoom, drag empty space → pan
+ */
+(function () {
+  const svg = document.getElementById('concepts-svg');
+  if (!svg) return;
+  const viewport = document.getElementById('concepts-viewport');
+  const edgesGroup = document.getElementById('concepts-edges');
+  const nodesGroup = document.getElementById('concepts-nodes');
+  const spiralsGroup = document.getElementById('concepts-spirals');
+  const detailPanel = document.getElementById('concepts-detail');
+  const zoomReadout = document.getElementById('concepts-zoom-readout');
+
+  const W = 1200, H = 600;
+  const CX = W / 2, CY = H / 2;
+
+  // ── Nodes ──────────────────────────────────────────────────────────────
+  const PROJECTS = [
+    { id: 'P1', label: 'P1', color: '#8b6dff', name: 'Self-Healing Pipeline' },
+    { id: 'P2', label: 'P2', color: '#4dd0c2', name: 'Knowledge OS (GraphRAG)' },
+    { id: 'P3', label: 'P3', color: '#ff9e6d', name: 'Research Agent (MemGPT)' },
+    { id: 'P4', label: 'P4', color: '#fbbf24', name: 'Multi-Agent Debate' },
+    { id: 'P5', label: 'P5', color: '#34d399', name: 'Workflow Engine (MCP)' },
+    { id: 'P6', label: 'P6', color: '#ec4899', name: 'Agentic RAG Benchmark' },
+  ];
+
+  // Each concept: id, label, body, and which projects use it
+  const CONCEPTS = [
+    { id: 'langgraph',  label: 'LangGraph',        uses: ['P1', 'P3', 'P5'],
+      body: 'A graph orchestration framework over LangChain. Lets you define agent workflows as inspectable state machines instead of opaque call chains. P1 uses it for the self-healing loop, P3 for the memory controller, P5 for the meta-agent planner.' },
+    { id: 'pgvector',   label: 'pgvector',         uses: ['P1', 'P3', 'P6'],
+      body: 'Postgres extension that turns regular tables into vector stores. The portfolio reuses it for episodic memory (P1), session memory (P3), and as one of the three benchmarked vector DBs (P6).' },
+    { id: 'bm25',       label: 'BM25',             uses: ['P2', 'P6'],
+      body: 'A keyword-ranking algorithm from the IR world that BERT-era ML largely ignored — until everyone realized that vector embeddings miss exact-token matches. P2 and P6 fuse BM25 with vector search via RRF.' },
+    { id: 'constitutional', label: 'Constitutional AI', uses: ['P1'],
+      body: 'Anthropic\'s scoring rubric pattern. Instead of asking "is this answer good?" (unscoreable), you score against explicit principles (completeness, accuracy, etc.). P1\'s critic uses 4 principles, 0–1 each, with a 0.85 pass threshold.' },
+    { id: 'mcp',        label: 'MCP',              uses: ['P5'],
+      body: 'Anthropic\'s Model Context Protocol. Standardizes how LLMs talk to external tools (GitHub, Jira, Slack, etc). P5\'s meta-agent generates DAGs that execute through MCP servers, so any new tool is just another server.' },
+    { id: 'kg',         label: 'Knowledge graph',  uses: ['P2'],
+      body: 'Neo4j + Cypher pattern matching for explicit, multi-hop relationships ("which alumni of X have shipped competitors to Y?"). P2 pairs it with vector search via RRF so structure and semantics both contribute.' },
+    { id: 'memory',     label: 'Memory tiers',     uses: ['P1', 'P3'],
+      body: 'Explicit promotion/eviction across working / episodic / semantic layers. P1 has the simpler episodic layer (errors); P3 has the full MemGPT three-tier with a controller node.' },
+    { id: 'embeddings', label: 'Vector embeddings', uses: ['P1', 'P2', 'P3', 'P6'],
+      body: 'Voyage AI\'s 1024-dim embeddings. The cornerstone of everything that needs "is this similar to that?" — episodic-memory lookup, semantic retrieval, knowledge-graph entity matching, RAG.' },
+    { id: 'rrf',        label: 'RRF fusion',       uses: ['P2', 'P6'],
+      body: 'Reciprocal Rank Fusion. Parameter-free combiner that beats vector-only on every published IR benchmark. Used in P2 (graph + vector) and P6 (BM25 + vector + rerank). See section 02c for the live demo.' },
+    { id: 'rerank',     label: 'Cohere Rerank',    uses: ['P2', 'P6'],
+      body: 'Cross-encoder reranker that reorders the top-K from RRF using a richer model. ~$0.001/query, consistently beats embedding similarity on top-K precision.' },
+    { id: 'ragas',      label: 'Ragas eval',       uses: ['P6'],
+      body: 'Automated RAG evaluation framework — computes faithfulness, answer relevancy, and context recall on every query. P6\'s auto-optimizer watches a rolling window of these scores and tunes parameters when one regresses.' },
+    { id: 'society',    label: 'Society of Mind',  uses: ['P4'],
+      body: 'Minsky\'s pattern of multiple specialized agents producing emergent insight from disagreement. P4 uses 5 roles (Optimist / Skeptic / Financial / Risk / Devil\'s Advocate) over 3 structured rounds.' },
+    { id: 'dag',        label: 'Runtime DAGs',     uses: ['P5'],
+      body: 'Workflows generated at request time instead of hardcoded. P5\'s planner reads the user goal in natural language, retrieves similar past DAGs, generates a new one, then executes via MCP.' },
+    { id: 'streaming',  label: 'SSE / WebSocket',  uses: ['P1', 'P4'],
+      body: 'Server-pushed events. P1 streams pipeline progress over SSE to the Next.js demo; P4 streams each debate agent\'s tokens live over WebSocket so the user can watch the disagreement form.' },
+    { id: 'fastapi',    label: 'FastAPI',          uses: ['P1', 'P2', 'P3', 'P4', 'P5', 'P6'],
+      body: 'Async-first Python web framework with native Pydantic v2 typing on the boundaries. Every project ships its API layer this way — same conventions, same tooling.' },
+  ];
+
+  const NODES = [
+    ...PROJECTS.map(p => ({
+      ...p, type: 'project', radius: 22,
+      x: CX + Math.cos(PROJECTS.indexOf(p) / 6 * Math.PI * 2) * 110,
+      y: CY + Math.sin(PROJECTS.indexOf(p) / 6 * Math.PI * 2) * 110,
+      vx: 0, vy: 0, fx: null, fy: null,
+    })),
+    ...CONCEPTS.map(c => ({
+      ...c, type: 'concept', radius: 13, color: '#4dd0c2',
+      x: CX + (Math.random() - 0.5) * 500,
+      y: CY + (Math.random() - 0.5) * 350,
+      vx: 0, vy: 0, fx: null, fy: null,
+    })),
+  ];
+
+  const NODE_MAP = new Map(NODES.map(n => [n.id, n]));
+
+  const EDGES = [];
+  for (const c of CONCEPTS) {
+    for (const pid of c.uses) {
+      EDGES.push({ source: c.id, target: pid });
+    }
+  }
+
+  // ── Force simulation ───────────────────────────────────────────────────
+  const REPULSION = 1800;
+  const SPRING = 0.018;
+  const SPRING_LEN = 120;
+  const CENTER = 0.005;
+  const DAMP = 0.86;
+
+  function step() {
+    // Repulsion (all pairs)
+    for (let i = 0; i < NODES.length; i++) {
+      for (let j = i + 1; j < NODES.length; j++) {
+        const a = NODES[i], b = NODES[j];
+        const dx = b.x - a.x, dy = b.y - a.y;
+        const d2 = Math.max(dx * dx + dy * dy, 25);
+        const f = REPULSION / d2;
+        const d = Math.sqrt(d2);
+        const fx = (dx / d) * f, fy = (dy / d) * f;
+        if (a.fx === null) { a.vx -= fx; a.vy -= fy; }
+        if (b.fx === null) { b.vx += fx; b.vy += fy; }
+      }
+    }
+    // Spring on edges
+    for (const e of EDGES) {
+      const a = NODE_MAP.get(e.source), b = NODE_MAP.get(e.target);
+      const dx = b.x - a.x, dy = b.y - a.y;
+      const d = Math.sqrt(dx * dx + dy * dy) || 1;
+      const force = (d - SPRING_LEN) * SPRING;
+      const fx = (dx / d) * force, fy = (dy / d) * force;
+      if (a.fx === null) { a.vx += fx; a.vy += fy; }
+      if (b.fx === null) { b.vx -= fx; b.vy -= fy; }
+    }
+    // Centering pull
+    for (const n of NODES) {
+      if (n.fx === null) {
+        n.vx += (CX - n.x) * CENTER;
+        n.vy += (CY - n.y) * CENTER;
+      }
+    }
+    // Apply velocity, damping
+    for (const n of NODES) {
+      if (n.fx !== null) {
+        n.x = n.fx; n.y = n.fy;
+        n.vx = 0; n.vy = 0;
+        continue;
+      }
+      n.vx *= DAMP; n.vy *= DAMP;
+      n.x += n.vx; n.y += n.vy;
+      // Keep inside the visible area with a soft bounce
+      const m = 40;
+      if (n.x < m) { n.x = m; n.vx *= -0.5; }
+      if (n.x > W - m) { n.x = W - m; n.vx *= -0.5; }
+      if (n.y < m) { n.y = m; n.vy *= -0.5; }
+      if (n.y > H - m) { n.y = H - m; n.vy *= -0.5; }
+    }
+  }
+
+  // ── Rendering ──────────────────────────────────────────────────────────
+  let hoveredId = null;
+  let selectedId = null;
+  const edgeEls = new Map();
+  const nodeEls = new Map();
+
+  function buildOnce() {
+    // Edges first so they sit under nodes
+    for (const e of EDGES) {
+      const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+      path.classList.add('concept-edge');
+      path.dataset.s = e.source;
+      path.dataset.t = e.target;
+      edgesGroup.appendChild(path);
+      edgeEls.set(e, path);
+    }
+
+    for (const n of NODES) {
+      const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+      g.classList.add('concept-node', n.type);
+      g.dataset.id = n.id;
+      g.style.color = n.color;
+      g.innerHTML = `
+        <circle cx="0" cy="0" r="${n.radius}" fill="${n.type === 'project' ? n.color : '#0f1118'}" stroke="${n.color}" stroke-width="1.5"/>
+        <text x="0" y="${n.type === 'project' ? 4 : -n.radius - 6}" fill="${n.type === 'project' ? '#0a0c12' : '#e8eaf0'}">${n.label}</text>
+      `;
+      nodesGroup.appendChild(g);
+      nodeEls.set(n.id, g);
+
+      g.addEventListener('mouseenter', () => { hoveredId = n.id; updateHighlights(); });
+      g.addEventListener('mouseleave', () => { hoveredId = null; updateHighlights(); });
+      g.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (n.type === 'concept') select(n.id);
+      });
+      g.addEventListener('mousedown', (e) => startDrag(e, n));
+    }
+  }
+
+  function paint() {
+    for (const e of EDGES) {
+      const a = NODE_MAP.get(e.source), b = NODE_MAP.get(e.target);
+      const path = edgeEls.get(e);
+      path.setAttribute('d', `M ${a.x} ${a.y} L ${b.x} ${b.y}`);
+    }
+    for (const n of NODES) {
+      const g = nodeEls.get(n.id);
+      g.setAttribute('transform', `translate(${n.x}, ${n.y})`);
+    }
+  }
+
+  function relatedIds(id) {
+    const n = NODE_MAP.get(id);
+    if (!n) return new Set();
+    const out = new Set([id]);
+    for (const e of EDGES) {
+      if (e.source === id) out.add(e.target);
+      if (e.target === id) out.add(e.source);
+    }
+    return out;
+  }
+
+  function updateHighlights() {
+    const focus = hoveredId || selectedId;
+    if (!focus) {
+      for (const path of edgeEls.values()) {
+        path.classList.remove('is-highlighted', 'is-dim');
+      }
+      for (const g of nodeEls.values()) g.classList.remove('is-hover', 'is-selected');
+      return;
+    }
+    const rel = relatedIds(focus);
+    for (const e of EDGES) {
+      const isRel = e.source === focus || e.target === focus;
+      const path = edgeEls.get(e);
+      path.classList.toggle('is-highlighted', isRel);
+      path.classList.toggle('is-dim', !isRel);
+    }
+    for (const n of NODES) {
+      const g = nodeEls.get(n.id);
+      g.classList.toggle('is-hover', n.id === hoveredId);
+      g.classList.toggle('is-selected', n.id === selectedId);
+      // Dim unrelated nodes a bit
+      g.style.opacity = rel.has(n.id) ? '1' : '0.35';
+    }
+  }
+
+  // ── Click selection: side panel + spiral animation ────────────────────
+  function select(id) {
+    selectedId = id;
+    updateHighlights();
+    const c = CONCEPTS.find(x => x.id === id);
+    if (!c) return;
+    renderDetail(c);
+    runSpirals(id);
+  }
+
+  function renderDetail(c) {
+    const usesProjects = c.uses.map(pid => {
+      const p = PROJECTS.find(x => x.id === pid);
+      return `<button class="concept-use-chip" data-pid="${pid}" style="color:${p.color};border-color:${p.color}44">${p.id} · ${p.name}</button>`;
+    }).join('');
+    detailPanel.innerHTML = `
+      <div class="concept-name">CONCEPT</div>
+      <div class="concept-title">${c.label}</div>
+      <div class="concept-body">${c.body}</div>
+      <div class="concept-uses">Used by</div>
+      <div class="concept-uses-list">${usesProjects}</div>
+    `;
+    detailPanel.querySelectorAll('.concept-use-chip').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const pid = btn.dataset.pid;
+        // Map P1..P6 → "01".."06" for openModal
+        const modalId = '0' + pid.replace('P', '');
+        if (typeof openModal === 'function') openModal(modalId);
+      });
+    });
+  }
+
+  function runSpirals(conceptId) {
+    spiralsGroup.innerHTML = '';
+    const c = NODE_MAP.get(conceptId);
+    if (!c) return;
+    for (const pid of CONCEPTS.find(x => x.id === conceptId).uses) {
+      const p = NODE_MAP.get(pid);
+      if (!p) continue;
+      // Build a path that spirals from the concept to the project
+      const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+      path.classList.add('concept-spiral');
+      const dx = p.x - c.x, dy = p.y - c.y;
+      const len = Math.sqrt(dx * dx + dy * dy);
+      const ux = dx / len, uy = dy / len;
+      const nx = -uy, ny = ux; // perpendicular
+      const turns = 3;
+      const samples = 60;
+      let d = `M ${c.x} ${c.y}`;
+      for (let i = 1; i <= samples; i++) {
+        const t = i / samples;
+        const t2 = t * t * (3 - 2 * t); // ease in-out
+        const along = c.x + ux * len * t2 + ', ' + (c.y + uy * len * t2);
+        // Spiral amplitude tapers from 18 → 0
+        const amp = 18 * (1 - t);
+        const theta = t * turns * Math.PI * 2;
+        const px = c.x + ux * len * t2 + nx * Math.sin(theta) * amp;
+        const py = c.y + uy * len * t2 + ny * Math.sin(theta) * amp;
+        d += ` L ${px.toFixed(2)} ${py.toFixed(2)}`;
+      }
+      path.setAttribute('d', d);
+      // animate stroke-dashoffset for a "draw in" effect
+      const length = 800; // rough upper bound
+      path.style.strokeDasharray = length;
+      path.style.strokeDashoffset = length;
+      path.style.transition = 'stroke-dashoffset 1.2s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.6s';
+      spiralsGroup.appendChild(path);
+      // trigger animation on next frame
+      requestAnimationFrame(() => {
+        path.style.strokeDashoffset = '0';
+      });
+      // fade out after settles
+      setTimeout(() => { path.style.opacity = '0.25'; }, 1500);
+      setTimeout(() => { path.remove(); }, 3500);
+    }
+  }
+
+  // Click empty space to clear selection
+  svg.addEventListener('click', (e) => {
+    if (e.target === svg || e.target === viewport || e.target.tagName === 'rect') {
+      selectedId = null;
+      spiralsGroup.innerHTML = '';
+      detailPanel.innerHTML = `<div class="concepts-detail-empty">Click any concept node to see what it does and which projects use it.</div>`;
+      updateHighlights();
+    }
+  });
+
+  // ── Drag ───────────────────────────────────────────────────────────────
+  let dragging = null;
+  function svgPoint(evt) {
+    const pt = svg.createSVGPoint();
+    pt.x = evt.clientX;
+    pt.y = evt.clientY;
+    return pt.matrixTransform(svg.getScreenCTM().inverse());
+  }
+  function startDrag(evt, n) {
+    evt.preventDefault();
+    dragging = n;
+    n.fx = n.x; n.fy = n.y;
+    svg.classList.add('is-dragging');
+  }
+  document.addEventListener('mousemove', (evt) => {
+    if (!dragging) return;
+    const p = svgPoint(evt);
+    // map screen point into the viewport coordinate system (account for pan/zoom)
+    const x = (p.x - panX) / zoom;
+    const y = (p.y - panY) / zoom;
+    dragging.fx = x; dragging.fy = y;
+  });
+  document.addEventListener('mouseup', () => {
+    if (!dragging) return;
+    dragging.fx = null; dragging.fy = null;
+    dragging = null;
+    svg.classList.remove('is-dragging');
+  });
+
+  // ── Pan + zoom ─────────────────────────────────────────────────────────
+  let zoom = 1;
+  let panX = 0, panY = 0;
+  let panning = false;
+  let panStart = { x: 0, y: 0, px: 0, py: 0 };
+
+  function applyTransform() {
+    viewport.setAttribute('transform', `translate(${panX}, ${panY}) scale(${zoom})`);
+    if (zoomReadout) zoomReadout.textContent = `zoom ${zoom.toFixed(2)}× · scroll to zoom · drag empty space to pan`;
+  }
+  svg.addEventListener('wheel', (e) => {
+    e.preventDefault();
+    const delta = e.deltaY > 0 ? 0.92 : 1.08;
+    const newZoom = Math.max(0.4, Math.min(3, zoom * delta));
+    // Zoom toward the cursor
+    const p = svgPoint(e);
+    panX = p.x - (p.x - panX) * (newZoom / zoom);
+    panY = p.y - (p.y - panY) * (newZoom / zoom);
+    zoom = newZoom;
+    applyTransform();
+  }, { passive: false });
+
+  svg.addEventListener('mousedown', (e) => {
+    if (e.target === svg || e.target === viewport) {
+      panning = true;
+      panStart = { x: e.clientX, y: e.clientY, px: panX, py: panY };
+      svg.classList.add('is-dragging');
+    }
+  });
+  document.addEventListener('mousemove', (e) => {
+    if (!panning) return;
+    panX = panStart.px + (e.clientX - panStart.x) * (W / svg.getBoundingClientRect().width);
+    panY = panStart.py + (e.clientY - panStart.y) * (W / svg.getBoundingClientRect().width);
+    applyTransform();
+  });
+  document.addEventListener('mouseup', () => {
+    if (panning) { panning = false; svg.classList.remove('is-dragging'); }
+  });
+
+  // ── Frame loop ─────────────────────────────────────────────────────────
+  buildOnce();
+  applyTransform();
+  function loop() {
+    step();
+    paint();
+    requestAnimationFrame(loop);
+  }
+  requestAnimationFrame(loop);
 })();
 </script>
 
