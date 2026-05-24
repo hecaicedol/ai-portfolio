@@ -32,7 +32,7 @@ Each project answers a question recruiters in EU/USA actually ask: *"Can this pe
 | 3 | [Autonomous Research Agent (MemGPT)](./03-research-agent) | Three-tier memory architecture (working/episodic/semantic) | Scaffolded |
 | 4 | [Multi-Agent Debate System](./04-debate-system) | Society of Mind pattern, 5 specialized agents, consensus measurement | Scaffolded |
 | 5 | [Adaptive Workflow Engine (MCP)](./05-workflow-engine) | Meta-agent generates DAGs at runtime, executes via MCP servers | Scaffolded |
-| 6 | [Agentic RAG with Vector DB Benchmark](./06-agentic-rag) | Contextual retrieval + hybrid search + auto-optimizer agent | Scaffolded |
+| 6 | [Agentic RAG with Vector DB Benchmark](./06-agentic-rag) | Contextual retrieval + hybrid search + auto-optimizer agent | **Core retrieval verified** · 23 tests |
 
 > **Why one flagship + five scaffolds?** A recruiter scanning the portfolio in 90 seconds needs (a) proof of end-to-end execution and (b) breadth of architectural thinking. Project 1 proves execution; the other five prove I can design six different non-trivial systems without copy-pasting the same template.
 

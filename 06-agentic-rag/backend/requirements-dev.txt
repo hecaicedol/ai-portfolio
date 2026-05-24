@@ -1,0 +1,15 @@
+# Minimal dev requirements for the in-memory retrieval slice (Slice 1).
+# Avoids the heavy production-only deps (qdrant-client, pinecone-client,
+# llama-index, unstructured, ragas) until those layers are implemented.
+
+pydantic==2.9.2
+pydantic-settings==2.6.0
+numpy>=1.26,<3
+rank-bm25==0.2.2
+
+# Used by QueryRewriter for the LLM message types — no API key required.
+langchain-core==0.3.15
+
+# Testing
+pytest==8.3.3
+pytest-asyncio==0.24.0

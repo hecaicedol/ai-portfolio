@@ -2725,7 +2725,7 @@
     <article class="project-detail reveal">
       <div class="project-head">
         <span class="project-num">PROJECT 06 / 06</span>
-        <span class="badge badge-scaffold">◐ Scaffolded</span>
+        <span class="badge badge-live">● Core retrieval verified · 23 tests</span>
       </div>
       <h3>Agentic RAG · Vector DB Benchmark</h3>
       <p class="project-subtitle">pgvector vs Qdrant vs Pinecone · Contextual retrieval · RRF hybrid · Auto-optimizer agent</p>
@@ -2751,6 +2751,14 @@
               <li>I measure things instead of citing them.</li>
               <li>I know that "use a vector DB" is the easy half of RAG — the chunking, fusion, and eval loop is the hard half.</li>
               <li>I treat optimization as a closed loop, not a one-off tuning session.</li>
+            </ul>
+          </div>
+          <div class="project-block">
+            <h5>Implementation status</h5>
+            <ul>
+              <li><strong>Implemented + tested:</strong> in-memory vector store (cosine sim + BM25), query rewriter (model-injectable, 3-attempt JSON retry), Reciprocal Rank Fusion hybrid search. <strong>23 pytest tests passing in ~0.4 s</strong> with no Docker, no API keys.</li>
+              <li><strong>Scaffolded:</strong> production stores (pgvector / Qdrant / Pinecone), Anthropic contextual enricher, Cohere rerank, Ragas evaluator, the auto-optimizer's tuning loop. Interfaces and per-metric remediation map already written.</li>
+              <li>Slice 1 lets the rest of the retrieval pipeline be wired against a real backend without touching the search algorithm again.</li>
             </ul>
           </div>
         </div>

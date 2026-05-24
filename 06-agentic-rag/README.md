@@ -2,10 +2,10 @@
 
 > Production-grade RAG that indexes the same corpus into pgvector, Qdrant, and Pinecone in parallel — runs hybrid retrieval with contextual enrichment and reranking — and includes an evaluator agent that auto-tunes parameters when quality drops.
 
-[![Status](https://img.shields.io/badge/status-scaffolded-blueviolet)]()
+[![Status](https://img.shields.io/badge/status-core%20retrieval%20verified-7c5cff)]()
 [![Python](https://img.shields.io/badge/python-3.12-blue)]()
+[![Tests](https://img.shields.io/badge/tests-23%20passing-success)]()
 [![Pattern](https://img.shields.io/badge/pattern-agentic--rag-7c5cff)]()
-[![Eval](https://img.shields.io/badge/eval-Ragas-4dd0c2)]()
 
 ---
 
@@ -127,7 +127,40 @@ This project answers all three with a single system: identical corpus indexed in
 
 ---
 
+## Implementation status
+
+| Component | State | Notes |
+|---|---|---|
+| `stores.in_memory_store.InMemoryVectorStore` | ✅ implemented | cosine similarity + BM25 keyword search + metadata filters |
+| `retrieval.query_rewriter.QueryRewriter` | ✅ implemented | model-injectable (testable without API key), 3-attempt JSON-retry, markdown-fence stripping |
+| `retrieval.hybrid_search.HybridSearcher` | ✅ implemented | Reciprocal Rank Fusion across vector + keyword hits, per phrasing |
+| **23 pytest tests** | ✅ passing | runs in ~0.4 s with no Docker / no API keys |
+| `stores.pgvector_store.PgVectorStore` | 🟡 scaffold | needs Postgres |
+| `stores.qdrant_store.QdrantStore` | 🟡 scaffold | needs Qdrant |
+| `stores.pinecone_store.PineconeStore` | 🟡 scaffold | needs Pinecone API key |
+| `ingestion.contextual_enricher.ContextualEnricher` | 🟡 scaffold | needs Claude API key |
+| `retrieval.reranker.CohereReranker` | 🟡 scaffold | needs Cohere API key |
+| `evaluation.evaluator_agent.EvaluatorAgent` | 🟡 scaffold | needs Ragas + Claude |
+| `evaluation.optimizer_agent.OptimizerAgent` | 🟡 partial | per-metric remediation map written, tuning loop pending |
+| `evaluation.metrics_store.MetricsStore` | 🟡 scaffold | needs Postgres |
+| `frontend/` | 🟡 scaffold | recharts benchmark dashboard |
+
 ## Quick start
+
+### A. No services, no API keys — verify the core retrieval works
+
+```bash
+cd backend
+python -m venv .venv
+.venv/Scripts/activate            # PowerShell: .venv\Scripts\Activate.ps1
+pip install -r requirements-dev.txt
+pytest tests                      # 23 tests, ~0.4 seconds
+```
+
+This exercises the full Slice 1 surface: in-memory vector store, BM25
+keyword search, RRF hybrid fusion, query rewriter with retry.
+
+### B. Full stack — production stores + LLM (pending)
 
 ```bash
 cp .env.example .env
