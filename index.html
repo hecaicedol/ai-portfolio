@@ -2177,6 +2177,110 @@
     .grad-descent-overlay { flex-direction: column; }
   }
 
+  /* Tour-strip used on top of each math card to onboard the reader */
+  .math-card-tour {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin: 18px 0 6px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--text-dim);
+  }
+  .math-card-tour .tour-step {
+    background: rgba(139, 109, 255, 0.08);
+    border: 1px solid rgba(139, 109, 255, 0.2);
+    border-radius: 999px;
+    padding: 6px 12px;
+  }
+  .math-card-tour .tour-step strong {
+    color: var(--accent);
+    margin-right: 4px;
+  }
+
+  /* Control bar below the gradient-descent canvas */
+  .grad-controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 18px;
+    padding: 14px 18px 4px;
+    border-top: 1px solid rgba(139, 109, 255, 0.12);
+    align-items: center;
+  }
+  .grad-control-group {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .grad-control-group > label {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--text-faint);
+  }
+  .grad-control-group select,
+  .grad-control-group input[type="range"] {
+    background: rgba(15, 17, 24, 0.7);
+    color: var(--text);
+    border: 1px solid rgba(139, 109, 255, 0.22);
+    border-radius: 6px;
+    padding: 6px 10px;
+    font-family: inherit;
+    font-size: 12px;
+    outline: none;
+    accent-color: var(--accent);
+  }
+  .grad-control-group select:focus,
+  .grad-control-group input[type="range"]:focus {
+    border-color: var(--accent);
+  }
+  .grad-slider-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .grad-slider-row input[type="range"] { width: 140px; padding: 0; }
+  .grad-slider-row span {
+    color: var(--accent);
+    font-size: 12px;
+    min-width: 38px;
+  }
+  .grad-control-buttons {
+    flex-direction: row;
+    gap: 8px;
+    align-items: center;
+    margin-left: auto;
+  }
+  .grad-btn {
+    background: rgba(139, 109, 255, 0.08);
+    color: var(--text);
+    border: 1px solid rgba(139, 109, 255, 0.25);
+    border-radius: 6px;
+    padding: 7px 12px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    cursor: pointer;
+    transition: background 0.15s, border-color 0.15s, color 0.15s;
+  }
+  .grad-btn:hover {
+    background: rgba(139, 109, 255, 0.2);
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+  .grad-btn.is-paused { background: rgba(255, 158, 109, 0.15); border-color: rgba(255, 158, 109, 0.5); color: #ff9e6d; }
+  .grad-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--text-dim);
+    cursor: pointer;
+    padding-left: 6px;
+  }
+  .grad-toggle input { accent-color: var(--accent); }
+
   /* ── RRF live calculator (math-in-motion II) ────────────────────────── */
   .rrf-demo {
     margin-top: 28px;
@@ -2438,47 +2542,55 @@
     body.cursor-fx textarea { cursor: none; }
 
     .glow-cursor-dot,
-    .glow-cursor-ring {
+    .glow-cursor-aura {
       position: fixed;
       top: 0; left: 0;
       pointer-events: none;
       z-index: 9999;
       will-change: transform;
+      mix-blend-mode: screen;
     }
     .glow-cursor-dot {
-      width: 6px; height: 6px;
-      margin: -3px 0 0 -3px;
+      width: 8px; height: 8px;
+      margin: -4px 0 0 -4px;
       border-radius: 50%;
-      background: #d8c8ff;
-      mix-blend-mode: screen;
+      background: #ffffff;
       box-shadow:
-        0 0 10px rgba(139, 109, 255, 0.95),
-        0 0 24px rgba(139, 109, 255, 0.55),
-        0 0 48px rgba(139, 109, 255, 0.25);
+        0 0 6px rgba(216, 200, 255, 1),
+        0 0 14px rgba(139, 109, 255, 0.85),
+        0 0 28px rgba(139, 109, 255, 0.45);
+      transition: transform 0.08s ease-out;
     }
-    .glow-cursor-ring {
-      width: 30px; height: 30px;
-      margin: -15px 0 0 -15px;
+    .glow-cursor-aura {
+      width: 80px; height: 80px;
+      margin: -40px 0 0 -40px;
       border-radius: 50%;
-      border: 1.5px solid rgba(139, 109, 255, 0.55);
-      box-shadow: 0 0 18px rgba(139, 109, 255, 0.2);
+      background: radial-gradient(circle,
+        rgba(139, 109, 255, 0.38) 0%,
+        rgba(139, 109, 255, 0.18) 35%,
+        rgba(139, 109, 255, 0) 70%);
+      filter: blur(1px);
       transition:
-        width 0.18s ease,
-        height 0.18s ease,
-        margin 0.18s ease,
-        border-color 0.18s ease,
-        background 0.18s ease;
+        width 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+        height 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+        margin 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+        background 0.25s ease;
     }
-    .glow-cursor-ring.is-over-interactive {
-      width: 44px; height: 44px;
-      margin: -22px 0 0 -22px;
-      border-color: rgba(77, 208, 194, 0.8);
-      background: rgba(139, 109, 255, 0.07);
+    .glow-cursor-aura.is-over-interactive {
+      width: 110px; height: 110px;
+      margin: -55px 0 0 -55px;
+      background: radial-gradient(circle,
+        rgba(77, 208, 194, 0.42) 0%,
+        rgba(77, 208, 194, 0.18) 40%,
+        rgba(77, 208, 194, 0) 75%);
     }
-    .glow-cursor-ring.is-pressing {
-      width: 18px; height: 18px;
-      margin: -9px 0 0 -9px;
-      border-color: rgba(255, 158, 109, 0.95);
+    .glow-cursor-aura.is-pressing {
+      width: 56px; height: 56px;
+      margin: -28px 0 0 -28px;
+      background: radial-gradient(circle,
+        rgba(255, 158, 109, 0.55) 0%,
+        rgba(255, 158, 109, 0.2) 40%,
+        rgba(255, 158, 109, 0) 75%);
     }
     .cursor-canvas {
       position: fixed;
@@ -2701,24 +2813,55 @@
 <!-- ============ MATH IN MOTION ============ -->
 <section id="math-in-motion">
   <div class="container">
-    <div class="section-eyebrow">02b · Mathematics in motion</div>
+    <div class="section-eyebrow">02b · Mathematics in motion · Gradient descent</div>
     <h2>The same gradient that trains every model in this portfolio</h2>
-    <p class="section-sub">Click anywhere on the loss surface. Watch a weight vector descend toward the minimum — the literal mechanism that updates every parameter inside Claude, GPT, and the LangGraph agents you'll see below.</p>
+    <p class="section-sub">Every parameter inside Claude, GPT, and the LangGraph agents you'll see below was set by repeating one rule: <code style="color:var(--accent-3);font-family:'JetBrains Mono',monospace">w<sub>t+1</sub> = w<sub>t</sub> − η · ∇L(w<sub>t</sub>)</code>. Below, that rule runs live. The colored landscape is a 2-parameter loss surface; the small arrows are its gradient field (pointing toward steeper loss); the bright dot is a weight vector descending. <strong style="color:var(--text)">Try every control</strong> — they tell different optimization stories.</p>
+
+    <div class="math-card-tour">
+      <span class="tour-step"><strong>1.</strong> click anywhere on the surface to drop the weight there</span>
+      <span class="tour-step"><strong>2.</strong> change the loss function to see SGD's behavior on different landscapes</span>
+      <span class="tour-step"><strong>3.</strong> raise η too high → watch divergence; too low → glacial convergence</span>
+    </div>
 
     <div class="grad-descent-wrap reveal">
       <canvas id="grad-canvas" width="1000" height="500" aria-label="Interactive gradient-descent visualization"></canvas>
       <div class="grad-descent-overlay">
-        <div class="hint">click <kbd>anywhere</kbd> to re-spawn · drag the <kbd>slider</kbd> below for learning rate</div>
+        <div class="hint" id="grad-fn-hint">paraboloid · narrow valley</div>
         <div class="readout" id="grad-readout">step <strong>—</strong> · loss <strong>—</strong> · ‖∇L‖ <strong>—</strong></div>
       </div>
+      <div class="grad-controls">
+        <div class="grad-control-group">
+          <label>loss function</label>
+          <select id="grad-fn">
+            <option value="paraboloid" selected>Paraboloid (narrow valley)</option>
+            <option value="bowl">Symmetric bowl</option>
+            <option value="saddle">Saddle point</option>
+            <option value="rosenbrock">Rosenbrock banana</option>
+            <option value="doublewell">Twin valleys (non-convex)</option>
+          </select>
+        </div>
+        <div class="grad-control-group">
+          <label>learning rate η</label>
+          <div class="grad-slider-row">
+            <input id="grad-lr" type="range" min="2" max="35" value="14" step="1">
+            <span id="grad-lr-readout">0.14</span>
+          </div>
+        </div>
+        <div class="grad-control-group grad-control-buttons">
+          <button id="grad-pause" class="grad-btn">⏸ pause</button>
+          <button id="grad-reset" class="grad-btn">↺ reset</button>
+          <button id="grad-random" class="grad-btn">🎲 random start</button>
+          <label class="grad-toggle">
+            <input type="checkbox" id="grad-field" checked> vector field
+          </label>
+        </div>
+      </div>
       <div class="grad-descent-legend">
-        <span><span class="legend-dot" style="background:#8b6dff;color:#8b6dff"></span>weight vector w<sub>t</sub></span>
-        <span><span class="legend-dot" style="background:rgba(139,109,255,0.45);color:rgba(139,109,255,0.45)"></span>trajectory · 60 most recent steps</span>
+        <span><span class="legend-dot" style="background:#ffffff;color:#fff;box-shadow:0 0 8px #fff"></span>weight vector w<sub>t</sub></span>
+        <span><span class="legend-dot" style="background:rgba(139,109,255,0.55);color:rgba(139,109,255,0.55)"></span>trajectory (last 60 steps)</span>
+        <span><span class="legend-dot" style="background:#ff9e6d;color:#ff9e6d"></span>negative gradient (direction the weight moves)</span>
         <span><span class="legend-dot" style="background:#4dd0c2;color:#4dd0c2"></span>optimum (loss = 0)</span>
-        <span style="margin-left:auto;display:inline-flex;align-items:center;gap:10px">
-          learning rate η: <input id="grad-lr" type="range" min="2" max="35" value="14" step="1" style="width:120px;accent-color:#8b6dff">
-          <span id="grad-lr-readout" style="font-family:'JetBrains Mono',monospace;color:var(--accent)">0.14</span>
-        </span>
+        <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text-faint);margin-left:auto" id="grad-fn-desc">narrow valley · curvature mismatch causes SGD to zigzag in the steep direction.</span>
       </div>
     </div>
   </div>
@@ -2732,6 +2875,12 @@
     <p class="section-sub">
       P6 fuses keyword (BM25) and vector (cosine) retrieval with <strong>Reciprocal Rank Fusion</strong>. The rule has one constant <code>k = 60</code> (recommended in the original 2009 paper and never seriously challenged), no training, no parameters to tune. It consistently beats both signals alone on every published benchmark — and on every internal one I've run. Reorder either list and watch the fused output update live.
     </p>
+
+    <div class="math-card-tour">
+      <span class="tour-step"><strong>1.</strong> use the ↑/↓ buttons to reorder items in either list</span>
+      <span class="tour-step"><strong>2.</strong> watch the rightmost column re-sort live with the new RRF score</span>
+      <span class="tour-step"><strong>3.</strong> hover any row to see how the same doc lines up across the three views</span>
+    </div>
 
     <div class="rrf-demo reveal">
       <div class="rrf-formula">
@@ -2772,6 +2921,12 @@
     <p class="section-sub">
       Every LLM you've heard of — Claude, GPT, Llama — is built on stacked layers of one tiny operation: scaled dot-product attention. Below, hover any output token to see which input tokens contributed to it and by how much. The line weight is literally the attention weight after softmax. Click <kbd>shuffle</kbd> for a fresh pattern.
     </p>
+
+    <div class="math-card-tour">
+      <span class="tour-step"><strong>1.</strong> hover any token in the bottom (output) row</span>
+      <span class="tour-step"><strong>2.</strong> the cubic-bezier edges show that token's attention distribution after softmax</span>
+      <span class="tour-step"><strong>3.</strong> press <kbd>↻ Shuffle attention</kbd> to regenerate the weights from a fresh kernel</span>
+    </div>
 
     <div class="attention-demo reveal">
       <div class="attention-formula">
@@ -4922,48 +5077,113 @@
 <!-- ============ GRADIENT DESCENT VISUALIZATION ============ -->
 <script>
 /**
- * Interactive gradient-descent on an anisotropic quadratic loss surface.
- *   L(w) = 0.5 * (a * x^2 + b * y^2)        with a < b → narrow valley
- *   ∇L  = (a * x, b * y)
- * Animates the canonical SGD update  w_{t+1} = w_t - η · ∇L(w_t)
- * Click anywhere to re-spawn the weight; drag the slider to change η.
+ * Interactive gradient descent with a 5-function registry.
+ *
+ *   w_{t+1} = w_t − η · ∇L(w_t)
+ *
+ * The whole landscape, the gradient vector field overlay, the optimum
+ * marker, and the gradient arrow at the weight are recomputed live whenever
+ * the user changes the loss function. Surfaces and contour parameters are
+ * cached per-function so switching is instant after the first render.
  */
 (function () {
   const canvas = document.getElementById('grad-canvas');
   if (!canvas) return;
   const ctx = canvas.getContext('2d');
-  const lrSlider = document.getElementById('grad-lr');
-  const lrReadout = document.getElementById('grad-lr-readout');
-  const readout = document.getElementById('grad-readout');
+  const lrSlider     = document.getElementById('grad-lr');
+  const lrReadout    = document.getElementById('grad-lr-readout');
+  const readout      = document.getElementById('grad-readout');
+  const fnSelect     = document.getElementById('grad-fn');
+  const fnHint       = document.getElementById('grad-fn-hint');
+  const fnDesc       = document.getElementById('grad-fn-desc');
+  const pauseBtn     = document.getElementById('grad-pause');
+  const resetBtn     = document.getElementById('grad-reset');
+  const randomBtn    = document.getElementById('grad-random');
+  const fieldToggle  = document.getElementById('grad-field');
 
-  // Loss surface coefficients — narrow valley along x → curvature mismatch
-  const A = 1.0;
-  const B = 8.0;
-  // World-space half-extent; map world [-X, X] × [-Y, Y] → canvas.
-  const WORLD_X = 5;
-  const WORLD_Y = 2.6;
-
-  // Internal device-pixel resolution (we paint to the canvas's native size; CSS scales it down).
   const W = canvas.width;
   const H = canvas.height;
 
-  const toScreen = (wx, wy) => ({
-    x: (wx + WORLD_X) / (2 * WORLD_X) * W,
-    y: (wy + WORLD_Y) / (2 * WORLD_Y) * H,
-  });
-  const toWorld = (sx, sy) => ({
-    x: (sx / W) * (2 * WORLD_X) - WORLD_X,
-    y: (sy / H) * (2 * WORLD_Y) - WORLD_Y,
-  });
+  // ── Loss-function registry ─────────────────────────────────────────────
+  const FUNCTIONS = {
+    paraboloid: {
+      label: 'paraboloid · narrow valley',
+      desc: 'L = ½(x² + 8y²) — anisotropic quadratic. Curvature mismatch makes SGD zigzag in y.',
+      worldX: 5, worldY: 2.6,
+      start: { x: -3.6, y: -2.0 },
+      optima: [{ x: 0, y: 0 }],
+      loss: (x, y) => 0.5 * (x * x + 8 * y * y),
+      grad: (x, y) => ({ gx: x, gy: 8 * y }),
+    },
+    bowl: {
+      label: 'symmetric bowl · trivial convex',
+      desc: 'L = ½(x² + y²) — isotropic. Gradient always points straight at the minimum.',
+      worldX: 5, worldY: 2.6,
+      start: { x: -3.5, y: -1.8 },
+      optima: [{ x: 0, y: 0 }],
+      loss: (x, y) => 0.5 * (x * x + y * y),
+      grad: (x, y) => ({ gx: x, gy: y }),
+    },
+    saddle: {
+      label: 'saddle point · non-convex',
+      desc: 'L = ½(x² − y²) + 2 — saddle at origin. Vanilla SGD escapes slowly; momentum or noise helps.',
+      worldX: 5, worldY: 2.6,
+      start: { x: -3.5, y: 0.02 },
+      optima: [], // unbounded below in y
+      loss: (x, y) => 0.5 * (x * x - y * y) + 4,
+      grad: (x, y) => ({ gx: x, gy: -y }),
+    },
+    rosenbrock: {
+      label: 'Rosenbrock banana · classic test',
+      desc: 'L = (1−x)² + 10(y−x²)² — curved valley. Even tuned SGD takes hundreds of steps to converge.',
+      worldX: 2.5, worldY: 1.6,
+      start: { x: -1.5, y: 1.0 },
+      optima: [{ x: 1, y: 1 }],
+      loss: (x, y) => 0.5 * ((1 - x) * (1 - x) + 10 * (y - x * x) * (y - x * x)),
+      grad: (x, y) => ({
+        gx: -(1 - x) + 10 * (y - x * x) * (-2 * x),
+        gy: 10 * (y - x * x),
+      }),
+    },
+    doublewell: {
+      label: 'twin valleys · non-convex',
+      desc: 'L = ⅛(x²−4)² + ½y² — two minima at x = ±2. Final basin depends entirely on initialization.',
+      worldX: 3.6, worldY: 1.8,
+      start: { x: -0.05, y: 1.2 },
+      optima: [{ x: -2, y: 0 }, { x: 2, y: 0 }],
+      loss: (x, y) => (1 / 8) * (x * x - 4) * (x * x - 4) + 0.5 * y * y,
+      grad: (x, y) => ({
+        gx: 0.5 * x * (x * x - 4),
+        gy: y,
+      }),
+    },
+  };
 
-  const lossAt = (x, y) => 0.5 * (A * x * x + B * y * y);
-  const gradAt = (x, y) => ({ gx: A * x, gy: B * y });
+  let current = 'paraboloid';
+  function F() { return FUNCTIONS[current]; }
 
-  // State
-  let weight = { x: -3.6, y: -2.0 };
+  // ── World ↔ screen ─────────────────────────────────────────────────────
+  function toScreen(wx, wy) {
+    const f = F();
+    return {
+      x: (wx + f.worldX) / (2 * f.worldX) * W,
+      y: (wy + f.worldY) / (2 * f.worldY) * H,
+    };
+  }
+  function toWorld(sx, sy) {
+    const f = F();
+    return {
+      x: (sx / W) * (2 * f.worldX) - f.worldX,
+      y: (sy / H) * (2 * f.worldY) - f.worldY,
+    };
+  }
+
+  // ── State ──────────────────────────────────────────────────────────────
+  let weight = { ...F().start };
   let trail = [];
-  let lr = parseInt(lrSlider.value, 10) / 100;
   let step = 0;
+  let lr = parseInt(lrSlider.value, 10) / 100;
+  let paused = false;
 
   function resetWeight(wx, wy) {
     weight = { x: wx, y: wy };
@@ -4971,20 +5191,32 @@
     step = 0;
   }
 
-  // Pre-render the loss surface (it's static unless coefficients change)
-  let surfaceImage = null;
-  function renderSurface() {
+  // ── Per-function surface cache ────────────────────────────────────────
+  const surfaceCache = new Map();
+  function getSurface() {
+    if (surfaceCache.has(current)) return surfaceCache.get(current);
+    const f = F();
     const img = ctx.createImageData(W, H);
-    const maxL = lossAt(WORLD_X, WORLD_Y);
+    // Find max loss in the visible window for color normalization
+    let maxL = 0;
+    const samples = 32;
+    for (let i = 0; i <= samples; i++) {
+      for (let j = 0; j <= samples; j++) {
+        const x = -f.worldX + (2 * f.worldX) * (i / samples);
+        const y = -f.worldY + (2 * f.worldY) * (j / samples);
+        maxL = Math.max(maxL, f.loss(x, y));
+      }
+    }
     for (let py = 0; py < H; py++) {
       for (let px = 0; px < W; px++) {
         const { x, y } = toWorld(px, py);
-        const L = lossAt(x, y);
-        const t = Math.min(1, L / maxL);
-        // Plasma-like gradient: deep purple → magenta → orange → near-white at high loss
-        const r = Math.floor(20 + t * 200);
-        const g = Math.floor(10 + t * 60);
-        const b = Math.floor(40 + (1 - t) * 100);
+        const L = f.loss(x, y);
+        // Normalize with sqrt for better dynamic range
+        const t = Math.min(1, Math.max(0, Math.sqrt(Math.max(L, 0) / maxL)));
+        // Plasma-ish: deep purple → magenta → orange
+        const r = Math.floor(20 + t * 210);
+        const g = Math.floor(10 + t * 65);
+        const b = Math.floor(45 + (1 - t) * 95);
         const idx = (py * W + px) * 4;
         img.data[idx + 0] = r;
         img.data[idx + 1] = g;
@@ -4992,101 +5224,125 @@
         img.data[idx + 3] = 255;
       }
     }
-    surfaceImage = img;
+    surfaceCache.set(current, img);
+    return img;
   }
-  renderSurface();
 
-  function drawContours() {
+  // ── Drawing helpers ───────────────────────────────────────────────────
+  function drawVectorField() {
+    if (!fieldToggle || !fieldToggle.checked) return;
+    const f = F();
+    const cols = 22;
+    const rows = 11;
+    const dx = (2 * f.worldX) / cols;
+    const dy = (2 * f.worldY) / rows;
     ctx.save();
-    ctx.strokeStyle = 'rgba(255, 255, 255, 0.07)';
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.16)';
     ctx.lineWidth = 1;
-    const levels = [0.5, 1.5, 3, 6, 10, 16, 24, 36];
-    for (const L of levels) {
-      ctx.beginPath();
-      // Ellipse: a x² + b y² = 2L → semi-axes √(2L/a), √(2L/b)
-      const ax = Math.sqrt(2 * L / A);
-      const ay = Math.sqrt(2 * L / B);
-      const c = toScreen(0, 0);
-      const sx = ax / WORLD_X * (W / 2);
-      const sy = ay / WORLD_Y * (H / 2);
-      ctx.ellipse(c.x, c.y, sx, sy, 0, 0, Math.PI * 2);
-      ctx.stroke();
+    for (let i = 0; i <= cols; i++) {
+      for (let j = 0; j <= rows; j++) {
+        const wx = -f.worldX + i * dx;
+        const wy = -f.worldY + j * dy;
+        const { gx, gy } = f.grad(wx, wy);
+        const mag = Math.sqrt(gx * gx + gy * gy);
+        if (mag < 1e-3) continue;
+        // Normalize to a fixed visual length, then scale by tanh(mag) for nicer dynamics
+        const visualLen = 14 * Math.tanh(mag * 0.3);
+        const ux = -gx / mag * visualLen;
+        const uy = -gy / mag * visualLen;
+        const s = toScreen(wx, wy);
+        ctx.beginPath();
+        ctx.moveTo(s.x, s.y);
+        ctx.lineTo(s.x + ux, s.y + uy);
+        ctx.stroke();
+        // Arrowhead
+        const ang = Math.atan2(uy, ux);
+        ctx.beginPath();
+        ctx.moveTo(s.x + ux, s.y + uy);
+        ctx.lineTo(s.x + ux - 4 * Math.cos(ang - 0.5), s.y + uy - 4 * Math.sin(ang - 0.5));
+        ctx.lineTo(s.x + ux - 4 * Math.cos(ang + 0.5), s.y + uy - 4 * Math.sin(ang + 0.5));
+        ctx.closePath();
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.22)';
+        ctx.fill();
+      }
     }
     ctx.restore();
   }
 
-  function drawMinimum() {
-    const { x, y } = toScreen(0, 0);
-    ctx.save();
-    ctx.fillStyle = '#4dd0c2';
-    ctx.shadowColor = '#4dd0c2';
-    ctx.shadowBlur = 18;
-    ctx.beginPath();
-    ctx.arc(x, y, 6, 0, Math.PI * 2);
-    ctx.fill();
-    // crosshair
-    ctx.strokeStyle = 'rgba(77, 208, 194, 0.4)';
-    ctx.lineWidth = 1;
-    ctx.beginPath(); ctx.moveTo(x - 14, y); ctx.lineTo(x + 14, y); ctx.stroke();
-    ctx.beginPath(); ctx.moveTo(x, y - 14); ctx.lineTo(x, y + 14); ctx.stroke();
-    ctx.restore();
+  function drawOptima() {
+    const opts = F().optima;
+    for (const o of opts) {
+      const s = toScreen(o.x, o.y);
+      ctx.save();
+      ctx.fillStyle = '#4dd0c2';
+      ctx.shadowColor = '#4dd0c2';
+      ctx.shadowBlur = 18;
+      ctx.beginPath();
+      ctx.arc(s.x, s.y, 6, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.strokeStyle = 'rgba(77, 208, 194, 0.4)';
+      ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.moveTo(s.x - 14, s.y); ctx.lineTo(s.x + 14, s.y); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(s.x, s.y - 14); ctx.lineTo(s.x, s.y + 14); ctx.stroke();
+      ctx.restore();
+    }
   }
 
   function drawTrail() {
     for (let i = 0; i < trail.length; i++) {
       const p = trail[i];
       const alpha = (i + 1) / trail.length;
-      const { x, y } = toScreen(p.x, p.y);
+      const s = toScreen(p.x, p.y);
       ctx.beginPath();
-      ctx.arc(x, y, 2.5, 0, Math.PI * 2);
-      ctx.fillStyle = `rgba(139, 109, 255, ${alpha * 0.55})`;
+      ctx.arc(s.x, s.y, 2.6, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(139, 109, 255, ${alpha * 0.7})`;
       ctx.fill();
     }
   }
 
   function drawWeight() {
-    const { x, y } = toScreen(weight.x, weight.y);
+    const s = toScreen(weight.x, weight.y);
     ctx.save();
-    ctx.fillStyle = '#c4b5fd';
+    ctx.fillStyle = '#ffffff';
     ctx.shadowColor = '#8b6dff';
-    ctx.shadowBlur = 22;
+    ctx.shadowBlur = 24;
     ctx.beginPath();
-    ctx.arc(x, y, 7, 0, Math.PI * 2);
+    ctx.arc(s.x, s.y, 7, 0, Math.PI * 2);
     ctx.fill();
-    // outer ring
-    ctx.strokeStyle = 'rgba(139, 109, 255, 0.7)';
+    ctx.strokeStyle = 'rgba(139, 109, 255, 0.85)';
     ctx.lineWidth = 1.5;
     ctx.beginPath();
-    ctx.arc(x, y, 12, 0, Math.PI * 2);
+    ctx.arc(s.x, s.y, 12, 0, Math.PI * 2);
     ctx.stroke();
     ctx.restore();
   }
 
   function drawGradientArrow() {
-    const { gx, gy } = gradAt(weight.x, weight.y);
+    const { gx, gy } = F().grad(weight.x, weight.y);
     const mag = Math.sqrt(gx * gx + gy * gy);
     if (mag < 0.05) return;
-    // Length scaled for visibility
-    const k = 0.18;
-    const tip = { x: weight.x - gx * k, y: weight.y - gy * k };
+    const f = F();
+    // Visual length proportional to gradient magnitude in *screen* units
+    const screenLen = 35 * Math.tanh(mag * 0.15);
+    const ux = -gx / mag;
+    const uy = -gy / mag;
     const s1 = toScreen(weight.x, weight.y);
-    const s2 = toScreen(tip.x, tip.y);
+    const s2 = { x: s1.x + ux * screenLen, y: s1.y + uy * screenLen };
     ctx.save();
     ctx.strokeStyle = '#ff9e6d';
     ctx.shadowColor = '#ff9e6d';
-    ctx.shadowBlur = 8;
-    ctx.lineWidth = 2;
+    ctx.shadowBlur = 10;
+    ctx.lineWidth = 2.2;
     ctx.beginPath();
     ctx.moveTo(s1.x, s1.y);
     ctx.lineTo(s2.x, s2.y);
     ctx.stroke();
-    // arrowhead
     const ang = Math.atan2(s2.y - s1.y, s2.x - s1.x);
-    const ah = 6;
+    const ah = 7;
     ctx.beginPath();
     ctx.moveTo(s2.x, s2.y);
-    ctx.lineTo(s2.x - ah * Math.cos(ang - 0.4), s2.y - ah * Math.sin(ang - 0.4));
-    ctx.lineTo(s2.x - ah * Math.cos(ang + 0.4), s2.y - ah * Math.sin(ang + 0.4));
+    ctx.lineTo(s2.x - ah * Math.cos(ang - 0.5), s2.y - ah * Math.sin(ang - 0.5));
+    ctx.lineTo(s2.x - ah * Math.cos(ang + 0.5), s2.y - ah * Math.sin(ang + 0.5));
     ctx.closePath();
     ctx.fillStyle = '#ff9e6d';
     ctx.fill();
@@ -5094,38 +5350,45 @@
   }
 
   function updateReadout() {
-    const L = lossAt(weight.x, weight.y);
-    const { gx, gy } = gradAt(weight.x, weight.y);
+    const L = F().loss(weight.x, weight.y);
+    const { gx, gy } = F().grad(weight.x, weight.y);
     const gNorm = Math.sqrt(gx * gx + gy * gy);
-    readout.innerHTML = `step <strong>${step}</strong> · loss <strong>${L.toFixed(3)}</strong> · ‖∇L‖ <strong>${gNorm.toFixed(3)}</strong>`;
+    readout.innerHTML = `step <strong>${step}</strong> · loss <strong>${L.toFixed(3)}</strong> · ‖∇L‖ <strong>${gNorm.toFixed(3)}</strong>${paused ? ' · <span style="color:#ff9e6d">paused</span>' : ''}`;
   }
 
+  // ── Frame loop ─────────────────────────────────────────────────────────
   function tick() {
-    // Paint surface
-    ctx.putImageData(surfaceImage, 0, 0);
-    drawContours();
-    drawMinimum();
+    ctx.putImageData(getSurface(), 0, 0);
+    drawVectorField();
+    drawOptima();
     drawTrail();
     drawGradientArrow();
     drawWeight();
     updateReadout();
 
-    // SGD step
-    const { gx, gy } = gradAt(weight.x, weight.y);
-    const gNorm = Math.sqrt(gx * gx + gy * gy);
-    if (gNorm > 0.005) {
-      weight.x -= lr * gx;
-      weight.y -= lr * gy;
-      trail.push({ x: weight.x, y: weight.y });
-      if (trail.length > 60) trail.shift();
-      step += 1;
+    if (!paused) {
+      const { gx, gy } = F().grad(weight.x, weight.y);
+      const gNorm = Math.sqrt(gx * gx + gy * gy);
+      if (gNorm > 0.005) {
+        // Clip the step in case of very steep gradients (Rosenbrock can blow up)
+        const stepLen = Math.min(0.5, lr * gNorm);
+        weight.x -= (gx / Math.max(gNorm, 1e-9)) * stepLen;
+        weight.y -= (gy / Math.max(gNorm, 1e-9)) * stepLen;
+        // Stay inside the world (otherwise the dot vanishes)
+        const f = F();
+        weight.x = Math.max(-f.worldX, Math.min(f.worldX, weight.x));
+        weight.y = Math.max(-f.worldY, Math.min(f.worldY, weight.y));
+        trail.push({ x: weight.x, y: weight.y });
+        if (trail.length > 60) trail.shift();
+        step += 1;
+      }
     }
 
     requestAnimationFrame(tick);
   }
   requestAnimationFrame(tick);
 
-  // ── Interaction ──────────────────────────────────────────────────────
+  // ── Interaction ───────────────────────────────────────────────────────
   function getCanvasCoords(evt) {
     const rect = canvas.getBoundingClientRect();
     const sx = (evt.clientX - rect.left) * (W / rect.width);
@@ -5135,15 +5398,39 @@
 
   canvas.addEventListener('click', (e) => {
     const { x, y } = getCanvasCoords(e);
-    // Clamp inside world
-    const cx = Math.max(-WORLD_X, Math.min(WORLD_X, x));
-    const cy = Math.max(-WORLD_Y, Math.min(WORLD_Y, y));
+    const f = F();
+    const cx = Math.max(-f.worldX, Math.min(f.worldX, x));
+    const cy = Math.max(-f.worldY, Math.min(f.worldY, y));
     resetWeight(cx, cy);
   });
 
   lrSlider.addEventListener('input', () => {
     lr = parseInt(lrSlider.value, 10) / 100;
     lrReadout.textContent = lr.toFixed(2);
+  });
+
+  fnSelect.addEventListener('change', () => {
+    current = fnSelect.value;
+    fnHint.textContent = F().label;
+    fnDesc.textContent = F().desc;
+    resetWeight(F().start.x, F().start.y);
+  });
+
+  pauseBtn.addEventListener('click', () => {
+    paused = !paused;
+    pauseBtn.textContent = paused ? '▶ resume' : '⏸ pause';
+    pauseBtn.classList.toggle('is-paused', paused);
+  });
+
+  resetBtn.addEventListener('click', () => {
+    resetWeight(F().start.x, F().start.y);
+  });
+
+  randomBtn.addEventListener('click', () => {
+    const f = F();
+    const rx = (Math.random() * 2 - 1) * f.worldX * 0.85;
+    const ry = (Math.random() * 2 - 1) * f.worldY * 0.85;
+    resetWeight(rx, ry);
   });
 })();
 </script>
@@ -5156,7 +5443,7 @@
  *
  * Layers:
  *   - .glow-cursor-dot   : small bright dot following the mouse 1:1
- *   - .glow-cursor-ring  : larger ring with eased follow + state classes
+ *   - .glow-cursor-aura  : soft radial-gradient halo with eased follow
  *   - .cursor-canvas     : full-viewport <canvas> for particle bursts
  */
 (function () {
@@ -5168,9 +5455,9 @@
   dot.className = 'glow-cursor-dot';
   document.body.appendChild(dot);
 
-  const ring = document.createElement('div');
-  ring.className = 'glow-cursor-ring';
-  document.body.appendChild(ring);
+  const aura = document.createElement('div');
+  aura.className = 'glow-cursor-aura';
+  document.body.appendChild(aura);
 
   const canvas = document.createElement('canvas');
   canvas.className = 'cursor-canvas';
@@ -5190,8 +5477,8 @@
 
   let mx = window.innerWidth / 2;
   let my = window.innerHeight / 2;
-  let rx = mx;
-  let ry = my;
+  let ax = mx;
+  let ay = my;
   let visible = false;
 
   function setPos(x, y) {
@@ -5199,7 +5486,7 @@
     dot.style.transform = `translate(${x}px, ${y}px)`;
     if (!visible) {
       dot.style.opacity = '1';
-      ring.style.opacity = '1';
+      aura.style.opacity = '1';
       visible = true;
     }
   }
@@ -5208,7 +5495,7 @@
 
   document.addEventListener('mouseleave', () => {
     dot.style.opacity = '0';
-    ring.style.opacity = '0';
+    aura.style.opacity = '0';
     visible = false;
   });
 
@@ -5216,18 +5503,18 @@
   const interactiveSelector = 'a, button, [role="button"], .project-open-btn, input, select, textarea, summary, [data-project]';
   document.addEventListener('mouseover', (e) => {
     if (e.target.closest && e.target.closest(interactiveSelector)) {
-      ring.classList.add('is-over-interactive');
+      aura.classList.add('is-over-interactive');
     }
   });
   document.addEventListener('mouseout', (e) => {
     if (e.target.closest && e.target.closest(interactiveSelector)) {
-      ring.classList.remove('is-over-interactive');
+      aura.classList.remove('is-over-interactive');
     }
   });
 
   // Press feedback
-  document.addEventListener('mousedown', () => ring.classList.add('is-pressing'));
-  document.addEventListener('mouseup', () => ring.classList.remove('is-pressing'));
+  document.addEventListener('mousedown', () => aura.classList.add('is-pressing'));
+  document.addEventListener('mouseup', () => aura.classList.remove('is-pressing'));
 
   // ── Particle burst on click ────────────────────────────────────────────
   const particles = [];
@@ -5256,10 +5543,10 @@
 
   // ── Animation loop ─────────────────────────────────────────────────────
   function tick() {
-    // Eased ring follow
-    rx += (mx - rx) * 0.22;
-    ry += (my - ry) * 0.22;
-    ring.style.transform = `translate(${rx}px, ${ry}px)`;
+    // Eased aura follow (slightly softer than the dot's instant track)
+    ax += (mx - ax) * 0.18;
+    ay += (my - ay) * 0.18;
+    aura.style.transform = `translate(${ax}px, ${ay}px)`;
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
