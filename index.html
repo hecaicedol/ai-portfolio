@@ -2465,6 +2465,46 @@
   .map-readout strong { color: var(--accent); }
   .map-readout em { font-style: normal; color: var(--accent-3); }
 
+  .map-tooltip {
+    position: absolute;
+    max-width: 340px;
+    background: rgba(10, 12, 18, 0.96);
+    border: 1px solid rgba(139, 109, 255, 0.5);
+    border-radius: 10px;
+    padding: 12px 14px;
+    box-shadow: 0 8px 28px rgba(0, 0, 0, 0.5), 0 0 30px rgba(139, 109, 255, 0.25);
+    pointer-events: none;
+    z-index: 50;
+    opacity: 0;
+    transform: translateY(4px) scale(0.96);
+    transition: opacity 0.18s ease, transform 0.18s ease;
+    backdrop-filter: blur(6px);
+  }
+  .map-tooltip.is-open {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  .map-tooltip-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--accent);
+    margin-bottom: 6px;
+    font-weight: 600;
+  }
+  .map-tooltip-body {
+    font-size: 12.5px;
+    line-height: 1.55;
+    color: var(--text);
+  }
+  .map-tooltip-cta {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10.5px;
+    color: var(--accent-3);
+    margin-top: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
   /* ── RRF live calculator (math-in-motion II) ────────────────────────── */
   .rrf-demo {
     margin-top: 28px;
@@ -3367,7 +3407,12 @@
         <span class="map-formula">L(x, y) = −Σ<sub>i</sub> &thinsp;w<sub>i</sub>&thinsp;·&thinsp;exp(−‖r − r<sub>i</sub>‖² / 2σ²) &nbsp;·&nbsp; σ = 1.1</span>
         <button id="map-clear" class="grad-btn">↺ clear particles</button>
       </div>
-      <div class="map-readout" id="map-readout">click anywhere to drop a particle — it will descend the gradient toward the closest project</div>
+      <div class="map-readout" id="map-readout" data-i18n="mathMap.readoutDefault">click anywhere to drop a particle — it will descend the gradient toward the closest project</div>
+      <div class="map-tooltip" id="map-tooltip" role="tooltip">
+        <div class="map-tooltip-title"></div>
+        <div class="map-tooltip-body"></div>
+        <div class="map-tooltip-cta">click to open the full project →</div>
+      </div>
     </div>
   </div>
 </section>
@@ -7359,12 +7404,18 @@
   const SIGMA2 = SIGMA * SIGMA;
 
   const PROJECTS = [
-    { id: '01', x: -2.8, y:  1.05, color: '#8b6dff', label: 'P1 · Self-Healing Pipeline', status: 'live · 22 tests', w: 1.55 },
-    { id: '02', x:  0.0, y:  1.55, color: '#4dd0c2', label: 'P2 · Knowledge OS (GraphRAG)', status: 'scaffolded', w: 1.00 },
-    { id: '03', x:  2.8, y:  1.05, color: '#ff9e6d', label: 'P3 · Research Agent (MemGPT)', status: 'scaffolded', w: 1.00 },
-    { id: '04', x: -2.8, y: -1.05, color: '#fbbf24', label: 'P4 · Multi-Agent Debate', status: 'scaffolded', w: 1.00 },
-    { id: '05', x:  0.0, y: -1.55, color: '#34d399', label: 'P5 · Workflow Engine (MCP)', status: 'scaffolded', w: 1.00 },
-    { id: '06', x:  2.8, y: -1.05, color: '#ec4899', label: 'P6 · Agentic RAG benchmark', status: 'core verified · 43 tests', w: 1.45 },
+    { id: '01', x: -2.8, y:  1.05, color: '#8b6dff', label: 'P1 · Self-Healing Pipeline', status: 'live · 22 tests', w: 1.55,
+      info: 'LangGraph orchestrates 5 nodes (extract → validate → critique → reflect → synthesize). A Constitutional AI critic scores extractions across 4 principles; failures trigger a bounded reflection loop, and every error is persisted to pgvector episodic memory so the critic gets stricter over time. 22 pytest tests, 15-doc eval corpus, Next.js demo frontend.' },
+    { id: '02', x:  0.0, y:  1.55, color: '#4dd0c2', label: 'P2 · Knowledge OS (GraphRAG)', status: 'scaffolded', w: 1.00,
+      info: 'Hybrid retrieval that joins a Neo4j knowledge graph with vector search. Cypher pattern matching for multi-hop questions, RRF fusion for unstructured chunks, plus a background staleness agent that flags entities whose embeddings drift from their source documents.' },
+    { id: '03', x:  2.8, y:  1.05, color: '#ff9e6d', label: 'P3 · Research Agent (MemGPT)', status: 'scaffolded', w: 1.00,
+      info: 'Autonomous research agent with three-tier memory (working / episodic / semantic). A memory controller node handles promotion and eviction explicitly. Pulls from arXiv API + Tavily + scraped web, synthesizes ReportLab PDFs.' },
+    { id: '04', x: -2.8, y: -1.05, color: '#fbbf24', label: 'P4 · Multi-Agent Debate', status: 'scaffolded', w: 1.00,
+      info: 'Society-of-Mind pattern with 5 specialized agents (Optimist, Skeptic, Financial, Risk, Devil\'s Advocate) running a structured 3-round protocol. Per-round cosine similarity of positions measures convergence. WebSocket streaming surfaces each agent\'s reasoning live.' },
+    { id: '05', x:  0.0, y: -1.55, color: '#34d399', label: 'P5 · Workflow Engine (MCP)', status: 'scaffolded', w: 1.00,
+      info: 'Meta-agent generates execution DAGs at runtime from natural-language goals, then executes them via Model Context Protocol servers (GitHub, Jira, Slack, GDrive). Human-in-the-loop approvals on critical nodes; the planner retrieves similar past DAGs before generating.' },
+    { id: '06', x:  2.8, y: -1.05, color: '#ec4899', label: 'P6 · Agentic RAG benchmark', status: 'core verified · 43 tests', w: 1.45,
+      info: 'Three vector stores (pgvector / Qdrant / Pinecone) indexed with the same Anthropic-contextual-retrieval chunks, queried with RRF hybrid of BM25 + vector + Cohere rerank. An auto-optimizer agent watches Ragas scores and tunes parameters when faithfulness drops. 43 tests, in-memory backends for cheap dev.' },
   ];
 
   const toScreen = (wx, wy) => ({
@@ -7455,7 +7506,13 @@
     ctx.restore();
   }
 
-  function drawAttractors(hoveredId) {
+  // Returns the screen position of the info icon for a project.
+  function infoIconPos(p) {
+    const s = toScreen(p.x, p.y);
+    return { x: s.x + 12, y: s.y + 48, r: 11 };
+  }
+
+  function drawAttractors(hoveredId, hoveredInfoId) {
     for (const p of PROJECTS) {
       const s = toScreen(p.x, p.y);
       const isHovered = p.id === hoveredId;
@@ -7483,6 +7540,28 @@
       ctx.font = "10px 'JetBrains Mono', monospace";
       ctx.fillStyle = 'rgba(255, 255, 255, 0.6)';
       ctx.fillText(p.status, s.x, s.y + 28);
+      ctx.restore();
+
+      // Floating info icon (orbiting the attractor)
+      const ip = infoIconPos(p);
+      const isInfoHovered = p.id === hoveredInfoId;
+      ctx.save();
+      ctx.fillStyle = isInfoHovered ? p.color : 'rgba(10, 12, 18, 0.92)';
+      ctx.strokeStyle = p.color;
+      ctx.lineWidth = 1.4;
+      ctx.shadowColor = p.color;
+      ctx.shadowBlur = isInfoHovered ? 18 : 6;
+      ctx.beginPath();
+      ctx.arc(ip.x, ip.y, ip.r, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.stroke();
+      ctx.shadowBlur = 0;
+      ctx.font = "italic 600 13px 'Georgia', serif";
+      ctx.fillStyle = isInfoHovered ? '#0a0c12' : p.color;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText('i', ip.x, ip.y + 1);
+      ctx.textBaseline = 'alphabetic';
       ctx.restore();
     }
   }
@@ -7526,11 +7605,15 @@
   }
 
   let hoveredId = null;
+  let hoveredInfoId = null;
+  const tooltipEl = document.getElementById('map-tooltip');
+  const tooltipTitle = tooltipEl ? tooltipEl.querySelector('.map-tooltip-title') : null;
+  const tooltipBody = tooltipEl ? tooltipEl.querySelector('.map-tooltip-body') : null;
 
   function frame() {
     ctx.putImageData(surface, 0, 0);
     drawVectorField();
-    drawAttractors(hoveredId);
+    drawAttractors(hoveredId, hoveredInfoId);
 
     for (let i = particles.length - 1; i >= 0; i--) {
       const p = particles[i];
@@ -7570,7 +7653,45 @@
   }
 
   canvas.addEventListener('mousemove', (e) => {
-    const { world } = getCanvasCoords(e);
+    const rect = canvas.getBoundingClientRect();
+    const sx = (e.clientX - rect.left) * (W / rect.width);
+    const sy = (e.clientY - rect.top) * (H / rect.height);
+
+    // First check if the cursor is over a "ⓘ" info icon (highest priority)
+    let infoHit = null;
+    for (const p of PROJECTS) {
+      const ip = infoIconPos(p);
+      const ddx = sx - ip.x, ddy = sy - ip.y;
+      if (ddx * ddx + ddy * ddy < (ip.r + 2) * (ip.r + 2)) {
+        infoHit = p;
+        break;
+      }
+    }
+
+    if (infoHit) {
+      hoveredInfoId = infoHit.id;
+      hoveredId = null;
+      canvas.style.cursor = 'pointer';
+      if (tooltipEl) {
+        tooltipTitle.textContent = infoHit.label;
+        tooltipBody.textContent = infoHit.info;
+        // Anchor tooltip relative to wrap, not viewport
+        const wrapRect = canvas.parentElement.getBoundingClientRect();
+        const ipScreen = { x: e.clientX, y: e.clientY };
+        let tx = ipScreen.x - wrapRect.left + 14;
+        let ty = ipScreen.y - wrapRect.top + 14;
+        // Don't run off the right edge
+        if (tx + 360 > wrapRect.width) tx = ipScreen.x - wrapRect.left - 360;
+        if (ty + 200 > wrapRect.height) ty = ipScreen.y - wrapRect.top - 200;
+        tooltipEl.style.left = tx + 'px';
+        tooltipEl.style.top = ty + 'px';
+        tooltipEl.classList.add('is-open');
+      }
+      return;
+    }
+
+    // Otherwise check if over an attractor
+    const world = toWorld(sx, sy);
     let nearest = null, bestD = Infinity;
     for (const p of PROJECTS) {
       const dx = world.x - p.x, dy = world.y - p.y;
@@ -7578,10 +7699,31 @@
       if (d < bestD) { bestD = d; nearest = p; }
     }
     hoveredId = bestD < 0.4 ? nearest.id : null;
+    hoveredInfoId = null;
     canvas.style.cursor = hoveredId ? 'pointer' : 'crosshair';
+    if (tooltipEl) tooltipEl.classList.remove('is-open');
+  });
+
+  canvas.addEventListener('mouseleave', () => {
+    hoveredInfoId = null;
+    if (tooltipEl) tooltipEl.classList.remove('is-open');
   });
 
   canvas.addEventListener('click', (e) => {
+    const rect = canvas.getBoundingClientRect();
+    const sx = (e.clientX - rect.left) * (W / rect.width);
+    const sy = (e.clientY - rect.top) * (H / rect.height);
+
+    // Click on info icon → open modal
+    for (const p of PROJECTS) {
+      const ip = infoIconPos(p);
+      const ddx = sx - ip.x, ddy = sy - ip.y;
+      if (ddx * ddx + ddy * ddy < (ip.r + 2) * (ip.r + 2)) {
+        if (typeof openModal === 'function') openModal(p.id);
+        return;
+      }
+    }
+
     const { world } = getCanvasCoords(e);
     let nearest = null, bestD = Infinity;
     for (const p of PROJECTS) {
