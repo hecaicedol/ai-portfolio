@@ -3384,44 +3384,44 @@
         <div>
           <div class="project-block">
             <h5 data-i18n="proj.theProblem">The problem</h5>
-            <p>In production, the most expensive AI failures are <strong>silent</strong>: a confident wrong invoice number propagates, a downstream system trusts the bad output, the wrong vendor gets paid. Standard pipelines treat the LLM as a black box — if it returns <em>something</em>, the pipeline returns "success."</p>
-            <p>This pipeline does the opposite: every output is adversarially evaluated by a critic, failures trigger a bounded reflection loop, and the system maintains an episodic memory of past errors that the critic consults before every evaluation.</p>
+            <p data-i18n="p1.problem.1">In production, the most expensive AI failures are <strong>silent</strong>: a confident wrong invoice number propagates, a downstream system trusts the bad output, the wrong vendor gets paid. Standard pipelines treat the LLM as a black box — if it returns <em>something</em>, the pipeline returns "success."</p>
+            <p data-i18n="p1.problem.2">This pipeline does the opposite: every output is adversarially evaluated by a critic, failures trigger a bounded reflection loop, and the system maintains an episodic memory of past errors that the critic consults before every evaluation.</p>
           </div>
 
           <div class="project-block">
             <h5 data-i18n="proj.decisions">Key architectural decisions</h5>
             <table class="decisions">
-              <tr><td>LangGraph orchestration</td><td>Explicit, inspectable state transitions over LangChain's opaque chains</td></tr>
-              <tr><td>Constitutional AI critic</td><td>Per-principle scoring (4 axes) yields actionable feedback; single-rubric LLM-as-judge does not</td></tr>
-              <tr><td>Episodic memory in pgvector</td><td>Domain-specific failure patterns surface across thousands of past runs — reuses the Postgres we already need</td></tr>
-              <tr><td>Hard cap: 3 reflection iterations</td><td>Unbounded retry loops are a top-3 incident class for agents. Cap forces loud failures over silent token spend</td></tr>
+              <tr><td data-i18n="p1.dec.1a">LangGraph orchestration</td><td data-i18n="p1.dec.1b">Explicit, inspectable state transitions over LangChain's opaque chains</td></tr>
+              <tr><td data-i18n="p1.dec.2a">Constitutional AI critic</td><td data-i18n="p1.dec.2b">Per-principle scoring (4 axes) yields actionable feedback; single-rubric LLM-as-judge does not</td></tr>
+              <tr><td data-i18n="p1.dec.3a">Episodic memory in pgvector</td><td data-i18n="p1.dec.3b">Domain-specific failure patterns surface across thousands of past runs — reuses the Postgres we already need</td></tr>
+              <tr><td data-i18n="p1.dec.4a">Hard cap: 3 reflection iterations</td><td data-i18n="p1.dec.4b">Unbounded retry loops are a top-3 incident class for agents. Cap forces loud failures over silent token spend</td></tr>
             </table>
           </div>
 
           <div class="project-block">
             <h5 data-i18n="proj.lessons">Lessons learned the hard way</h5>
             <ul>
-              <li>Critics need <strong>memory, not just rubrics</strong>. A stateless critic re-makes the same mistake every run.</li>
-              <li>Constitutional principles must be <strong>evaluable, not philosophical</strong>. "Output should be helpful" is unscorable; "every required field has a non-empty value matching its type" is.</li>
-              <li>Reflection loops without hard caps burned $40 of credits on a single malformed PDF in week one.</li>
+              <li data-i18n="p1.lesson.1">Critics need <strong>memory, not just rubrics</strong>. A stateless critic re-makes the same mistake every run.</li>
+              <li data-i18n="p1.lesson.2">Constitutional principles must be <strong>evaluable, not philosophical</strong>. "Output should be helpful" is unscorable; "every required field has a non-empty value matching its type" is.</li>
+              <li data-i18n="p1.lesson.3">Reflection loops without hard caps burned $40 of credits on a single malformed PDF in week one.</li>
             </ul>
           </div>
 
           <div class="project-block">
             <h5 data-i18n="proj.status">Implementation status</h5>
             <ul>
-              <li><strong>Backend:</strong> 5-node LangGraph (extract → validate → critique → reflect → synthesize), 4 agents implemented, FastAPI with SSE streaming, pgvector episodic memory layer.</li>
-              <li><strong>Tests:</strong> 22 pytest tests passing in ~3s — validator, agent JSON-retry, all four orchestrator paths, FastAPI HTTP layer. Zero Docker, zero API-key, zero cost to run.</li>
-              <li><strong>Evaluation harness:</strong> 15-document synthetic corpus (8 invoices · 4 receipts · 3 contracts, easy/medium/hard mix) plus a runner that grades extracted output field-by-field against ground truth and emits aggregate metrics.</li>
-              <li><strong>Frontend:</strong> Next.js 14 + Tailwind SPA with live SSE pipeline view, per-principle critic scoring, episodic memory panel. Includes a client-side scripted demo mode that plays the self-healing scenario without any backend.</li>
-              <li><strong>Pending (visible in the repo):</strong> populate the metrics card with the real benchmark numbers, public Vercel deployment, Langfuse callback wiring.</li>
+              <li data-i18n="p1.status.1"><strong>Backend:</strong> 5-node LangGraph (extract → validate → critique → reflect → synthesize), 4 agents implemented, FastAPI with SSE streaming, pgvector episodic memory layer.</li>
+              <li data-i18n="p1.status.2"><strong>Tests:</strong> 22 pytest tests passing in ~3s — validator, agent JSON-retry, all four orchestrator paths, FastAPI HTTP layer. Zero Docker, zero API-key, zero cost to run.</li>
+              <li data-i18n="p1.status.3"><strong>Evaluation harness:</strong> 15-document synthetic corpus (8 invoices · 4 receipts · 3 contracts, easy/medium/hard mix) plus a runner that grades extracted output field-by-field against ground truth and emits aggregate metrics.</li>
+              <li data-i18n="p1.status.4"><strong>Frontend:</strong> Next.js 14 + Tailwind SPA with live SSE pipeline view, per-principle critic scoring, episodic memory panel. Includes a client-side scripted demo mode that plays the self-healing scenario without any backend.</li>
+              <li data-i18n="p1.status.5"><strong>Pending (visible in the repo):</strong> populate the metrics card with the real benchmark numbers, public Vercel deployment, Langfuse callback wiring.</li>
             </ul>
           </div>
         </div>
 
         <div>
           <div class="arch-card">
-            <h5>Architecture · LangGraph state machine <span class="arch-live-dot"></span><span class="arch-live-label">animated · hover the nodes</span></h5>
+            <h5 data-i18n="p1.arch.h">Architecture · LangGraph state machine <span class="arch-live-dot"></span><span class="arch-live-label">animated · hover the nodes</span></h5>
             <svg class="p1-flow" viewBox="0 0 400 280" xmlns="http://www.w3.org/2000/svg">
               <defs>
                 <marker id="arr1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#8b6dff"/></marker>
@@ -3567,20 +3567,20 @@
         <div>
           <div class="project-block">
             <h5 data-i18n="proj.theProblem">The problem</h5>
-            <p><code>vector.search()</code> can't answer multi-hop questions. "Which projects led by alumni of company X have shipped products that compete with our Y line?" needs <strong>relationships</strong>, not just similarity. A knowledge graph stores those relationships explicitly.</p>
+            <p data-i18n="p2.problem.1"><code>vector.search()</code> can't answer multi-hop questions. "Which projects led by alumni of company X have shipped products that compete with our Y line?" needs <strong>relationships</strong>, not just similarity. A knowledge graph stores those relationships explicitly.</p>
           </div>
           <div class="project-block">
             <h5 data-i18n="proj.decisions">Key architectural decisions</h5>
             <table class="decisions">
-              <tr><td>Neo4j over Postgres + recursive CTEs</td><td>Path queries, Cypher's pattern matching, APOC traversal — built for graphs, not bolted on</td></tr>
-              <tr><td>Hybrid: graph + vector</td><td>Graph for structure, vector for unstructured chunks. RRF fusion at retrieval</td></tr>
-              <tr><td>Background staleness agent</td><td>Flags entities whose embeddings drift from the source documents — knowledge decay is a real bug class</td></tr>
+              <tr><td data-i18n="p2.dec.1a">Neo4j over Postgres + recursive CTEs</td><td data-i18n="p2.dec.1b">Path queries, Cypher's pattern matching, APOC traversal — built for graphs, not bolted on</td></tr>
+              <tr><td data-i18n="p2.dec.2a">Hybrid: graph + vector</td><td data-i18n="p2.dec.2b">Graph for structure, vector for unstructured chunks. RRF fusion at retrieval</td></tr>
+              <tr><td data-i18n="p2.dec.3a">Background staleness agent</td><td data-i18n="p2.dec.3b">Flags entities whose embeddings drift from the source documents — knowledge decay is a real bug class</td></tr>
             </table>
           </div>
         </div>
         <div>
           <div class="arch-card">
-            <h5>Architecture · ingest → graph + vector</h5>
+            <h5 data-i18n="p2.arch.h">Architecture · ingest → graph + vector</h5>
             <svg viewBox="0 0 400 240" xmlns="http://www.w3.org/2000/svg">
               <defs><marker id="arr2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#4dd0c2"/></marker></defs>
               <g font-family="JetBrains Mono, monospace" font-size="11" fill="#e8eaf0">
@@ -3639,20 +3639,20 @@
         <div>
           <div class="project-block">
             <h5 data-i18n="proj.theProblem">The problem</h5>
-            <p>A research agent that "forgets" between sessions is a chatbot, not a researcher. The MemGPT paper showed that explicit memory tiering — working / episodic / semantic — with a controller that promotes and evicts beats relying on bigger context windows.</p>
+            <p data-i18n="p3.problem.1">A research agent that "forgets" between sessions is a chatbot, not a researcher. The MemGPT paper showed that explicit memory tiering — working / episodic / semantic — with a controller that promotes and evicts beats relying on bigger context windows.</p>
           </div>
           <div class="project-block">
             <h5 data-i18n="proj.decisions">Key architectural decisions</h5>
             <table class="decisions">
-              <tr><td>Three-tier memory</td><td>Working (in-context) / episodic (recent runs) / semantic (consolidated facts). Each tier has explicit promotion rules.</td></tr>
-              <tr><td>Memory controller as a node</td><td>Promotion and eviction are first-class graph nodes — inspectable in Langfuse, not buried in a hook</td></tr>
-              <tr><td>arXiv + Tavily + scraping</td><td>Mix of structured (arXiv API) and unstructured (Tavily) sources reduces source-bias in synthesized reports</td></tr>
+              <tr><td data-i18n="p3.dec.1a">Three-tier memory</td><td data-i18n="p3.dec.1b">Working (in-context) / episodic (recent runs) / semantic (consolidated facts). Each tier has explicit promotion rules.</td></tr>
+              <tr><td data-i18n="p3.dec.2a">Memory controller as a node</td><td data-i18n="p3.dec.2b">Promotion and eviction are first-class graph nodes — inspectable in Langfuse, not buried in a hook</td></tr>
+              <tr><td data-i18n="p3.dec.3a">arXiv + Tavily + scraping</td><td data-i18n="p3.dec.3b">Mix of structured (arXiv API) and unstructured (Tavily) sources reduces source-bias in synthesized reports</td></tr>
             </table>
           </div>
         </div>
         <div>
           <div class="arch-card">
-            <h5>Architecture · memory tiers</h5>
+            <h5 data-i18n="p3.arch.h">Architecture · memory tiers</h5>
             <svg viewBox="0 0 400 220" xmlns="http://www.w3.org/2000/svg">
               <g font-family="JetBrains Mono, monospace" font-size="11">
                 <rect x="40" y="20" width="320" height="40" rx="6" fill="#0f1118" stroke="#8b6dff"/>
@@ -3697,21 +3697,21 @@
         <div>
           <div class="project-block">
             <h5 data-i18n="proj.theProblem">The problem</h5>
-            <p>Single-agent reasoning collapses to the model's prior. Five agents with <strong>distinct, persistent perspectives</strong> — Optimist, Skeptic, Financial Analyst, Risk Officer, Devil's Advocate — generate dissent and surface tradeoffs that a single chain-of-thought hides.</p>
+            <p data-i18n="p4.problem.1">Single-agent reasoning collapses to the model's prior. Five agents with <strong>distinct, persistent perspectives</strong> — Optimist, Skeptic, Financial Analyst, Risk Officer, Devil's Advocate — generate dissent and surface tradeoffs that a single chain-of-thought hides.</p>
           </div>
           <div class="project-block">
             <h5 data-i18n="proj.decisions">Key architectural decisions</h5>
             <table class="decisions">
-              <tr><td>5 roles, not 2</td><td>Two-agent "debate" collapses to majority. Five roles, structured three rounds, prevent groupthink</td></tr>
-              <tr><td>Three-round protocol</td><td>Opening · rebuttal · synthesis. Bounded, measurable, prevents infinite loops</td></tr>
-              <tr><td>Consensus score per round</td><td>Cosine similarity of agent positions over rounds. Measurable convergence, not vibes</td></tr>
-              <tr><td>WebSocket streaming</td><td>Each agent's tokens stream live to UI — debate is a watchable artifact, not a black box</td></tr>
+              <tr><td data-i18n="p4.dec.1a">5 roles, not 2</td><td data-i18n="p4.dec.1b">Two-agent "debate" collapses to majority. Five roles, structured three rounds, prevent groupthink</td></tr>
+              <tr><td data-i18n="p4.dec.2a">Three-round protocol</td><td data-i18n="p4.dec.2b">Opening · rebuttal · synthesis. Bounded, measurable, prevents infinite loops</td></tr>
+              <tr><td data-i18n="p4.dec.3a">Consensus score per round</td><td data-i18n="p4.dec.3b">Cosine similarity of agent positions over rounds. Measurable convergence, not vibes</td></tr>
+              <tr><td data-i18n="p4.dec.4a">WebSocket streaming</td><td data-i18n="p4.dec.4b">Each agent's tokens stream live to UI — debate is a watchable artifact, not a black box</td></tr>
             </table>
           </div>
         </div>
         <div>
           <div class="arch-card">
-            <h5>Architecture · debate flow</h5>
+            <h5 data-i18n="p4.arch.h">Architecture · debate flow</h5>
             <svg viewBox="0 0 400 220" xmlns="http://www.w3.org/2000/svg">
               <defs><marker id="arr4" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#8b6dff"/></marker></defs>
               <g font-family="JetBrains Mono, monospace" font-size="10" fill="#e8eaf0">
@@ -3757,20 +3757,20 @@
         <div>
           <div class="project-block">
             <h5 data-i18n="proj.theProblem">The problem</h5>
-            <p>Hardcoded workflows break the moment the business changes. A meta-agent that <strong>generates the DAG from natural language</strong> and executes via Model Context Protocol servers turns any new business request into a runnable pipeline without engineering work.</p>
+            <p data-i18n="p5.problem.1">Hardcoded workflows break the moment the business changes. A meta-agent that <strong>generates the DAG from natural language</strong> and executes via Model Context Protocol servers turns any new business request into a runnable pipeline without engineering work.</p>
           </div>
           <div class="project-block">
             <h5 data-i18n="proj.decisions">Key architectural decisions</h5>
             <table class="decisions">
-              <tr><td>MCP, not custom tool APIs</td><td>Standardized protocol means GitHub/Jira/Slack/Drive integrations are reusable, swappable, auditable</td></tr>
-              <tr><td>Planner learns from past DAGs</td><td>Successful workflows are embedded; planner retrieves similar past plans before generating</td></tr>
-              <tr><td>HITL approvals on critical nodes</td><td>"Send email" or "post to channel" require explicit approval. Auditable, reversible.</td></tr>
+              <tr><td data-i18n="p5.dec.1a">MCP, not custom tool APIs</td><td data-i18n="p5.dec.1b">Standardized protocol means GitHub/Jira/Slack/Drive integrations are reusable, swappable, auditable</td></tr>
+              <tr><td data-i18n="p5.dec.2a">Planner learns from past DAGs</td><td data-i18n="p5.dec.2b">Successful workflows are embedded; planner retrieves similar past plans before generating</td></tr>
+              <tr><td data-i18n="p5.dec.3a">HITL approvals on critical nodes</td><td data-i18n="p5.dec.3b">"Send email" or "post to channel" require explicit approval. Auditable, reversible.</td></tr>
             </table>
           </div>
         </div>
         <div>
           <div class="arch-card">
-            <h5>Architecture · plan → execute → approve</h5>
+            <h5 data-i18n="p5.arch.h">Architecture · plan → execute → approve</h5>
             <svg viewBox="0 0 400 220" xmlns="http://www.w3.org/2000/svg">
               <defs><marker id="arr5" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#8b6dff"/></marker></defs>
               <g font-family="JetBrains Mono, monospace" font-size="11" fill="#e8eaf0">
@@ -3820,37 +3820,37 @@
         <div>
           <div class="project-block">
             <h5 data-i18n="proj.theProblem">The problem</h5>
-            <p>Most RAG implementations stop at "we chose Pinecone." This project asks the harder question: <strong>which one actually performs better on your corpus, and by how much?</strong> Three vector stores run in parallel, all queries dual-written, all metrics tracked.</p>
+            <p data-i18n="p6.problem.1">Most RAG implementations stop at "we chose Pinecone." This project asks the harder question: <strong>which one actually performs better on your corpus, and by how much?</strong> Three vector stores run in parallel, all queries dual-written, all metrics tracked.</p>
           </div>
           <div class="project-block">
             <h5 data-i18n="proj.decisions">Key architectural decisions</h5>
             <table class="decisions">
-              <tr><td>Three stores in parallel</td><td>Same corpus, same queries, same eval. Real apples-to-apples — published benchmarks rarely are</td></tr>
-              <tr><td>Anthropic's contextual retrieval</td><td>~49% retrieval failure reduction by prepending chunk context. Free quality lift before any reranker</td></tr>
-              <tr><td>Hybrid: BM25 + vector + rerank</td><td>RRF fusion of lexical + semantic + Cohere rerank. Each stage measured independently</td></tr>
-              <tr><td>Auto-optimizer agent</td><td>Watches Ragas scores; when faithfulness drops, tunes chunk size / rerank-k / fusion weights, A/B's against held-out set</td></tr>
+              <tr><td data-i18n="p6.dec.1a">Three stores in parallel</td><td data-i18n="p6.dec.1b">Same corpus, same queries, same eval. Real apples-to-apples — published benchmarks rarely are</td></tr>
+              <tr><td data-i18n="p6.dec.2a">Anthropic's contextual retrieval</td><td data-i18n="p6.dec.2b">~49% retrieval failure reduction by prepending chunk context. Free quality lift before any reranker</td></tr>
+              <tr><td data-i18n="p6.dec.3a">Hybrid: BM25 + vector + rerank</td><td data-i18n="p6.dec.3b">RRF fusion of lexical + semantic + Cohere rerank. Each stage measured independently</td></tr>
+              <tr><td data-i18n="p6.dec.4a">Auto-optimizer agent</td><td data-i18n="p6.dec.4b">Watches Ragas scores; when faithfulness drops, tunes chunk size / rerank-k / fusion weights, A/B's against held-out set</td></tr>
             </table>
           </div>
           <div class="project-block">
             <h5 data-i18n="proj.proves">What this proves to hiring teams</h5>
             <ul>
-              <li>I measure things instead of citing them.</li>
-              <li>I know that "use a vector DB" is the easy half of RAG — the chunking, fusion, and eval loop is the hard half.</li>
-              <li>I treat optimization as a closed loop, not a one-off tuning session.</li>
+              <li data-i18n="p6.proves.1">I measure things instead of citing them.</li>
+              <li data-i18n="p6.proves.2">I know that "use a vector DB" is the easy half of RAG — the chunking, fusion, and eval loop is the hard half.</li>
+              <li data-i18n="p6.proves.3">I treat optimization as a closed loop, not a one-off tuning session.</li>
             </ul>
           </div>
           <div class="project-block">
             <h5 data-i18n="proj.status">Implementation status</h5>
             <ul>
-              <li><strong>Implemented + tested:</strong> in-memory vector store (cosine sim + BM25), query rewriter (model-injectable, 3-attempt JSON retry), Reciprocal Rank Fusion hybrid search. <strong>23 pytest tests passing in ~0.4 s</strong> with no Docker, no API keys.</li>
-              <li><strong>Scaffolded:</strong> production stores (pgvector / Qdrant / Pinecone), Anthropic contextual enricher, Cohere rerank, Ragas evaluator, the auto-optimizer's tuning loop. Interfaces and per-metric remediation map already written.</li>
-              <li>Slice 1 lets the rest of the retrieval pipeline be wired against a real backend without touching the search algorithm again.</li>
+              <li data-i18n="p6.status.1"><strong>Implemented + tested:</strong> in-memory vector store (cosine sim + BM25), query rewriter (model-injectable, 3-attempt JSON retry), Reciprocal Rank Fusion hybrid search. <strong>23 pytest tests passing in ~0.4 s</strong> with no Docker, no API keys.</li>
+              <li data-i18n="p6.status.2"><strong>Scaffolded:</strong> production stores (pgvector / Qdrant / Pinecone), Anthropic contextual enricher, Cohere rerank, Ragas evaluator, the auto-optimizer's tuning loop. Interfaces and per-metric remediation map already written.</li>
+              <li data-i18n="p6.status.3">Slice 1 lets the rest of the retrieval pipeline be wired against a real backend without touching the search algorithm again.</li>
             </ul>
           </div>
         </div>
         <div>
           <div class="arch-card">
-            <h5>Architecture · parallel retrieval + closed-loop tuning <span class="arch-live-dot"></span><span class="arch-live-label">animated · hover the nodes</span></h5>
+            <h5 data-i18n="p6.arch.h">Architecture · parallel retrieval + closed-loop tuning <span class="arch-live-dot"></span><span class="arch-live-label">animated · hover the nodes</span></h5>
             <svg class="p6-flow" viewBox="0 0 400 250" xmlns="http://www.w3.org/2000/svg">
               <defs>
                 <marker id="arr6" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#8b6dff"/></marker>
@@ -6113,6 +6113,87 @@
 
       'footer.tagline': 'Q.E.D. · MIT-licensed · fork it',
       'footer.updated': 'Last updated',
+
+      // Project 01 body
+      'p1.arch.h': 'Architecture · LangGraph state machine <span class="arch-live-dot"></span><span class="arch-live-label">animated · hover the nodes</span>',
+      'p1.problem.1': 'In production, the most expensive AI failures are <strong>silent</strong>: a confident wrong invoice number propagates, a downstream system trusts the bad output, the wrong vendor gets paid. Standard pipelines treat the LLM as a black box — if it returns <em>something</em>, the pipeline returns "success."',
+      'p1.problem.2': 'This pipeline does the opposite: every output is adversarially evaluated by a critic, failures trigger a bounded reflection loop, and the system maintains an episodic memory of past errors that the critic consults before every evaluation.',
+      'p1.dec.1a': 'LangGraph orchestration',
+      'p1.dec.1b': 'Explicit, inspectable state transitions over LangChain\'s opaque chains',
+      'p1.dec.2a': 'Constitutional AI critic',
+      'p1.dec.2b': 'Per-principle scoring (4 axes) yields actionable feedback; single-rubric LLM-as-judge does not',
+      'p1.dec.3a': 'Episodic memory in pgvector',
+      'p1.dec.3b': 'Domain-specific failure patterns surface across thousands of past runs — reuses the Postgres we already need',
+      'p1.dec.4a': 'Hard cap: 3 reflection iterations',
+      'p1.dec.4b': 'Unbounded retry loops are a top-3 incident class for agents. Cap forces loud failures over silent token spend',
+      'p1.lesson.1': 'Critics need <strong>memory, not just rubrics</strong>. A stateless critic re-makes the same mistake every run.',
+      'p1.lesson.2': 'Constitutional principles must be <strong>evaluable, not philosophical</strong>. "Output should be helpful" is unscorable; "every required field has a non-empty value matching its type" is.',
+      'p1.lesson.3': 'Reflection loops without hard caps burned $40 of credits on a single malformed PDF in week one.',
+      'p1.status.1': '<strong>Backend:</strong> 5-node LangGraph (extract → validate → critique → reflect → synthesize), 4 agents implemented, FastAPI with SSE streaming, pgvector episodic memory layer.',
+      'p1.status.2': '<strong>Tests:</strong> 22 pytest tests passing in ~3s — validator, agent JSON-retry, all four orchestrator paths, FastAPI HTTP layer. Zero Docker, zero API-key, zero cost to run.',
+      'p1.status.3': '<strong>Evaluation harness:</strong> 15-document synthetic corpus (8 invoices · 4 receipts · 3 contracts, easy/medium/hard mix) plus a runner that grades extracted output field-by-field against ground truth and emits aggregate metrics.',
+      'p1.status.4': '<strong>Frontend:</strong> Next.js 14 + Tailwind SPA with live SSE pipeline view, per-principle critic scoring, episodic memory panel. Includes a client-side scripted demo mode that plays the self-healing scenario without any backend.',
+      'p1.status.5': '<strong>Pending (visible in the repo):</strong> populate the metrics card with the real benchmark numbers, public Vercel deployment, Langfuse callback wiring.',
+
+      // Project 02
+      'p2.arch.h': 'Architecture · ingest → graph + vector',
+      'p2.problem.1': '<code>vector.search()</code> can\'t answer multi-hop questions. "Which projects led by alumni of company X have shipped products that compete with our Y line?" needs <strong>relationships</strong>, not just similarity. A knowledge graph stores those relationships explicitly.',
+      'p2.dec.1a': 'Neo4j over Postgres + recursive CTEs',
+      'p2.dec.1b': 'Path queries, Cypher\'s pattern matching, APOC traversal — built for graphs, not bolted on',
+      'p2.dec.2a': 'Hybrid: graph + vector',
+      'p2.dec.2b': 'Graph for structure, vector for unstructured chunks. RRF fusion at retrieval',
+      'p2.dec.3a': 'Background staleness agent',
+      'p2.dec.3b': 'Flags entities whose embeddings drift from the source documents — knowledge decay is a real bug class',
+
+      // Project 03
+      'p3.arch.h': 'Architecture · memory tiers',
+      'p3.problem.1': 'A research agent that "forgets" between sessions is a chatbot, not a researcher. The MemGPT paper showed that explicit memory tiering — working / episodic / semantic — with a controller that promotes and evicts beats relying on bigger context windows.',
+      'p3.dec.1a': 'Three-tier memory',
+      'p3.dec.1b': 'Working (in-context) / episodic (recent runs) / semantic (consolidated facts). Each tier has explicit promotion rules.',
+      'p3.dec.2a': 'Memory controller as a node',
+      'p3.dec.2b': 'Promotion and eviction are first-class graph nodes — inspectable in Langfuse, not buried in a hook',
+      'p3.dec.3a': 'arXiv + Tavily + scraping',
+      'p3.dec.3b': 'Mix of structured (arXiv API) and unstructured (Tavily) sources reduces source-bias in synthesized reports',
+
+      // Project 04
+      'p4.arch.h': 'Architecture · debate flow',
+      'p4.problem.1': 'Single-agent reasoning collapses to the model\'s prior. Five agents with <strong>distinct, persistent perspectives</strong> — Optimist, Skeptic, Financial Analyst, Risk Officer, Devil\'s Advocate — generate dissent and surface tradeoffs that a single chain-of-thought hides.',
+      'p4.dec.1a': '5 roles, not 2',
+      'p4.dec.1b': 'Two-agent "debate" collapses to majority. Five roles, structured three rounds, prevent groupthink',
+      'p4.dec.2a': 'Three-round protocol',
+      'p4.dec.2b': 'Opening · rebuttal · synthesis. Bounded, measurable, prevents infinite loops',
+      'p4.dec.3a': 'Consensus score per round',
+      'p4.dec.3b': 'Cosine similarity of agent positions over rounds. Measurable convergence, not vibes',
+      'p4.dec.4a': 'WebSocket streaming',
+      'p4.dec.4b': 'Each agent\'s tokens stream live to UI — debate is a watchable artifact, not a black box',
+
+      // Project 05
+      'p5.arch.h': 'Architecture · plan → execute → approve',
+      'p5.problem.1': 'Hardcoded workflows break the moment the business changes. A meta-agent that <strong>generates the DAG from natural language</strong> and executes via Model Context Protocol servers turns any new business request into a runnable pipeline without engineering work.',
+      'p5.dec.1a': 'MCP, not custom tool APIs',
+      'p5.dec.1b': 'Standardized protocol means GitHub/Jira/Slack/Drive integrations are reusable, swappable, auditable',
+      'p5.dec.2a': 'Planner learns from past DAGs',
+      'p5.dec.2b': 'Successful workflows are embedded; planner retrieves similar past plans before generating',
+      'p5.dec.3a': 'HITL approvals on critical nodes',
+      'p5.dec.3b': '"Send email" or "post to channel" require explicit approval. Auditable, reversible.',
+
+      // Project 06
+      'p6.arch.h': 'Architecture · parallel retrieval + closed-loop tuning <span class="arch-live-dot"></span><span class="arch-live-label">animated · hover the nodes</span>',
+      'p6.problem.1': 'Most RAG implementations stop at "we chose Pinecone." This project asks the harder question: <strong>which one actually performs better on your corpus, and by how much?</strong> Three vector stores run in parallel, all queries dual-written, all metrics tracked.',
+      'p6.dec.1a': 'Three stores in parallel',
+      'p6.dec.1b': 'Same corpus, same queries, same eval. Real apples-to-apples — published benchmarks rarely are',
+      'p6.dec.2a': 'Anthropic\'s contextual retrieval',
+      'p6.dec.2b': '~49% retrieval failure reduction by prepending chunk context. Free quality lift before any reranker',
+      'p6.dec.3a': 'Hybrid: BM25 + vector + rerank',
+      'p6.dec.3b': 'RRF fusion of lexical + semantic + Cohere rerank. Each stage measured independently',
+      'p6.dec.4a': 'Auto-optimizer agent',
+      'p6.dec.4b': 'Watches Ragas scores; when faithfulness drops, tunes chunk size / rerank-k / fusion weights, A/B\'s against held-out set',
+      'p6.proves.1': 'I measure things instead of citing them.',
+      'p6.proves.2': 'I know that "use a vector DB" is the easy half of RAG — the chunking, fusion, and eval loop is the hard half.',
+      'p6.proves.3': 'I treat optimization as a closed loop, not a one-off tuning session.',
+      'p6.status.1': '<strong>Implemented + tested:</strong> in-memory vector store (cosine sim + BM25), query rewriter (model-injectable, 3-attempt JSON retry), Reciprocal Rank Fusion hybrid search. <strong>23 pytest tests passing in ~0.4 s</strong> with no Docker, no API keys.',
+      'p6.status.2': '<strong>Scaffolded:</strong> production stores (pgvector / Qdrant / Pinecone), Anthropic contextual enricher, Cohere rerank, Ragas evaluator, the auto-optimizer\'s tuning loop. Interfaces and per-metric remediation map already written.',
+      'p6.status.3': 'Slice 1 lets the rest of the retrieval pipeline be wired against a real backend without touching the search algorithm again.',
     },
 
     es: {
@@ -6312,6 +6393,87 @@
 
       'footer.tagline': 'Q.E.D. · Licencia MIT · forkéalo',
       'footer.updated': 'Última actualización',
+
+      // Project 01 body — ES
+      'p1.arch.h': 'Arquitectura · máquina de estados LangGraph <span class="arch-live-dot"></span><span class="arch-live-label">animado · pasa por los nodos</span>',
+      'p1.problem.1': 'En producción, los fallos de IA más caros son <strong>silenciosos</strong>: un número de factura equivocado pero confiado se propaga, un sistema downstream confía en el output y se le paga al proveedor equivocado. Los pipelines estándar tratan al LLM como caja negra — si devuelve <em>algo</em>, el pipeline reporta "éxito".',
+      'p1.problem.2': 'Este pipeline hace lo contrario: cada output es evaluado adversarialmente por un crítico, los fallos disparan un loop de reflexión acotado, y el sistema mantiene una memoria episódica de errores pasados que el crítico consulta antes de cada evaluación.',
+      'p1.dec.1a': 'Orquestación con LangGraph',
+      'p1.dec.1b': 'Transiciones de estado explícitas e inspeccionables, en lugar de las cadenas opacas de LangChain',
+      'p1.dec.2a': 'Crítico de Constitutional AI',
+      'p1.dec.2b': 'Scoring por principio (4 ejes) da feedback accionable; un LLM-as-judge con una sola rúbrica no',
+      'p1.dec.3a': 'Memoria episódica en pgvector',
+      'p1.dec.3b': 'Patrones de fallo específicos del dominio emergen tras miles de corridas pasadas — reutiliza el Postgres que ya necesitas',
+      'p1.dec.4a': 'Hard cap: 3 iteraciones de reflexión',
+      'p1.dec.4b': 'Los retry loops sin acotar son una de las top-3 clases de incidente en agentes. El cap fuerza fallos ruidosos en vez de quemar tokens en silencio',
+      'p1.lesson.1': 'Los críticos necesitan <strong>memoria, no solo rúbricas</strong>. Un crítico stateless comete el mismo error cada corrida.',
+      'p1.lesson.2': 'Los principios constitucionales deben ser <strong>evaluables, no filosóficos</strong>. "El output debe ser útil" no es scoreable; "cada campo requerido tiene un valor no vacío que coincide con su tipo" sí.',
+      'p1.lesson.3': 'Los loops de reflexión sin hard caps quemaron $40 en créditos sobre un solo PDF malformado en la primera semana.',
+      'p1.status.1': '<strong>Backend:</strong> LangGraph de 5 nodos (extract → validate → critique → reflect → synthesize), 4 agentes implementados, FastAPI con streaming SSE, capa de memoria episódica en pgvector.',
+      'p1.status.2': '<strong>Tests:</strong> 22 tests pytest pasando en ~3s — validator, JSON-retry en los agentes, los cuatro caminos del orchestrator, capa HTTP de FastAPI. Sin Docker, sin API key, sin costo para correrlo.',
+      'p1.status.3': '<strong>Harness de evaluación:</strong> corpus sintético de 15 documentos (8 facturas · 4 recibos · 3 contratos, mezcla easy/medium/hard) más un runner que califica el output extraído campo por campo contra ground truth y emite métricas agregadas.',
+      'p1.status.4': '<strong>Frontend:</strong> SPA Next.js 14 + Tailwind con vista en vivo del pipeline por SSE, scoring del crítico por principio, panel de memoria episódica. Incluye un modo demo scripted client-side que reproduce el escenario de auto-curación sin necesidad de backend.',
+      'p1.status.5': '<strong>Pendiente (visible en el repo):</strong> poblar la tarjeta de métricas con los números reales del benchmark, deploy público en Vercel, cableado del callback de Langfuse.',
+
+      // Project 02 — ES
+      'p2.arch.h': 'Arquitectura · ingesta → grafo + vector',
+      'p2.problem.1': '<code>vector.search()</code> no puede responder preguntas multi-hop. "¿Qué proyectos liderados por ex-empleados de la empresa X han enviado productos que compiten con nuestra línea Y?" necesita <strong>relaciones</strong>, no solo similitud. Un knowledge graph almacena esas relaciones explícitamente.',
+      'p2.dec.1a': 'Neo4j sobre Postgres + CTEs recursivos',
+      'p2.dec.1b': 'Path queries, pattern matching de Cypher, traversal con APOC — diseñado para grafos, no atornillado encima',
+      'p2.dec.2a': 'Híbrido: grafo + vector',
+      'p2.dec.2b': 'Grafo para estructura, vector para chunks no estructurados. Fusión RRF en el retrieval',
+      'p2.dec.3a': 'Agente de obsolescencia en background',
+      'p2.dec.3b': 'Marca entidades cuyos embeddings divergen de los documentos fuente — el "knowledge decay" es una clase de bug real',
+
+      // Project 03 — ES
+      'p3.arch.h': 'Arquitectura · capas de memoria',
+      'p3.problem.1': 'Un agente de investigación que "olvida" entre sesiones es un chatbot, no un investigador. El paper de MemGPT mostró que las capas de memoria explícitas — working / episodic / semantic — con un controlador que promueve y desaloja le ganan a depender de ventanas de contexto más grandes.',
+      'p3.dec.1a': 'Memoria de tres capas',
+      'p3.dec.1b': 'Working (en contexto) / episódica (corridas recientes) / semántica (hechos consolidados). Cada capa tiene reglas explícitas de promoción.',
+      'p3.dec.2a': 'Controlador de memoria como nodo',
+      'p3.dec.2b': 'Promoción y desalojo son nodos de grafo de primera clase — inspeccionables en Langfuse, no escondidos en un hook',
+      'p3.dec.3a': 'arXiv + Tavily + scraping',
+      'p3.dec.3b': 'La mezcla de fuentes estructuradas (API de arXiv) y no estructuradas (Tavily) reduce el sesgo de fuente en los reportes sintetizados',
+
+      // Project 04 — ES
+      'p4.arch.h': 'Arquitectura · flujo de debate',
+      'p4.problem.1': 'El razonamiento de un solo agente colapsa al prior del modelo. Cinco agentes con <strong>perspectivas distintas y persistentes</strong> — Optimista, Escéptico, Analista Financiero, Risk Officer, Abogado del Diablo — generan disenso y sacan a la luz tradeoffs que un solo chain-of-thought oculta.',
+      'p4.dec.1a': '5 roles, no 2',
+      'p4.dec.1b': 'El "debate" de dos agentes colapsa a la mayoría. Cinco roles, en tres rondas estructuradas, previenen el groupthink',
+      'p4.dec.2a': 'Protocolo de tres rondas',
+      'p4.dec.2b': 'Apertura · refutación · síntesis. Acotado, medible, previene loops infinitos',
+      'p4.dec.3a': 'Score de consenso por ronda',
+      'p4.dec.3b': 'Similitud coseno de las posiciones de los agentes a lo largo de las rondas. Convergencia medible, no vibes',
+      'p4.dec.4a': 'Streaming por WebSocket',
+      'p4.dec.4b': 'Los tokens de cada agente fluyen en vivo a la UI — el debate es un artefacto observable, no una caja negra',
+
+      // Project 05 — ES
+      'p5.arch.h': 'Arquitectura · plan → ejecuta → aprueba',
+      'p5.problem.1': 'Los workflows hardcodeados se rompen en cuanto el negocio cambia. Un meta-agente que <strong>genera el DAG desde lenguaje natural</strong> y lo ejecuta vía servidores Model Context Protocol convierte cualquier nuevo requisito de negocio en un pipeline ejecutable sin trabajo de ingeniería.',
+      'p5.dec.1a': 'MCP, no APIs de herramientas custom',
+      'p5.dec.1b': 'Un protocolo estandarizado significa que las integraciones con GitHub/Jira/Slack/Drive son reusables, swappables y auditables',
+      'p5.dec.2a': 'El planner aprende de DAGs pasados',
+      'p5.dec.2b': 'Los workflows exitosos se embeben; el planner recupera planes pasados similares antes de generar uno nuevo',
+      'p5.dec.3a': 'Aprobaciones HITL en nodos críticos',
+      'p5.dec.3b': '"Enviar email" o "publicar en canal" requieren aprobación explícita. Auditable, reversible.',
+
+      // Project 06 — ES
+      'p6.arch.h': 'Arquitectura · retrieval paralelo + tuning en loop cerrado <span class="arch-live-dot"></span><span class="arch-live-label">animado · pasa por los nodos</span>',
+      'p6.problem.1': 'La mayoría de las implementaciones de RAG se quedan en "elegimos Pinecone". Este proyecto hace la pregunta más difícil: <strong>¿cuál funciona mejor sobre tu corpus, y por cuánto?</strong> Tres vector stores corren en paralelo, todas las queries duplicadas, todas las métricas tracked.',
+      'p6.dec.1a': 'Tres stores en paralelo',
+      'p6.dec.1b': 'Mismo corpus, mismas queries, misma eval. Comparación apples-to-apples real — los benchmarks publicados pocas veces lo son',
+      'p6.dec.2a': 'Retrieval contextual de Anthropic',
+      'p6.dec.2b': '~49% de reducción de fallos de retrieval al anteponer contexto al chunk. Lift gratis de calidad antes de cualquier reranker',
+      'p6.dec.3a': 'Híbrido: BM25 + vector + rerank',
+      'p6.dec.3b': 'Fusión RRF de léxico + semántico + rerank de Cohere. Cada etapa medida independientemente',
+      'p6.dec.4a': 'Agente auto-optimizer',
+      'p6.dec.4b': 'Observa los scores de Ragas; cuando la faithfulness baja, tunea chunk size / rerank-k / pesos de fusión, A/B contra un set held-out',
+      'p6.proves.1': 'Mido cosas en lugar de citarlas.',
+      'p6.proves.2': 'Sé que "usar un vector DB" es la mitad fácil de RAG — el chunking, la fusión y el eval loop son la mitad difícil.',
+      'p6.proves.3': 'Trato la optimización como un loop cerrado, no como una sesión de tuneo única.',
+      'p6.status.1': '<strong>Implementado + testeado:</strong> in-memory vector store (cosine + BM25), query rewriter (modelo inyectable, retry de 3 intentos sobre JSON), Reciprocal Rank Fusion hybrid search. <strong>23 tests pytest pasando en ~0.4 s</strong> sin Docker, sin API keys.',
+      'p6.status.2': '<strong>Scaffolded:</strong> stores de producción (pgvector / Qdrant / Pinecone), enriquecedor contextual de Anthropic, rerank Cohere, evaluador Ragas, el loop de tuneo del auto-optimizer. Interfaces y mapa de remediación por métrica ya escritos.',
+      'p6.status.3': 'El Slice 1 permite cablear el resto del pipeline de retrieval contra un backend real sin tocar el algoritmo de búsqueda otra vez.',
     },
 
     pt: {
@@ -6511,6 +6673,87 @@
 
       'footer.tagline': 'Q.E.D. · Licença MIT · forke-o',
       'footer.updated': 'Última atualização',
+
+      // Project 01 body — PT
+      'p1.arch.h': 'Arquitetura · máquina de estados LangGraph <span class="arch-live-dot"></span><span class="arch-live-label">animado · passe pelos nós</span>',
+      'p1.problem.1': 'Em produção, as falhas de IA mais caras são <strong>silenciosas</strong>: um número de nota fiscal confiantemente errado se propaga, um sistema downstream confia no output e paga o fornecedor errado. Pipelines padrão tratam o LLM como caixa-preta — se devolve <em>alguma coisa</em>, o pipeline reporta "sucesso".',
+      'p1.problem.2': 'Este pipeline faz o oposto: cada saída é avaliada adversarialmente por um crítico, falhas disparam um loop de reflexão limitado, e o sistema mantém uma memória episódica de erros passados que o crítico consulta antes de cada avaliação.',
+      'p1.dec.1a': 'Orquestração com LangGraph',
+      'p1.dec.1b': 'Transições de estado explícitas e inspecionáveis, em vez das cadeias opacas do LangChain',
+      'p1.dec.2a': 'Crítico Constitutional AI',
+      'p1.dec.2b': 'Scoring por princípio (4 eixos) dá feedback acionável; um LLM-as-judge com rubrica única não',
+      'p1.dec.3a': 'Memória episódica em pgvector',
+      'p1.dec.3b': 'Padrões de falha específicos do domínio emergem ao longo de milhares de runs passadas — reutiliza o Postgres que você já precisa',
+      'p1.dec.4a': 'Hard cap: 3 iterações de reflexão',
+      'p1.dec.4b': 'Retry loops sem limite são uma das top-3 classes de incidente em agentes. O cap força falhas barulhentas em vez de queimar tokens em silêncio',
+      'p1.lesson.1': 'Críticos precisam de <strong>memória, não só rubricas</strong>. Um crítico stateless comete o mesmo erro a cada run.',
+      'p1.lesson.2': 'Princípios constitucionais precisam ser <strong>avaliáveis, não filosóficos</strong>. "A saída deve ser útil" não dá pra pontuar; "todo campo obrigatório tem valor não-vazio com o tipo certo" dá.',
+      'p1.lesson.3': 'Loops de reflexão sem hard caps queimaram $40 em créditos sobre um único PDF malformado na primeira semana.',
+      'p1.status.1': '<strong>Backend:</strong> LangGraph de 5 nós (extract → validate → critique → reflect → synthesize), 4 agentes implementados, FastAPI com streaming SSE, camada de memória episódica em pgvector.',
+      'p1.status.2': '<strong>Testes:</strong> 22 testes pytest passando em ~3s — validator, JSON-retry dos agentes, todos os quatro caminhos do orchestrator, camada HTTP do FastAPI. Zero Docker, zero API key, zero custo para rodar.',
+      'p1.status.3': '<strong>Harness de avaliação:</strong> corpus sintético de 15 documentos (8 notas fiscais · 4 recibos · 3 contratos, mistura easy/medium/hard) mais um runner que avalia o output extraído campo a campo contra ground truth e emite métricas agregadas.',
+      'p1.status.4': '<strong>Frontend:</strong> SPA Next.js 14 + Tailwind com visão ao vivo do pipeline via SSE, scoring do crítico por princípio, painel de memória episódica. Inclui um modo demo scripted client-side que reproduz o cenário de auto-cura sem precisar de backend.',
+      'p1.status.5': '<strong>Pendente (visível no repo):</strong> popular o card de métricas com os números reais do benchmark, deploy público no Vercel, cabear o callback do Langfuse.',
+
+      // Project 02 — PT
+      'p2.arch.h': 'Arquitetura · ingestão → grafo + vetor',
+      'p2.problem.1': '<code>vector.search()</code> não responde perguntas multi-hop. "Quais projetos liderados por ex-funcionários da empresa X lançaram produtos que competem com nossa linha Y?" precisa de <strong>relações</strong>, não só similaridade. Um knowledge graph armazena essas relações explicitamente.',
+      'p2.dec.1a': 'Neo4j em vez de Postgres + CTEs recursivas',
+      'p2.dec.1b': 'Path queries, pattern matching do Cypher, traversal com APOC — feito para grafos, não parafusado por cima',
+      'p2.dec.2a': 'Híbrido: grafo + vetor',
+      'p2.dec.2b': 'Grafo para estrutura, vetor para chunks não-estruturados. Fusão RRF no retrieval',
+      'p2.dec.3a': 'Agente de obsolescência em background',
+      'p2.dec.3b': 'Marca entidades cujos embeddings divergem dos documentos fonte — knowledge decay é uma classe de bug real',
+
+      // Project 03 — PT
+      'p3.arch.h': 'Arquitetura · camadas de memória',
+      'p3.problem.1': 'Um agente de pesquisa que "esquece" entre sessões é um chatbot, não um pesquisador. O paper do MemGPT mostrou que camadas de memória explícitas — working / episodic / semantic — com um controlador que promove e descarta ganham de depender de janelas de contexto maiores.',
+      'p3.dec.1a': 'Memória de três camadas',
+      'p3.dec.1b': 'Working (em contexto) / episódica (runs recentes) / semântica (fatos consolidados). Cada camada tem regras explícitas de promoção.',
+      'p3.dec.2a': 'Controlador de memória como nó',
+      'p3.dec.2b': 'Promoção e descarte são nós de grafo de primeira classe — inspecionáveis no Langfuse, não enterrados num hook',
+      'p3.dec.3a': 'arXiv + Tavily + scraping',
+      'p3.dec.3b': 'A mistura de fontes estruturadas (API do arXiv) e não-estruturadas (Tavily) reduz o viés de fonte nos relatórios sintetizados',
+
+      // Project 04 — PT
+      'p4.arch.h': 'Arquitetura · fluxo do debate',
+      'p4.problem.1': 'O raciocínio de um único agente colapsa para o prior do modelo. Cinco agentes com <strong>perspectivas distintas e persistentes</strong> — Otimista, Cético, Analista Financeiro, Risk Officer, Advogado do Diabo — geram dissenso e revelam tradeoffs que um chain-of-thought único esconde.',
+      'p4.dec.1a': '5 papéis, não 2',
+      'p4.dec.1b': '"Debate" de dois agentes colapsa para a maioria. Cinco papéis, em três rounds estruturados, previnem o groupthink',
+      'p4.dec.2a': 'Protocolo de três rounds',
+      'p4.dec.2b': 'Abertura · refutação · síntese. Limitado, mensurável, previne loops infinitos',
+      'p4.dec.3a': 'Score de consenso por round',
+      'p4.dec.3b': 'Similaridade cosseno das posições dos agentes ao longo dos rounds. Convergência mensurável, não vibes',
+      'p4.dec.4a': 'Streaming via WebSocket',
+      'p4.dec.4b': 'Os tokens de cada agente fluem ao vivo para a UI — o debate é um artefato observável, não uma caixa-preta',
+
+      // Project 05 — PT
+      'p5.arch.h': 'Arquitetura · planeja → executa → aprova',
+      'p5.problem.1': 'Workflows hardcoded quebram no momento em que o negócio muda. Um meta-agente que <strong>gera o DAG a partir de linguagem natural</strong> e executa via servidores Model Context Protocol transforma qualquer novo requisito de negócio num pipeline executável sem trabalho de engenharia.',
+      'p5.dec.1a': 'MCP, não APIs de ferramentas custom',
+      'p5.dec.1b': 'Um protocolo padronizado significa que as integrações com GitHub/Jira/Slack/Drive são reutilizáveis, trocáveis e auditáveis',
+      'p5.dec.2a': 'O planner aprende com DAGs passados',
+      'p5.dec.2b': 'Workflows bem-sucedidos são embedados; o planner recupera planos passados similares antes de gerar um novo',
+      'p5.dec.3a': 'Aprovações HITL em nós críticos',
+      'p5.dec.3b': '"Enviar email" ou "postar em canal" exigem aprovação explícita. Auditável, reversível.',
+
+      // Project 06 — PT
+      'p6.arch.h': 'Arquitetura · retrieval paralelo + tuning em loop fechado <span class="arch-live-dot"></span><span class="arch-live-label">animado · passe pelos nós</span>',
+      'p6.problem.1': 'A maioria das implementações de RAG para em "escolhemos o Pinecone". Este projeto faz a pergunta mais difícil: <strong>qual realmente performa melhor no seu corpus, e por quanto?</strong> Três vector stores rodam em paralelo, todas as queries duplicadas, todas as métricas tracked.',
+      'p6.dec.1a': 'Três stores em paralelo',
+      'p6.dec.1b': 'Mesmo corpus, mesmas queries, mesma eval. Comparação apples-to-apples real — os benchmarks publicados raramente são',
+      'p6.dec.2a': 'Retrieval contextual da Anthropic',
+      'p6.dec.2b': '~49% de redução nas falhas de retrieval ao prefixar contexto no chunk. Lift de qualidade grátis antes de qualquer reranker',
+      'p6.dec.3a': 'Híbrido: BM25 + vetor + rerank',
+      'p6.dec.3b': 'Fusão RRF de léxico + semântico + rerank Cohere. Cada estágio medido independentemente',
+      'p6.dec.4a': 'Agente auto-optimizer',
+      'p6.dec.4b': 'Observa os scores do Ragas; quando a faithfulness cai, tuna chunk size / rerank-k / pesos de fusão, A/B contra um set held-out',
+      'p6.proves.1': 'Eu meço as coisas em vez de citá-las.',
+      'p6.proves.2': 'Sei que "usar um vector DB" é a metade fácil de RAG — chunking, fusão e eval loop são a metade difícil.',
+      'p6.proves.3': 'Trato otimização como um loop fechado, não uma sessão de tuning única.',
+      'p6.status.1': '<strong>Implementado + testado:</strong> in-memory vector store (cosseno + BM25), query rewriter (modelo injetável, retry de 3 tentativas no JSON), Reciprocal Rank Fusion hybrid search. <strong>23 testes pytest passando em ~0.4 s</strong> sem Docker, sem API keys.',
+      'p6.status.2': '<strong>Scaffolded:</strong> stores de produção (pgvector / Qdrant / Pinecone), enriquecedor contextual da Anthropic, rerank Cohere, avaliador Ragas, o loop de tuning do auto-optimizer. Interfaces e mapa de remediação por métrica já escritos.',
+      'p6.status.3': 'O Slice 1 permite cabear o resto do pipeline de retrieval contra um backend real sem mexer no algoritmo de busca de novo.',
     },
   };
 
