@@ -2493,6 +2493,152 @@
     margin-top: 10px;
     letter-spacing: 0.04em;
   }
+  /* New: dataset / mode chips + k slider control row */
+  .rrf-controls {
+    background: rgba(15, 17, 24, 0.55);
+    border: 1px solid rgba(139, 109, 255, 0.18);
+    border-radius: 14px;
+    padding: 16px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .rrf-control-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex-wrap: wrap;
+  }
+  .rrf-control-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--text-faint);
+    min-width: 110px;
+  }
+  .rrf-chip-group { display: inline-flex; gap: 6px; flex-wrap: wrap; }
+  .rrf-chip {
+    background: rgba(15, 17, 24, 0.7);
+    border: 1px solid rgba(139, 109, 255, 0.2);
+    color: var(--text-dim);
+    padding: 6px 12px;
+    border-radius: 999px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s, border-color 0.15s;
+  }
+  .rrf-chip:hover { color: var(--text); border-color: rgba(139, 109, 255, 0.5); }
+  .rrf-chip.is-active {
+    background: rgba(139, 109, 255, 0.18);
+    color: var(--accent);
+    border-color: var(--accent);
+  }
+  .rrf-query-display {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 14px;
+    background: rgba(10, 12, 18, 0.7);
+    border: 1px solid rgba(77, 208, 194, 0.18);
+    border-radius: 8px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+  }
+  .rrf-query-label {
+    color: var(--text-faint);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    font-size: 10px;
+  }
+  .rrf-query-text { color: var(--accent-3); }
+
+  /* Synthesizer (fake LLM) card */
+  .rrf-llm-card {
+    background: linear-gradient(180deg, rgba(139, 109, 255, 0.08), rgba(77, 208, 194, 0.04));
+    border: 1px solid rgba(139, 109, 255, 0.22);
+    border-radius: 14px;
+    padding: 18px 22px;
+  }
+  .rrf-llm-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 14px;
+    margin-bottom: 12px;
+    flex-wrap: wrap;
+  }
+  .rrf-llm-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+  }
+  .rrf-llm-sub {
+    font-size: 12px;
+    color: var(--text-dim);
+    margin-top: 4px;
+    max-width: 580px;
+    line-height: 1.5;
+  }
+  .rrf-llm-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--accent);
+    color: white;
+    border: none;
+    padding: 9px 16px;
+    border-radius: 8px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    cursor: pointer;
+    transition: background 0.15s, transform 0.1s;
+    box-shadow: 0 0 16px rgba(139, 109, 255, 0.4);
+  }
+  .rrf-llm-button:hover { background: var(--accent-2, #a78bfa); }
+  .rrf-llm-button:active { transform: scale(0.97); }
+  .rrf-llm-button:disabled {
+    background: rgba(139, 109, 255, 0.3);
+    cursor: not-allowed;
+    box-shadow: none;
+  }
+  .rrf-llm-output {
+    background: rgba(10, 12, 18, 0.85);
+    border: 1px solid rgba(139, 109, 255, 0.15);
+    border-radius: 8px;
+    padding: 16px 18px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    line-height: 1.65;
+    color: var(--text);
+    min-height: 80px;
+    white-space: pre-wrap;
+  }
+  .rrf-llm-output .rrf-llm-placeholder { color: var(--text-faint); }
+  .rrf-llm-output .rrf-llm-cursor {
+    display: inline-block;
+    width: 7px;
+    background: var(--accent);
+    margin-left: 2px;
+    animation: blink 0.9s steps(2) infinite;
+    vertical-align: text-bottom;
+    height: 1em;
+  }
+  .rrf-llm-output .citation {
+    color: var(--accent-3);
+    font-size: 10px;
+    padding: 1px 6px;
+    background: rgba(77, 208, 194, 0.12);
+    border-radius: 4px;
+    margin: 0 2px;
+    vertical-align: text-top;
+  }
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+  }
+
   .rrf-explanation,
   .attention-explanation {
     font-size: 13.5px;
@@ -2892,12 +3038,12 @@
   <div class="container">
     <div class="section-eyebrow" data-i18n="mathGrad.eyebrow">02b · Mathematics in motion · Gradient descent</div>
     <h2 data-i18n="mathGrad.h2">The same gradient that trains every model in this portfolio</h2>
-    <p class="section-sub">Every parameter inside Claude, GPT, and the LangGraph agents you'll see below was set by repeating one rule: <code style="color:var(--accent-3);font-family:'JetBrains Mono',monospace">w<sub>t+1</sub> = w<sub>t</sub> − η · ∇L(w<sub>t</sub>)</code>. Below, that rule runs live. The colored landscape is a 2-parameter loss surface; the small arrows are its gradient field (pointing toward steeper loss); the bright dot is a weight vector descending. <strong style="color:var(--text)">Try every control</strong> — they tell different optimization stories.</p>
+    <p class="section-sub" data-i18n="mathGrad.sub">Every parameter inside Claude, GPT, and the LangGraph agents you'll see below was set by repeating one rule: <code style="color:var(--accent-3);font-family:'JetBrains Mono',monospace">w<sub>t+1</sub> = w<sub>t</sub> − η · ∇L(w<sub>t</sub>)</code>. Below, that rule runs live. The colored landscape is a 2-parameter loss surface; the small arrows are its gradient field (pointing toward steeper loss); the bright dot is a weight vector descending. <strong style="color:var(--text)">Try every control</strong> — they tell different optimization stories.</p>
 
     <div class="math-card-tour">
-      <span class="tour-step"><strong>1.</strong> click anywhere on the surface to drop the weight there</span>
-      <span class="tour-step"><strong>2.</strong> change the loss function to see SGD's behavior on different landscapes</span>
-      <span class="tour-step"><strong>3.</strong> raise η too high → watch divergence; too low → glacial convergence</span>
+      <span class="tour-step" data-i18n="mathGrad.tour.1"><strong>1.</strong> click anywhere on the surface to drop the weight there</span>
+      <span class="tour-step" data-i18n="mathGrad.tour.2"><strong>2.</strong> change the loss function to see SGD's behavior on different landscapes</span>
+      <span class="tour-step" data-i18n="mathGrad.tour.3"><strong>3.</strong> raise η too high → watch divergence; too low → glacial convergence</span>
     </div>
 
     <div class="grad-descent-wrap reveal">
@@ -2949,42 +3095,87 @@
   <div class="container">
     <div class="section-eyebrow" data-i18n="mathRRF.eyebrow">02c · Mathematics in motion · Reciprocal Rank Fusion</div>
     <h2 data-i18n="mathRRF.h2">Two parameter-free lines of math beat a model that costs a million dollars to train</h2>
-    <p class="section-sub">
-      P6 fuses keyword (BM25) and vector (cosine) retrieval with <strong>Reciprocal Rank Fusion</strong>. The rule has one constant <code>k = 60</code> (recommended in the original 2009 paper and never seriously challenged), no training, no parameters to tune. It consistently beats both signals alone on every published benchmark — and on every internal one I've run. Reorder either list and watch the fused output update live.
+    <p class="section-sub" data-i18n="mathRRF.sub">
+      P6 fuses keyword (BM25) and vector (cosine) retrieval with <strong>Reciprocal Rank Fusion</strong>. One constant <code>k = 60</code> (recommended in the 2009 paper and never seriously challenged), no training, no parameters to tune. It beats both signals alone on every published benchmark. Try it across <strong>four different corpora</strong>, toggle the retrieval mode, change <code>k</code>, then hit the LLM-synthesis button to see what a downstream model would actually return.
     </p>
 
     <div class="math-card-tour">
-      <span class="tour-step"><strong>1.</strong> use the ↑/↓ buttons to reorder items in either list</span>
-      <span class="tour-step"><strong>2.</strong> watch the rightmost column re-sort live with the new RRF score</span>
-      <span class="tour-step"><strong>3.</strong> hover any row to see how the same doc lines up across the three views</span>
+      <span class="tour-step" data-i18n="mathRRF.tour.1"><strong>1.</strong> pick a corpus → see how vector vs keyword split on real data</span>
+      <span class="tour-step" data-i18n="mathRRF.tour.2"><strong>2.</strong> slide <code>k</code> and switch between Vector / Keyword / Hybrid modes</span>
+      <span class="tour-step" data-i18n="mathRRF.tour.3"><strong>3.</strong> hit 🤖 Synthesize → the top-3 contexts go into a streaming "LLM" answer</span>
     </div>
 
     <div class="rrf-demo reveal">
       <div class="rrf-formula">
-        <div class="formula-line">score(d) = Σ<sub>i</sub> &nbsp;1 / (k + rank<sub>i</sub>(d))</div>
-        <div class="formula-where">d ranks higher when it appears near the top of multiple lists. The reciprocal damps the contribution of any single list, so one strong signal can't completely overrule another. k = 60 sets the "patience" — bigger k means a document at rank 20 still gets meaningful credit.</div>
+        <div class="formula-line">score(d) = Σ<sub>i</sub> &nbsp;1 / (<span id="rrf-k-label">k</span> + rank<sub>i</sub>(d)) &nbsp; · &nbsp; <span id="rrf-k-readout" style="color:var(--accent-3)">k = 60</span></div>
+        <div class="formula-where" data-i18n="mathRRF.formulaWhere">A doc ranks higher when it sits near the top of multiple lists. The reciprocal damps any single signal — no list can completely overrule another. Bigger k = more "patience" (a doc at rank 20 still contributes meaningfully); smaller k = aggressive top-of-list weighting.</div>
+      </div>
+
+      <div class="rrf-controls">
+        <div class="rrf-control-row">
+          <label class="rrf-control-label" data-i18n="mathRRF.controls.dataset">corpus</label>
+          <div class="rrf-chip-group" id="rrf-dataset-group">
+            <button class="rrf-chip is-active" data-dataset="ai"     data-i18n="mathRRF.dataset.ai">AI / ML papers</button>
+            <button class="rrf-chip"           data-dataset="code"   data-i18n="mathRRF.dataset.code">Code search</button>
+            <button class="rrf-chip"           data-dataset="ecom"   data-i18n="mathRRF.dataset.ecom">E-commerce</button>
+            <button class="rrf-chip"           data-dataset="support" data-i18n="mathRRF.dataset.support">Customer support</button>
+          </div>
+        </div>
+        <div class="rrf-control-row">
+          <label class="rrf-control-label" data-i18n="mathRRF.controls.mode">retrieval mode</label>
+          <div class="rrf-chip-group" id="rrf-mode-group">
+            <button class="rrf-chip" data-mode="vector"  data-i18n="mathRRF.mode.vector">vector only</button>
+            <button class="rrf-chip" data-mode="keyword" data-i18n="mathRRF.mode.keyword">keyword only</button>
+            <button class="rrf-chip is-active" data-mode="hybrid" data-i18n="mathRRF.mode.hybrid">hybrid (RRF)</button>
+          </div>
+        </div>
+        <div class="rrf-control-row">
+          <label class="rrf-control-label">k</label>
+          <input type="range" id="rrf-k" min="1" max="200" value="60" step="1" style="flex:1;max-width:300px;accent-color:#8b6dff">
+          <span id="rrf-k-display" style="font-family:'JetBrains Mono',monospace;color:var(--accent);min-width:40px;text-align:right">60</span>
+        </div>
+        <div class="rrf-query-display">
+          <span class="rrf-query-label" data-i18n="mathRRF.controls.query">user query:</span>
+          <span class="rrf-query-text" id="rrf-query"></span>
+        </div>
       </div>
 
       <div class="rrf-grid">
         <div class="rrf-list">
-          <h6><span class="dot" style="background:#8b6dff"></span>Vector similarity · Voyage AI</h6>
+          <h6><span class="dot" style="background:#8b6dff"></span><span data-i18n="mathRRF.list.vector">Vector similarity · Voyage AI</span></h6>
           <ul id="rrf-list-vec"></ul>
-          <div class="rrf-list-note">drag any item ↑↓ to reorder</div>
+          <div class="rrf-list-note" data-i18n="mathRRF.list.vectorNote">cosine over 1024-dim embeddings</div>
         </div>
         <div class="rrf-list">
-          <h6><span class="dot" style="background:#4dd0c2"></span>BM25 keyword</h6>
+          <h6><span class="dot" style="background:#4dd0c2"></span><span data-i18n="mathRRF.list.keyword">BM25 keyword</span></h6>
           <ul id="rrf-list-kw"></ul>
-          <div class="rrf-list-note">drag any item ↑↓ to reorder</div>
+          <div class="rrf-list-note" data-i18n="mathRRF.list.keywordNote">TF-IDF with length normalization</div>
         </div>
         <div class="rrf-list rrf-fused">
-          <h6><span class="dot" style="background:#fbbf24"></span>RRF-fused output</h6>
+          <h6><span class="dot" style="background:#fbbf24"></span><span id="rrf-result-label" data-i18n="mathRRF.list.hybrid">Hybrid (RRF) result</span></h6>
           <ul id="rrf-list-fused"></ul>
-          <div class="rrf-list-note">computed live · k = 60</div>
+          <div class="rrf-list-note" id="rrf-result-note" data-i18n="mathRRF.list.hybridNote">live · top-3 fed to the synthesizer below</div>
+        </div>
+      </div>
+
+      <div class="rrf-llm-card">
+        <div class="rrf-llm-header">
+          <div>
+            <div class="rrf-llm-title" data-i18n="mathRRF.llm.title">🤖 Synthesizer · Claude with the top-3 contexts</div>
+            <div class="rrf-llm-sub" data-i18n="mathRRF.llm.sub">The retrieved chunks above become the context window for a fake LLM call. The response below is precomputed per corpus but the streaming is real.</div>
+          </div>
+          <button class="rrf-llm-button" id="rrf-synthesize">
+            <span data-i18n="mathRRF.llm.button">Synthesize answer</span>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+          </button>
+        </div>
+        <div class="rrf-llm-output" id="rrf-llm-output">
+          <span class="rrf-llm-placeholder" data-i18n="mathRRF.llm.placeholder">Generated answer will stream here. Click "Synthesize" above to start.</span>
         </div>
       </div>
 
       <div class="rrf-explanation">
-        <p><strong>Why this matters for production RAG.</strong> Vector embeddings are good at <em>semantic</em> matches: "auth token" ≈ "JWT" ≈ "session credential". BM25 is good at <em>exact</em> matches: product codes, version numbers, acronyms, the names of internal services. Real corpora need both; the rest of the field treats this as "easy" by snapping to vector-only, which is why so many RAG demos work on a curated wiki and fall over on real enterprise documents. Choosing the fusion math is the actual engineering decision.</p>
+        <p data-i18n="mathRRF.explanation"><strong>Why this matters for production RAG.</strong> Vector embeddings are good at <em>semantic</em> matches: "auth token" ≈ "JWT" ≈ "session credential". BM25 is good at <em>exact</em> matches: product codes, version numbers, acronyms, the names of internal services. Real corpora need both. The rest of the field snaps to vector-only — which is why so many RAG demos work on a curated wiki and fall over on real enterprise documents. Choosing the fusion math is the actual engineering decision.</p>
       </div>
     </div>
   </div>
@@ -2995,14 +3186,14 @@
   <div class="container">
     <div class="section-eyebrow" data-i18n="mathAttn.eyebrow">02d · Mathematics in motion · Self-attention</div>
     <h2 data-i18n="mathAttn.h2">The 49-character formula behind every model in this portfolio</h2>
-    <p class="section-sub">
+    <p class="section-sub" data-i18n="mathAttn.sub">
       Every LLM you've heard of — Claude, GPT, Llama — is built on stacked layers of one tiny operation: scaled dot-product attention. Below, hover any output token to see which input tokens contributed to it and by how much. The line weight is literally the attention weight after softmax. Click <kbd>shuffle</kbd> for a fresh pattern.
     </p>
 
     <div class="math-card-tour">
-      <span class="tour-step"><strong>1.</strong> hover any token in the bottom (output) row</span>
-      <span class="tour-step"><strong>2.</strong> the cubic-bezier edges show that token's attention distribution after softmax</span>
-      <span class="tour-step"><strong>3.</strong> press <kbd>↻ Shuffle attention</kbd> to regenerate the weights from a fresh kernel</span>
+      <span class="tour-step" data-i18n="mathAttn.tour.1"><strong>1.</strong> hover any token in the bottom (output) row</span>
+      <span class="tour-step" data-i18n="mathAttn.tour.2"><strong>2.</strong> the cubic-bezier edges show that token's attention distribution after softmax</span>
+      <span class="tour-step" data-i18n="mathAttn.tour.3"><strong>3.</strong> press <kbd>↻ Shuffle attention</kbd> to regenerate the weights from a fresh kernel</span>
     </div>
 
     <div class="attention-demo reveal">
@@ -3048,14 +3239,14 @@
   <div class="container">
     <div class="section-eyebrow" data-i18n="mathMap.eyebrow">02e · Mathematics in motion · Portfolio as a loss landscape</div>
     <h2 data-i18n="mathMap.h2">The whole portfolio is one big loss surface</h2>
-    <p class="section-sub">
+    <p class="section-sub" data-i18n="mathMap.sub">
       I literally encoded the six projects as attractors of a 2D vector field. Each project is a Gaussian basin at <code>r<sub>i</sub></code> with depth <code>w<sub>i</sub></code> sized to its current state of completion. Click anywhere — a particle drops there, descends −∇L, and lands in the closest project's basin. Click on a project's label to open its details. This is the same math you've been watching above, just turned into a navigation device.
     </p>
 
     <div class="math-card-tour">
-      <span class="tour-step"><strong>1.</strong> click anywhere on the map → particle drops & descends</span>
-      <span class="tour-step"><strong>2.</strong> watch which project's basin captures it</span>
-      <span class="tour-step"><strong>3.</strong> click any labeled attractor to open the full project</span>
+      <span class="tour-step" data-i18n="mathMap.tour.1"><strong>1.</strong> click anywhere on the map → particle drops & descends</span>
+      <span class="tour-step" data-i18n="mathMap.tour.2"><strong>2.</strong> watch which project's basin captures it</span>
+      <span class="tour-step" data-i18n="mathMap.tour.3"><strong>3.</strong> click any labeled attractor to open the full project</span>
     </div>
 
     <div class="map-card reveal">
@@ -3178,7 +3369,7 @@
   <div class="container">
     <div class="section-eyebrow" data-i18n="work.eyebrow">04 · The work</div>
     <h2 data-i18n="work.h2">Six projects, one philosophy</h2>
-    <p class="section-sub">Each project answers a distinct production question. Status is honest: one functional flagship and five scaffolded designs with full READMEs and code skeletons.</p>
+    <p class="section-sub" data-i18n="work.sub">Each project answers a distinct production question. Status is honest: one functional flagship and five scaffolded designs with full READMEs and code skeletons.</p>
 
     <!-- PROJECT 01 -->
     <article class="project-detail reveal">
@@ -3793,9 +3984,9 @@
 <!-- ============ LIVE DEMO ============ -->
 <section id="demo">
   <div class="container">
-    <div class="section-eyebrow">05 · Live demo · Project 01</div>
-    <h2>Watch the self-healing loop run</h2>
-    <p class="section-sub">A simulated execution of the LangGraph state machine on a malformed invoice. The critic flags the failure, the extractor reflects, episodic memory is consulted. No real LLM calls — the timing and scores match the actual run profile.</p>
+    <div class="section-eyebrow" data-i18n="demo.eyebrow">05 · Live demo · Project 01</div>
+    <h2 data-i18n="demo.h2">Watch the self-healing loop run</h2>
+    <p class="section-sub" data-i18n="demo.sub">A simulated execution of the LangGraph state machine on a malformed invoice. The critic flags the failure, the extractor reflects, episodic memory is consulted. No real LLM calls — the timing and scores match the actual run profile.</p>
 
     <div class="demo-card reveal">
       <div class="demo-header">
@@ -3872,9 +4063,9 @@
 <!-- ============ BENCHMARKS ============ -->
 <section id="benchmarks">
   <div class="container">
-    <div class="section-eyebrow">06 · Benchmarks · Project 06</div>
-    <h2>Three vector stores. Same corpus. Same queries.</h2>
-    <p class="section-sub">Target benchmarks for the agentic RAG benchmark suite, with and without the reranker stage. Numbers are the project's success targets — real measurements land in the README when the benchmark runs against the production corpus.</p>
+    <div class="section-eyebrow" data-i18n="bench.eyebrow">06 · Benchmarks · Project 06</div>
+    <h2 data-i18n="bench.h2">Three vector stores. Same corpus. Same queries.</h2>
+    <p class="section-sub" data-i18n="bench.sub">Target benchmarks for the agentic RAG benchmark suite, with and without the reranker stage. Numbers are the project's success targets — real measurements land in the README when the benchmark runs against the production corpus.</p>
 
     <div class="bench-wrap reveal">
       <div class="bench-controls">
@@ -3945,9 +4136,9 @@
 <!-- ============ STACK ============ -->
 <section id="stack">
   <div class="container">
-    <div class="section-eyebrow">07 · The toolbox</div>
-    <h2>What I actually reach for</h2>
-    <p class="section-sub">Categorized by layer. Dots indicate self-assessed proficiency — three dots means I've shipped it under load, two means I've built a non-trivial project with it, one means I've used it enough to have an opinion.</p>
+    <div class="section-eyebrow" data-i18n="stack.eyebrow">07 · The toolbox</div>
+    <h2 data-i18n="stack.h2">What I actually reach for</h2>
+    <p class="section-sub" data-i18n="stack.sub">Categorized by layer. Dots indicate self-assessed proficiency — three dots means I've shipped it under load, two means I've built a non-trivial project with it, one means I've used it enough to have an opinion.</p>
 
     <div class="stack-matrix">
       <div class="stack-layer reveal">
@@ -4019,9 +4210,9 @@
 <!-- ============ ROADMAP ============ -->
 <section id="roadmap">
   <div class="container">
-    <div class="section-eyebrow">08 · Roadmap</div>
-    <h2>What lands next</h2>
-    <p class="section-sub">Public, honest, dated. Each quarter has one project pushed from <em>scaffolded</em> to <em>functional with metrics in the README</em>.</p>
+    <div class="section-eyebrow" data-i18n="roadmap.eyebrow">08 · Roadmap</div>
+    <h2 data-i18n="roadmap.h2">What lands next</h2>
+    <p class="section-sub" data-i18n="roadmap.sub">Public, honest, dated. Each quarter has one project pushed from <em>scaffolded</em> to <em>functional with metrics in the README</em>.</p>
 
     <div class="roadmap" style="max-width: var(--max-w-narrow)">
       <div class="roadmap-item done reveal">
@@ -4051,9 +4242,9 @@
 <!-- ============ ABOUT ============ -->
 <section id="about">
   <div class="container">
-    <div class="section-eyebrow">09 · About</div>
-    <h2>The person behind the repos</h2>
-    <p class="section-sub">Short version below. The rest lives in the code.</p>
+    <div class="section-eyebrow" data-i18n="about.eyebrow">09 · About</div>
+    <h2 data-i18n="about.h2">The person behind the repos</h2>
+    <p class="section-sub" data-i18n="about.sub">Short version below. The rest lives in the code.</p>
 
     <div class="about-grid">
       <div class="about-text">
@@ -4890,57 +5081,153 @@
   }
 </script>
 
-<!-- ============ RRF LIVE CALCULATOR ============ -->
+<!-- ============ RRF LIVE CALCULATOR (multi-corpus + LLM synth) ============ -->
 <script>
 /**
- * Interactive Reciprocal Rank Fusion demo.
- * Two sortable lists (vector, keyword) and a fused output computed live:
- *   score(d) = Σ_i 1 / (k + rank_i(d))    with k = 60
- * Users press ↑/↓ on any item to move it within its list — the fused
- * column reorders smoothly. Whichever item the user is hovering gets
- * highlighted across all three columns so the cross-list contribution
- * is visible at a glance.
+ * Interactive Reciprocal Rank Fusion playground.
+ *   score(d) = Σ_i 1 / (k + rank_i(d))
+ *
+ * Knobs:
+ *   • corpus       — 4 distinct retrieval scenarios (AI papers / code /
+ *                    e-commerce / customer support). Each ships with its
+ *                    own 5 docs, a sample user query, and pre-baked vector
+ *                    vs keyword rankings that reflect how the two signals
+ *                    typically diverge on that data.
+ *   • mode         — vector only / keyword only / hybrid (RRF). When the
+ *                    user picks vector-only, the result column copies the
+ *                    vector list verbatim; for hybrid it computes RRF live.
+ *   • k            — the RRF "patience" constant (1 .. 200, default 60).
+ *                    Lower k aggressively rewards top positions; bigger k
+ *                    flattens the contribution curve.
+ *   • ↑/↓ buttons  — let the user permute the underlying rankings to see
+ *                    how the fused order tracks the input changes.
+ *   • Synthesize   — fakes an LLM call: takes the top-3 contexts from the
+ *                    current result column and streams a pre-baked answer
+ *                    character by character with inline citations.
  */
 (function () {
-  const vecRoot = document.getElementById('rrf-list-vec');
-  const kwRoot  = document.getElementById('rrf-list-kw');
+  const vecRoot   = document.getElementById('rrf-list-vec');
+  const kwRoot    = document.getElementById('rrf-list-kw');
   const fusedRoot = document.getElementById('rrf-list-fused');
   if (!vecRoot || !kwRoot || !fusedRoot) return;
 
-  const K = 60;
-  const DOCS = [
-    { id: 'A', title: 'transformer architecture' },
-    { id: 'B', title: 'reciprocal rank fusion paper' },
-    { id: 'C', title: 'pgvector ivfflat setup' },
-    { id: 'D', title: 'asyncio event loop' },
-    { id: 'E', title: 'JSON schema validation' },
-  ];
+  const kSlider     = document.getElementById('rrf-k');
+  const kDisplay    = document.getElementById('rrf-k-display');
+  const kReadout    = document.getElementById('rrf-k-readout');
+  const queryNode   = document.getElementById('rrf-query');
+  const resultLabel = document.getElementById('rrf-result-label');
+  const resultNote  = document.getElementById('rrf-result-note');
+  const llmOutput   = document.getElementById('rrf-llm-output');
+  const llmButton   = document.getElementById('rrf-synthesize');
 
-  // Two distinct rankings — vector finds semantics, BM25 finds exact terms.
-  let vectorOrder  = ['D', 'A', 'B', 'E', 'C'];
-  let keywordOrder = ['B', 'D', 'A', 'C', 'E'];
+  // ── Corpora ────────────────────────────────────────────────────────────
+  const CORPORA = {
+    ai: {
+      query: '"What is reciprocal rank fusion and why does it beat vector-only retrieval?"',
+      docs: {
+        A: 'Attention Is All You Need (Vaswani 2017)',
+        B: 'Reciprocal Rank Fusion outperforms Condorcet (Cormack 2009)',
+        C: 'Dense Passage Retrieval for Open-Domain QA (Karpukhin 2020)',
+        D: 'BM25 and Beyond — IR reranking survey',
+        E: 'RAG: Retrieval-Augmented Generation (Lewis 2020)',
+      },
+      vector:  ['C', 'E', 'A', 'D', 'B'],
+      keyword: ['B', 'D', 'A', 'E', 'C'],
+      answer:
+        'Reciprocal Rank Fusion (RRF) combines multiple ranked retrieval lists into a single ordering by summing 1 / (k + rank) across lists, with k≈60 [§B]. ' +
+        'Vector-only retrieval misses exact-keyword matches (acronyms, product codes) while BM25 alone misses semantic paraphrases [§D]. ' +
+        'In hybrid RAG pipelines, fusing both signals before passing to a generator like RAG (Lewis 2020) yields a ~14-point recall@10 lift on standard IR benchmarks [§E].',
+    },
+    code: {
+      query: '"How do I run a batch of async tasks in Python with bounded concurrency?"',
+      docs: {
+        A: 'asyncio.gather(*coros) — concurrent execution',
+        B: 'asyncio.Semaphore for limiting in-flight tasks',
+        C: 'concurrent.futures.ThreadPoolExecutor.map',
+        D: 'anyio task groups with capacity limiter',
+        E: 'TrioCapacityLimiter + Nursery — structured concurrency',
+      },
+      vector:  ['B', 'D', 'A', 'E', 'C'],
+      keyword: ['A', 'B', 'C', 'D', 'E'],
+      answer:
+        'For bounded-concurrency async batching in Python, wrap your coroutines in an asyncio.Semaphore that caps the in-flight count, then pass the wrapped coroutines to asyncio.gather() [§A, §B]. ' +
+        'For more structured guarantees (cancellation propagation, error scoping) use anyio task groups with a CapacityLimiter [§D] — they Trio-style nurseries make the concurrency contract explicit. ' +
+        'concurrent.futures.ThreadPoolExecutor is a different tool: it\'s for I/O-blocking sync code, not async coroutines [§C].',
+    },
+    ecom: {
+      query: '"wireless headphones with active noise cancellation under $200"',
+      docs: {
+        A: 'Sony WH-1000XM4 · over-ear · $349',
+        B: 'Bose QuietComfort 35 II · over-ear · $279',
+        C: 'Soundcore Space Q45 · ANC · $149',
+        D: 'Anker Soundcore Life Q30 · ANC · $79',
+        E: 'Apple AirPods Pro 2 · in-ear · $249',
+      },
+      vector:  ['A', 'B', 'E', 'C', 'D'],
+      keyword: ['C', 'D', 'A', 'B', 'E'],
+      answer:
+        'Within the $200 budget the strongest active-noise-cancelling options are the Soundcore Space Q45 ($149) and the Anker Soundcore Life Q30 ($79) [§C, §D]. ' +
+        'Both ship hybrid ANC with multi-band noise rejection; the Q45 adds LDAC for higher-bitrate Bluetooth. ' +
+        'The Sony WH-1000XM4 and Bose QC35 II are usually considered the gold standard for ANC, but they sit above the price ceiling [§A, §B].',
+    },
+    support: {
+      query: '"why was I charged twice for my monthly subscription this period?"',
+      docs: {
+        A: 'Billing FAQ — duplicate charges and how they happen',
+        B: 'How to request a refund — full / pro-rated / partial',
+        C: 'Subscription auto-renewal policy and pre-charge window',
+        D: 'Payment method troubleshooting after card update',
+        E: 'Account security — what to do after suspicious activity',
+      },
+      vector:  ['A', 'C', 'D', 'B', 'E'],
+      keyword: ['A', 'B', 'D', 'C', 'E'],
+      answer:
+        'Duplicate subscription charges most often come from one of two causes [§A]: an attempted charge that returned as "pending" on your bank then re-cleared after the retry window, or an auto-renewal that overlapped with a manual subscription update during the pre-charge window [§C]. ' +
+        'If a second charge has actually settled (not just authorized), open a refund request from your billing dashboard — pro-rated refunds clear within 5–7 business days [§B].',
+    },
+  };
+
+  // ── State ──────────────────────────────────────────────────────────────
+  let currentCorpus = 'ai';
+  let currentMode   = 'hybrid';
+  let k = 60;
+  let vectorOrder, keywordOrder;
+
+  function loadCorpus(name) {
+    currentCorpus = name;
+    const c = CORPORA[name];
+    vectorOrder  = [...c.vector];
+    keywordOrder = [...c.keyword];
+    queryNode.textContent = c.query;
+    resetLlmOutput();
+    renderAll();
+  }
 
   function rankIn(order, id) { return order.indexOf(id) + 1; }
-
   function scoreFor(id) {
     const rv = rankIn(vectorOrder, id);
     const rk = rankIn(keywordOrder, id);
-    return {
-      total: 1 / (K + rv) + 1 / (K + rk),
-      rv, rk,
-    };
+    return { total: 1 / (k + rv) + 1 / (k + rk), rv, rk };
   }
+  function titleFor(id) { return CORPORA[currentCorpus].docs[id]; }
 
   function fusedOrder() {
-    return DOCS
-      .map(d => ({ id: d.id, ...scoreFor(d.id) }))
+    return Object.keys(CORPORA[currentCorpus].docs)
+      .map(id => ({ id, ...scoreFor(id) }))
       .sort((a, b) => b.total - a.total);
   }
 
-  function titleFor(id) {
-    return DOCS.find(d => d.id === id).title;
+  function resultOrder() {
+    if (currentMode === 'vector') {
+      return vectorOrder.map((id, i) => ({ id, rv: i + 1, rk: rankIn(keywordOrder, id), total: 1 / (k + i + 1) }));
+    }
+    if (currentMode === 'keyword') {
+      return keywordOrder.map((id, i) => ({ id, rk: i + 1, rv: rankIn(vectorOrder, id), total: 1 / (k + i + 1) }));
+    }
+    return fusedOrder();
   }
 
+  // ── Rendering ──────────────────────────────────────────────────────────
   function renderList(root, order, listName) {
     root.innerHTML = '';
     order.forEach((id, idx) => {
@@ -4948,11 +5235,11 @@
       const li = document.createElement('li');
       li.dataset.doc = id;
       li.dataset.list = listName;
-      const { rv, rk, total } = scoreFor(id);
+      const contrib = 1 / (k + rank);
       li.innerHTML = `
         <span class="rrf-rank">#${rank}</span>
         <span class="rrf-title">doc ${id} · ${titleFor(id)}</span>
-        <span class="rrf-score">contrib  1/(60+${rank}) = ${(1/(60+rank)).toFixed(5)}</span>
+        <span class="rrf-score">1/(${k}+${rank}) = ${contrib.toFixed(5)}</span>
         <span class="rrf-actions">
           <button data-act="up"   data-doc="${id}" data-list="${listName}" ${idx === 0 ? 'disabled' : ''}>↑</button>
           <button data-act="down" data-doc="${id}" data-list="${listName}" ${idx === order.length - 1 ? 'disabled' : ''}>↓</button>
@@ -4961,26 +5248,43 @@
     });
   }
 
-  function renderFused() {
+  function renderResult() {
     fusedRoot.innerHTML = '';
-    fusedOrder().forEach((row, idx) => {
+    resultOrder().forEach((row, idx) => {
       const li = document.createElement('li');
       li.dataset.doc = row.id;
+      let scoreText;
+      if (currentMode === 'hybrid') {
+        scoreText = `1/(${k}+${row.rv}) + 1/(${k}+${row.rk}) = ${row.total.toFixed(5)}`;
+      } else {
+        scoreText = `1/(${k}+${idx + 1}) = ${(1 / (k + idx + 1)).toFixed(5)}`;
+      }
       li.innerHTML = `
         <span class="rrf-rank">#${idx + 1}</span>
         <span class="rrf-title">doc ${row.id} · ${titleFor(row.id)}</span>
-        <span class="rrf-score">1/(60+${row.rv}) + 1/(60+${row.rk}) = ${row.total.toFixed(5)}</span>
+        <span class="rrf-score">${scoreText}</span>
         <span class="rrf-actions"></span>`;
       fusedRoot.appendChild(li);
     });
+
+    if (currentMode === 'vector') {
+      resultLabel.textContent = 'Vector-only result';
+      resultNote.textContent = 'mode: vector · k unused';
+    } else if (currentMode === 'keyword') {
+      resultLabel.textContent = 'Keyword-only result';
+      resultNote.textContent = 'mode: keyword · k unused';
+    } else {
+      resultLabel.textContent = 'Hybrid (RRF) result';
+      resultNote.textContent = `live · k = ${k} · top-3 → synthesizer below`;
+    }
   }
 
   function renderAll() {
     renderList(vecRoot, vectorOrder, 'vector');
-    renderList(kwRoot,  keywordOrder, 'keyword');
-    renderFused();
-    wireActions();
-    wireHover();
+    renderList(kwRoot, keywordOrder, 'keyword');
+    renderResult();
+    wireRowActions();
+    wireRowHover();
   }
 
   function move(listName, id, dir) {
@@ -4992,7 +5296,7 @@
     renderAll();
   }
 
-  function wireActions() {
+  function wireRowActions() {
     document.querySelectorAll('.rrf-list .rrf-actions button').forEach(btn => {
       btn.addEventListener('click', () => {
         const dir = btn.dataset.act === 'up' ? -1 : 1;
@@ -5001,22 +5305,92 @@
     });
   }
 
-  function wireHover() {
+  function wireRowHover() {
     document.querySelectorAll('.rrf-list li[data-doc]').forEach(li => {
       li.addEventListener('mouseenter', () => {
-        document
-          .querySelectorAll(`.rrf-list li[data-doc="${li.dataset.doc}"]`)
+        document.querySelectorAll(`.rrf-list li[data-doc="${li.dataset.doc}"]`)
           .forEach(el => el.classList.add('rrf-highlighted'));
       });
       li.addEventListener('mouseleave', () => {
-        document
-          .querySelectorAll('.rrf-list li.rrf-highlighted')
+        document.querySelectorAll('.rrf-list li.rrf-highlighted')
           .forEach(el => el.classList.remove('rrf-highlighted'));
       });
     });
   }
 
-  renderAll();
+  // ── LLM "synthesis" — pre-baked answer streamed letter by letter ──────
+  let streaming = false;
+  function resetLlmOutput() {
+    llmOutput.innerHTML = '<span class="rrf-llm-placeholder">Click "Synthesize answer" — the top-3 contexts above will be fed to a simulated LLM that streams the response.</span>';
+  }
+
+  function streamAnswer(text) {
+    if (streaming) return;
+    streaming = true;
+    llmButton.disabled = true;
+    llmOutput.innerHTML = '<span class="rrf-llm-cursor"></span>';
+    let i = 0;
+    const cursor = llmOutput.querySelector('.rrf-llm-cursor');
+
+    function step() {
+      if (i >= text.length) {
+        cursor.remove();
+        streaming = false;
+        llmButton.disabled = false;
+        return;
+      }
+      // Look ahead for citation tokens like [§A] and emit them as a chip
+      if (text[i] === '[' && text[i + 1] === '§') {
+        const close = text.indexOf(']', i);
+        if (close !== -1) {
+          const tag = text.slice(i + 2, close);
+          const span = document.createElement('span');
+          span.className = 'citation';
+          span.textContent = '§' + tag;
+          cursor.parentNode.insertBefore(span, cursor);
+          i = close + 1;
+          setTimeout(step, 80);
+          return;
+        }
+      }
+      cursor.parentNode.insertBefore(document.createTextNode(text[i]), cursor);
+      i += 1;
+      const ch = text[i - 1];
+      const delay = ch === '.' || ch === ',' ? 60 : (ch === ' ' ? 18 : 14);
+      setTimeout(step, delay);
+    }
+    step();
+  }
+
+  llmButton.addEventListener('click', () => {
+    const answer = CORPORA[currentCorpus].answer;
+    streamAnswer(answer);
+  });
+
+  // ── Control wiring ─────────────────────────────────────────────────────
+  document.getElementById('rrf-dataset-group').addEventListener('click', (e) => {
+    const btn = e.target.closest('.rrf-chip');
+    if (!btn || !btn.dataset.dataset) return;
+    document.querySelectorAll('#rrf-dataset-group .rrf-chip').forEach(b => b.classList.toggle('is-active', b === btn));
+    loadCorpus(btn.dataset.dataset);
+  });
+
+  document.getElementById('rrf-mode-group').addEventListener('click', (e) => {
+    const btn = e.target.closest('.rrf-chip');
+    if (!btn || !btn.dataset.mode) return;
+    document.querySelectorAll('#rrf-mode-group .rrf-chip').forEach(b => b.classList.toggle('is-active', b === btn));
+    currentMode = btn.dataset.mode;
+    renderResult();
+  });
+
+  kSlider.addEventListener('input', () => {
+    k = parseInt(kSlider.value, 10);
+    kDisplay.textContent = k;
+    kReadout.textContent = `k = ${k}`;
+    renderAll();
+  });
+
+  loadCorpus('ai');
 })();
 </script>
 
@@ -5575,12 +5949,53 @@
 
       'mathGrad.eyebrow': '02b · Mathematics in motion · Gradient descent',
       'mathGrad.h2': 'The same gradient that trains every model in this portfolio',
+      'mathGrad.sub': 'Every parameter inside Claude, GPT, and the LangGraph agents you\'ll see below was set by repeating one rule: <code style="color:var(--accent-3);font-family:\'JetBrains Mono\',monospace">w<sub>t+1</sub> = w<sub>t</sub> − η · ∇L(w<sub>t</sub>)</code>. Below, that rule runs live. The colored landscape is a 2-parameter loss surface; the small arrows are its gradient field; the bright dot is a weight vector descending. <strong style="color:var(--text)">Try every control</strong> — they tell different optimization stories.',
+      'mathGrad.tour.1': '<strong>1.</strong> click anywhere on the surface to drop the weight there',
+      'mathGrad.tour.2': '<strong>2.</strong> change the loss function to see SGD\'s behavior on different landscapes',
+      'mathGrad.tour.3': '<strong>3.</strong> raise η too high → watch divergence; too low → glacial convergence',
+
       'mathRRF.eyebrow': '02c · Mathematics in motion · Reciprocal Rank Fusion',
       'mathRRF.h2': 'Two parameter-free lines of math beat a model that costs a million dollars to train',
+      'mathRRF.sub': 'P6 fuses keyword (BM25) and vector (cosine) retrieval with <strong>Reciprocal Rank Fusion</strong>. One constant <code>k = 60</code> (recommended in the 2009 paper and never seriously challenged), no training, no parameters to tune. It beats both signals alone on every published benchmark. Try it across <strong>four different corpora</strong>, toggle the retrieval mode, change <code>k</code>, then hit the LLM-synthesis button to see what a downstream model would actually return.',
+      'mathRRF.tour.1': '<strong>1.</strong> pick a corpus → see how vector vs keyword split on real data',
+      'mathRRF.tour.2': '<strong>2.</strong> slide <code>k</code> and switch between Vector / Keyword / Hybrid modes',
+      'mathRRF.tour.3': '<strong>3.</strong> hit 🤖 Synthesize → the top-3 contexts go into a streaming "LLM" answer',
+      'mathRRF.formulaWhere': 'A doc ranks higher when it sits near the top of multiple lists. The reciprocal damps any single signal — no list can completely overrule another. Bigger k = more "patience" (a doc at rank 20 still contributes meaningfully); smaller k = aggressive top-of-list weighting.',
+      'mathRRF.controls.dataset': 'corpus',
+      'mathRRF.controls.mode': 'retrieval mode',
+      'mathRRF.controls.query': 'user query:',
+      'mathRRF.dataset.ai': 'AI / ML papers',
+      'mathRRF.dataset.code': 'Code search',
+      'mathRRF.dataset.ecom': 'E-commerce',
+      'mathRRF.dataset.support': 'Customer support',
+      'mathRRF.mode.vector': 'vector only',
+      'mathRRF.mode.keyword': 'keyword only',
+      'mathRRF.mode.hybrid': 'hybrid (RRF)',
+      'mathRRF.list.vector': 'Vector similarity · Voyage AI',
+      'mathRRF.list.vectorNote': 'cosine over 1024-dim embeddings',
+      'mathRRF.list.keyword': 'BM25 keyword',
+      'mathRRF.list.keywordNote': 'TF-IDF with length normalization',
+      'mathRRF.list.hybrid': 'Hybrid (RRF) result',
+      'mathRRF.list.hybridNote': 'live · top-3 fed to the synthesizer below',
+      'mathRRF.llm.title': '🤖 Synthesizer · Claude with the top-3 contexts',
+      'mathRRF.llm.sub': 'The retrieved chunks above become the context window for a fake LLM call. The response below is precomputed per corpus but the streaming is real.',
+      'mathRRF.llm.button': 'Synthesize answer',
+      'mathRRF.llm.placeholder': 'Generated answer will stream here. Click "Synthesize" above to start.',
+      'mathRRF.explanation': '<strong>Why this matters for production RAG.</strong> Vector embeddings are good at <em>semantic</em> matches: "auth token" ≈ "JWT" ≈ "session credential". BM25 is good at <em>exact</em> matches: product codes, version numbers, acronyms, the names of internal services. Real corpora need both. The rest of the field snaps to vector-only — which is why so many RAG demos work on a curated wiki and fall over on real enterprise documents. Choosing the fusion math is the actual engineering decision.',
+
       'mathAttn.eyebrow': '02d · Mathematics in motion · Self-attention',
       'mathAttn.h2': 'The 49-character formula behind every model in this portfolio',
+      'mathAttn.sub': 'Every LLM you\'ve heard of — Claude, GPT, Llama — is built on stacked layers of one tiny operation: scaled dot-product attention. Below, hover any output token to see which input tokens contributed to it and by how much. The line weight is literally the attention weight after softmax. Click <kbd>shuffle</kbd> for a fresh pattern.',
+      'mathAttn.tour.1': '<strong>1.</strong> hover any token in the bottom (output) row',
+      'mathAttn.tour.2': '<strong>2.</strong> the cubic-bezier edges show that token\'s attention distribution after softmax',
+      'mathAttn.tour.3': '<strong>3.</strong> press <kbd>↻ Shuffle attention</kbd> to regenerate the weights from a fresh kernel',
+
       'mathMap.eyebrow': '02e · Mathematics in motion · Portfolio as a loss landscape',
       'mathMap.h2': 'The whole portfolio is one big loss surface',
+      'mathMap.sub': 'I literally encoded the six projects as attractors of a 2D vector field. Each project is a Gaussian basin at <code>r<sub>i</sub></code> with depth <code>w<sub>i</sub></code> sized to its current state of completion. Click anywhere — a particle drops there, descends −∇L, and lands in the closest project\'s basin. Click on a project\'s label to open its details. This is the same math you\'ve been watching above, just turned into a navigation device.',
+      'mathMap.tour.1': '<strong>1.</strong> click anywhere on the map → particle drops & descends',
+      'mathMap.tour.2': '<strong>2.</strong> watch which project\'s basin captures it',
+      'mathMap.tour.3': '<strong>3.</strong> click any labeled attractor to open the full project',
 
       'caps.eyebrow': '03 · Capabilities',
       'caps.h2': 'Six axes of production AI',
@@ -5588,6 +6003,27 @@
 
       'work.eyebrow': '04 · The work',
       'work.h2': 'Six projects, one philosophy',
+      'work.sub': 'Each project answers a distinct production question. Status is honest: one functional flagship and five scaffolded designs with full READMEs and code skeletons.',
+
+      'demo.eyebrow': '05 · Live demo · Project 01',
+      'demo.h2': 'Watch the self-healing loop run',
+      'demo.sub': 'A simulated execution of the LangGraph state machine on a malformed invoice. The critic flags the failure, the extractor reflects, episodic memory is consulted. No real LLM calls — the timing and scores match the actual run profile.',
+
+      'bench.eyebrow': '06 · Benchmarks · Project 06',
+      'bench.h2': 'Three vector stores. Same corpus. Same queries.',
+      'bench.sub': 'Target benchmarks for the agentic RAG benchmark suite, with and without the reranker stage. Numbers are the project\'s success targets — real measurements land in the README when the benchmark runs against the production corpus.',
+
+      'stack.eyebrow': '07 · The toolbox',
+      'stack.h2': 'What I actually reach for',
+      'stack.sub': 'Categorized by layer. Dots indicate self-assessed proficiency — three dots means I\'ve shipped it under load, two means I\'ve built a non-trivial project with it, one means I\'ve used it enough to have an opinion.',
+
+      'roadmap.eyebrow': '08 · Roadmap',
+      'roadmap.h2': 'What lands next',
+      'roadmap.sub': 'Public, honest, dated. Each quarter has one project pushed from <em>scaffolded</em> to <em>functional with metrics in the README</em>.',
+
+      'about.eyebrow': '09 · About',
+      'about.h2': 'The person behind the repos',
+      'about.sub': 'Short version below. The rest lives in the code.',
     },
 
     es: {
@@ -5623,12 +6059,53 @@
 
       'mathGrad.eyebrow': '02b · Matemáticas en movimiento · Descenso de gradiente',
       'mathGrad.h2': 'El mismo gradiente que entrena cada modelo de este portafolio',
+      'mathGrad.sub': 'Cada parámetro dentro de Claude, GPT y los agentes LangGraph que verás abajo fue fijado repitiendo una sola regla: <code style="color:var(--accent-3);font-family:\'JetBrains Mono\',monospace">w<sub>t+1</sub> = w<sub>t</sub> − η · ∇L(w<sub>t</sub>)</code>. Abajo, esa regla corre en vivo. El terreno coloreado es una superficie de pérdida de 2 parámetros; las flechas pequeñas son su campo gradiente; el punto brillante es un vector de pesos descendiendo. <strong style="color:var(--text)">Prueba todos los controles</strong> — cada uno cuenta una historia distinta de optimización.',
+      'mathGrad.tour.1': '<strong>1.</strong> clic en cualquier punto de la superficie para soltar el peso ahí',
+      'mathGrad.tour.2': '<strong>2.</strong> cambia la función de pérdida y observa cómo SGD se comporta en cada paisaje',
+      'mathGrad.tour.3': '<strong>3.</strong> sube η demasiado → divergencia; bájalo → convergencia glacial',
+
       'mathRRF.eyebrow': '02c · Matemáticas en movimiento · Reciprocal Rank Fusion',
       'mathRRF.h2': 'Dos líneas de matemáticas sin parámetros le ganan a un modelo de un millón de dólares',
+      'mathRRF.sub': 'P6 fusiona retrieval por keyword (BM25) y por vector (coseno) con <strong>Reciprocal Rank Fusion</strong>. Una constante <code>k = 60</code> (recomendada en el paper original de 2009, nunca cuestionada seriamente), sin entrenamiento, sin parámetros que tunear. Le gana a cada señal por separado en todos los benchmarks publicados. Pruébalo sobre <strong>cuatro corpus distintos</strong>, cambia el modo de retrieval, mueve <code>k</code>, y dale al botón de síntesis para ver qué respondería un LLM al final.',
+      'mathRRF.tour.1': '<strong>1.</strong> escoge un corpus → mira cómo vector vs keyword divergen sobre datos reales',
+      'mathRRF.tour.2': '<strong>2.</strong> mueve <code>k</code> y alterna entre Vector / Keyword / Hybrid',
+      'mathRRF.tour.3': '<strong>3.</strong> dale a 🤖 Sintetizar → los top-3 contextos pasan al "LLM" que stream-ea la respuesta',
+      'mathRRF.formulaWhere': 'Un documento sube cuando aparece arriba en varias listas. El recíproco amortigua cualquier señal individual — ninguna lista puede dominar por completo. k grande = más "paciencia" (un doc en posición 20 aún contribuye); k pequeño = peso agresivo a las primeras posiciones.',
+      'mathRRF.controls.dataset': 'corpus',
+      'mathRRF.controls.mode': 'modo de retrieval',
+      'mathRRF.controls.query': 'consulta del usuario:',
+      'mathRRF.dataset.ai': 'Papers de IA / ML',
+      'mathRRF.dataset.code': 'Búsqueda de código',
+      'mathRRF.dataset.ecom': 'E-commerce',
+      'mathRRF.dataset.support': 'Soporte al cliente',
+      'mathRRF.mode.vector': 'solo vector',
+      'mathRRF.mode.keyword': 'solo keyword',
+      'mathRRF.mode.hybrid': 'híbrido (RRF)',
+      'mathRRF.list.vector': 'Similitud vectorial · Voyage AI',
+      'mathRRF.list.vectorNote': 'coseno sobre embeddings de 1024 dim',
+      'mathRRF.list.keyword': 'BM25 keyword',
+      'mathRRF.list.keywordNote': 'TF-IDF con normalización por longitud',
+      'mathRRF.list.hybrid': 'Resultado híbrido (RRF)',
+      'mathRRF.list.hybridNote': 'en vivo · top-3 al sintetizador de abajo',
+      'mathRRF.llm.title': '🤖 Sintetizador · Claude con los top-3 contextos',
+      'mathRRF.llm.sub': 'Los chunks recuperados de arriba se convierten en la ventana de contexto de una llamada LLM simulada. La respuesta de abajo está precalculada por corpus, pero el streaming es real.',
+      'mathRRF.llm.button': 'Sintetizar respuesta',
+      'mathRRF.llm.placeholder': 'La respuesta generada se va a transmitir aquí. Haz clic en "Sintetizar" arriba para empezar.',
+      'mathRRF.explanation': '<strong>Por qué esto importa en RAG de producción.</strong> Los embeddings vectoriales son buenos en matches <em>semánticos</em>: "token de auth" ≈ "JWT" ≈ "credencial de sesión". BM25 es bueno en matches <em>exactos</em>: códigos de producto, números de versión, acrónimos, nombres de servicios internos. Los corpus reales necesitan ambos. El resto del campo cae en vector-only — por eso tantos demos de RAG funcionan sobre una wiki curada y se caen sobre documentos empresariales reales. Decidir las matemáticas de fusión es la decisión de ingeniería real.',
+
       'mathAttn.eyebrow': '02d · Matemáticas en movimiento · Self-attention',
       'mathAttn.h2': 'La fórmula de 49 caracteres detrás de cada modelo de este portafolio',
+      'mathAttn.sub': 'Todo LLM que hayas escuchado — Claude, GPT, Llama — está construido sobre capas apiladas de una operación diminuta: scaled dot-product attention. Abajo, pasa el cursor sobre cualquier token de salida para ver qué tokens de entrada contribuyeron a él y cuánto. El grosor de la línea es literalmente el peso de atención después del softmax. Dale a <kbd>shuffle</kbd> para un patrón nuevo.',
+      'mathAttn.tour.1': '<strong>1.</strong> pasa el cursor sobre cualquier token de la fila inferior (salida)',
+      'mathAttn.tour.2': '<strong>2.</strong> las curvas Bézier muestran la distribución de atención de ese token tras el softmax',
+      'mathAttn.tour.3': '<strong>3.</strong> dale a <kbd>↻ Shuffle attention</kbd> para regenerar los pesos con un kernel nuevo',
+
       'mathMap.eyebrow': '02e · Matemáticas en movimiento · Portafolio como superficie de pérdida',
       'mathMap.h2': 'Todo el portafolio es una sola superficie de pérdida',
+      'mathMap.sub': 'Codifiqué literalmente los seis proyectos como atractores de un campo vectorial 2D. Cada proyecto es una cuenca gaussiana en <code>r<sub>i</sub></code> con profundidad <code>w<sub>i</sub></code> proporcional a su estado de avance actual. Haz clic en cualquier lugar — una partícula cae ahí, desciende −∇L y aterriza en la cuenca del proyecto más cercano. Haz clic en la etiqueta de un proyecto para abrirlo. Son las mismas matemáticas que has visto arriba, convertidas en un dispositivo de navegación.',
+      'mathMap.tour.1': '<strong>1.</strong> clic en cualquier punto del mapa → cae una partícula y desciende',
+      'mathMap.tour.2': '<strong>2.</strong> observa en qué cuenca de proyecto cae',
+      'mathMap.tour.3': '<strong>3.</strong> clic en cualquier atractor etiquetado para abrir el proyecto completo',
 
       'caps.eyebrow': '03 · Capacidades',
       'caps.h2': 'Seis ejes de la IA de producción',
@@ -5636,6 +6113,27 @@
 
       'work.eyebrow': '04 · El trabajo',
       'work.h2': 'Seis proyectos, una sola filosofía',
+      'work.sub': 'Cada proyecto responde una pregunta de producción distinta. El estado es honesto: un flagship funcional y cinco diseños scaffolded con READMEs completos y esqueletos de código.',
+
+      'demo.eyebrow': '05 · Demo en vivo · Proyecto 01',
+      'demo.h2': 'Mira el loop de auto-curación en acción',
+      'demo.sub': 'Una ejecución simulada de la máquina de estados LangGraph sobre una factura malformada. El crítico marca el fallo, el extractor reflexiona, la memoria episódica se consulta. Sin llamadas reales al LLM — los tiempos y scores coinciden con el perfil real de ejecución.',
+
+      'bench.eyebrow': '06 · Benchmarks · Proyecto 06',
+      'bench.h2': 'Tres vector stores. Mismo corpus. Mismas queries.',
+      'bench.sub': 'Benchmarks objetivo para la suite del agentic RAG, con y sin la etapa de reranker. Los números son los targets de éxito del proyecto — las mediciones reales se publican en el README cuando el benchmark corre contra el corpus de producción.',
+
+      'stack.eyebrow': '07 · La caja de herramientas',
+      'stack.h2': 'Lo que realmente uso',
+      'stack.sub': 'Categorizado por capa. Los puntos indican proficiencia autoasignada — tres puntos significa que lo he enviado a producción bajo carga, dos significa que he construido un proyecto no trivial con ello, uno significa que lo he usado lo suficiente para tener una opinión.',
+
+      'roadmap.eyebrow': '08 · Roadmap',
+      'roadmap.h2': 'Qué viene después',
+      'roadmap.sub': 'Público, honesto, con fechas. Cada trimestre tiene un proyecto que pasa de <em>scaffolded</em> a <em>funcional con métricas en el README</em>.',
+
+      'about.eyebrow': '09 · Sobre mí',
+      'about.h2': 'La persona detrás de los repos',
+      'about.sub': 'La versión corta abajo. El resto vive en el código.',
     },
 
     pt: {
@@ -5671,12 +6169,53 @@
 
       'mathGrad.eyebrow': '02b · Matemática em movimento · Gradiente descendente',
       'mathGrad.h2': 'O mesmo gradiente que treina cada modelo deste portfólio',
+      'mathGrad.sub': 'Cada parâmetro dentro do Claude, GPT e dos agentes LangGraph que você verá abaixo foi definido repetindo uma única regra: <code style="color:var(--accent-3);font-family:\'JetBrains Mono\',monospace">w<sub>t+1</sub> = w<sub>t</sub> − η · ∇L(w<sub>t</sub>)</code>. Abaixo, essa regra roda ao vivo. O terreno colorido é uma superfície de perda de 2 parâmetros; as setinhas são seu campo gradiente; o ponto brilhante é um vetor de pesos descendo. <strong style="color:var(--text)">Mexa em cada controle</strong> — cada um conta uma história de otimização diferente.',
+      'mathGrad.tour.1': '<strong>1.</strong> clique em qualquer ponto da superfície para soltar o peso lá',
+      'mathGrad.tour.2': '<strong>2.</strong> troque a função de perda e veja como o SGD se comporta em cada paisagem',
+      'mathGrad.tour.3': '<strong>3.</strong> suba η demais → divergência; abaixe → convergência lenta',
+
       'mathRRF.eyebrow': '02c · Matemática em movimento · Reciprocal Rank Fusion',
       'mathRRF.h2': 'Duas linhas de matemática sem parâmetros ganham de um modelo de um milhão de dólares',
+      'mathRRF.sub': 'O P6 funde recuperação por keyword (BM25) e por vetor (cosseno) com <strong>Reciprocal Rank Fusion</strong>. Uma constante <code>k = 60</code> (recomendada no paper original de 2009 e nunca seriamente contestada), sem treino, sem parâmetros para tunar. Bate cada sinal isolado em todos os benchmarks publicados. Teste em <strong>quatro corpora diferentes</strong>, troque o modo de retrieval, mexa em <code>k</code> e clique no botão de síntese para ver o que um LLM responderia no fim.',
+      'mathRRF.tour.1': '<strong>1.</strong> escolha um corpus → veja como vetor vs keyword divergem em dados reais',
+      'mathRRF.tour.2': '<strong>2.</strong> mexa em <code>k</code> e alterne entre Vetor / Keyword / Híbrido',
+      'mathRRF.tour.3': '<strong>3.</strong> clique em 🤖 Sintetizar → os top-3 contextos vão para um "LLM" que stream-a a resposta',
+      'mathRRF.formulaWhere': 'Um documento sobe quando aparece no topo de várias listas. O recíproco amortece qualquer sinal isolado — nenhuma lista pode dominar completamente. k maior = mais "paciência" (um doc na posição 20 ainda contribui); k menor = peso agressivo nas primeiras posições.',
+      'mathRRF.controls.dataset': 'corpus',
+      'mathRRF.controls.mode': 'modo de retrieval',
+      'mathRRF.controls.query': 'consulta do usuário:',
+      'mathRRF.dataset.ai': 'Papers de IA / ML',
+      'mathRRF.dataset.code': 'Busca de código',
+      'mathRRF.dataset.ecom': 'E-commerce',
+      'mathRRF.dataset.support': 'Suporte ao cliente',
+      'mathRRF.mode.vector': 'só vetor',
+      'mathRRF.mode.keyword': 'só keyword',
+      'mathRRF.mode.hybrid': 'híbrido (RRF)',
+      'mathRRF.list.vector': 'Similaridade vetorial · Voyage AI',
+      'mathRRF.list.vectorNote': 'cosseno sobre embeddings de 1024 dim',
+      'mathRRF.list.keyword': 'BM25 keyword',
+      'mathRRF.list.keywordNote': 'TF-IDF com normalização por comprimento',
+      'mathRRF.list.hybrid': 'Resultado híbrido (RRF)',
+      'mathRRF.list.hybridNote': 'ao vivo · top-3 vai para o sintetizador',
+      'mathRRF.llm.title': '🤖 Sintetizador · Claude com os top-3 contextos',
+      'mathRRF.llm.sub': 'Os chunks recuperados acima viram a janela de contexto de uma chamada LLM simulada. A resposta abaixo é pré-calculada por corpus, mas o streaming é real.',
+      'mathRRF.llm.button': 'Sintetizar resposta',
+      'mathRRF.llm.placeholder': 'A resposta gerada vai aparecer aqui em streaming. Clique em "Sintetizar" acima para começar.',
+      'mathRRF.explanation': '<strong>Por que isso importa em RAG de produção.</strong> Embeddings vetoriais são bons em matches <em>semânticos</em>: "token de auth" ≈ "JWT" ≈ "credencial de sessão". BM25 é bom em matches <em>exatos</em>: códigos de produto, números de versão, siglas, nomes de serviços internos. Corpora reais precisam dos dois. O resto do campo cai em vector-only — por isso tantos demos de RAG funcionam numa wiki curada e quebram em documentos empresariais reais. Decidir a matemática da fusão é a decisão de engenharia real.',
+
       'mathAttn.eyebrow': '02d · Matemática em movimento · Self-attention',
       'mathAttn.h2': 'A fórmula de 49 caracteres por trás de cada modelo deste portfólio',
+      'mathAttn.sub': 'Todo LLM que você já ouviu falar — Claude, GPT, Llama — é construído com camadas empilhadas de uma operação minúscula: scaled dot-product attention. Abaixo, passe o cursor em qualquer token de saída e veja quais tokens de entrada contribuíram e quanto. A espessura da linha é literalmente o peso de atenção depois do softmax. Clique em <kbd>shuffle</kbd> para um padrão novo.',
+      'mathAttn.tour.1': '<strong>1.</strong> passe o cursor em qualquer token da linha inferior (saída)',
+      'mathAttn.tour.2': '<strong>2.</strong> as curvas Bézier mostram a distribuição de atenção desse token após o softmax',
+      'mathAttn.tour.3': '<strong>3.</strong> clique em <kbd>↻ Shuffle attention</kbd> para regenerar os pesos com um kernel novo',
+
       'mathMap.eyebrow': '02e · Matemática em movimento · Portfólio como superfície de perda',
       'mathMap.h2': 'O portfólio inteiro é uma única superfície de perda',
+      'mathMap.sub': 'Codifiquei literalmente os seis projetos como atratores de um campo vetorial 2D. Cada projeto é uma bacia gaussiana em <code>r<sub>i</sub></code> com profundidade <code>w<sub>i</sub></code> proporcional ao seu estado de completude. Clique em qualquer lugar — uma partícula cai ali, desce −∇L e pousa na bacia do projeto mais próximo. Clique no rótulo de um projeto para abri-lo. É a mesma matemática que você viu acima, transformada num dispositivo de navegação.',
+      'mathMap.tour.1': '<strong>1.</strong> clique em qualquer ponto do mapa → uma partícula cai e desce',
+      'mathMap.tour.2': '<strong>2.</strong> observe em qual bacia de projeto ela cai',
+      'mathMap.tour.3': '<strong>3.</strong> clique em qualquer atrator rotulado para abrir o projeto completo',
 
       'caps.eyebrow': '03 · Capacidades',
       'caps.h2': 'Seis eixos da IA de produção',
@@ -5684,6 +6223,27 @@
 
       'work.eyebrow': '04 · O trabalho',
       'work.h2': 'Seis projetos, uma só filosofia',
+      'work.sub': 'Cada projeto responde a uma pergunta de produção distinta. O status é honesto: um carro-chefe funcional e cinco designs scaffolded com READMEs completos e esqueletos de código.',
+
+      'demo.eyebrow': '05 · Demo ao vivo · Projeto 01',
+      'demo.h2': 'Veja o loop de auto-cura em ação',
+      'demo.sub': 'Uma execução simulada da máquina de estados LangGraph sobre uma fatura malformada. O crítico sinaliza a falha, o extrator reflete, a memória episódica é consultada. Sem chamadas reais ao LLM — os tempos e scores casam com o perfil real de execução.',
+
+      'bench.eyebrow': '06 · Benchmarks · Projeto 06',
+      'bench.h2': 'Três vector stores. Mesmo corpus. Mesmas queries.',
+      'bench.sub': 'Benchmarks-alvo para a suite do agentic RAG, com e sem o estágio de reranker. Os números são os targets de sucesso do projeto — medições reais vão para o README quando o benchmark rodar contra o corpus de produção.',
+
+      'stack.eyebrow': '07 · A caixa de ferramentas',
+      'stack.h2': 'O que eu realmente uso',
+      'stack.sub': 'Categorizado por camada. Os pontos indicam proficiência autoavaliada — três pontos quer dizer que mandei para produção sob carga, dois quer dizer que construí um projeto não-trivial com isso, um quer dizer que usei o suficiente para ter uma opinião.',
+
+      'roadmap.eyebrow': '08 · Roadmap',
+      'roadmap.h2': 'O que vem em seguida',
+      'roadmap.sub': 'Público, honesto, com datas. Cada trimestre tem um projeto que passa de <em>scaffolded</em> para <em>funcional com métricas no README</em>.',
+
+      'about.eyebrow': '09 · Sobre',
+      'about.h2': 'A pessoa por trás dos repos',
+      'about.sub': 'A versão curta abaixo. O resto vive no código.',
     },
   };
 
