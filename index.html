@@ -2281,6 +2281,78 @@
   }
   .grad-toggle input { accent-color: var(--accent); }
 
+  /* ── Language switcher ────────────────────────────────────────────────── */
+  .lang-switcher {
+    display: inline-flex;
+    gap: 2px;
+    padding: 3px;
+    background: rgba(15, 17, 24, 0.6);
+    border: 1px solid rgba(139, 109, 255, 0.2);
+    border-radius: 999px;
+    margin-right: 10px;
+  }
+  .lang-btn {
+    background: transparent;
+    color: var(--text-dim);
+    border: none;
+    padding: 4px 11px;
+    border-radius: 999px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.06em;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s;
+  }
+  .lang-btn:hover { color: var(--text); }
+  .lang-btn.is-active {
+    background: rgba(139, 109, 255, 0.22);
+    color: var(--accent);
+  }
+
+  /* ── Portfolio map (vector-field navigation) ─────────────────────────── */
+  .map-card {
+    margin-top: 22px;
+    position: relative;
+    border: 1px solid rgba(139, 109, 255, 0.2);
+    border-radius: 14px;
+    background: #0a0c12;
+    overflow: hidden;
+  }
+  .map-card canvas {
+    display: block;
+    width: 100%;
+    height: auto;
+    cursor: crosshair;
+  }
+  .map-overlay {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    padding: 10px 16px;
+    border-top: 1px solid rgba(139, 109, 255, 0.12);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--text-dim);
+  }
+  .map-overlay .map-formula {
+    color: var(--text);
+  }
+  .map-overlay .map-formula sub { color: var(--accent-3); }
+  .map-readout {
+    padding: 10px 16px;
+    border-top: 1px solid rgba(139, 109, 255, 0.08);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--text);
+    background: rgba(15, 17, 24, 0.4);
+    min-height: 38px;
+    display: flex;
+    align-items: center;
+  }
+  .map-readout strong { color: var(--accent); }
+  .map-readout em { font-style: normal; color: var(--accent-3); }
+
   /* ── RRF live calculator (math-in-motion II) ────────────────────────── */
   .rrf-demo {
     margin-top: 28px;
@@ -2615,15 +2687,20 @@
       <span>hac · math → ai</span>
     </div>
     <div class="nav-links" id="navLinks">
-      <a href="#thesis">Thesis</a>
-      <a href="#why-math">Why math?</a>
-      <a href="#projects">Projects</a>
-      <a href="#demo">Live demo</a>
-      <a href="#benchmarks">Benchmarks</a>
-      <a href="#stack">Stack</a>
-      <a href="#about">About</a>
+      <a href="#thesis" data-i18n="nav.thesis">Thesis</a>
+      <a href="#why-math" data-i18n="nav.whyMath">Why math?</a>
+      <a href="#projects" data-i18n="nav.projects">Projects</a>
+      <a href="#demo" data-i18n="nav.demo">Live demo</a>
+      <a href="#benchmarks" data-i18n="nav.benchmarks">Benchmarks</a>
+      <a href="#stack" data-i18n="nav.stack">Stack</a>
+      <a href="#about" data-i18n="nav.about">About</a>
     </div>
-    <a class="nav-cta" href="#contact">Get in touch →</a>
+    <div class="lang-switcher" role="group" aria-label="Language selector">
+      <button type="button" class="lang-btn" data-lang="en">EN</button>
+      <button type="button" class="lang-btn" data-lang="es">ES</button>
+      <button type="button" class="lang-btn" data-lang="pt">PT</button>
+    </div>
+    <a class="nav-cta" href="#contact" data-i18n="nav.cta">Get in touch →</a>
   </div>
 </nav>
 
@@ -2682,16 +2759,16 @@
   </svg>
 
   <div class="hero-inner">
-    <div class="hero-badge">Pure Mathematics · UNAL · open to AI Engineer roles · remote-first</div>
-    <h1>Most AI ships confidence.<br>I ship systems that <span class="accent">know when they're wrong.</span></h1>
-    <p class="lede">
+    <div class="hero-badge" data-i18n="hero.badge">Pure Mathematics · UNAL · open to AI Engineer roles · remote-first</div>
+    <h1 data-i18n="hero.title">Most AI ships confidence.<br>I ship systems that <span class="accent">know when they're wrong.</span></h1>
+    <p class="lede" data-i18n="hero.lede">
       <strong>Heims Andrés Caicedo Lopera</strong> — pure mathematics undergrad at Universidad Nacional de Colombia, training as an AI Engineer. Six production-grade designs built on a single thesis: <strong>a system that can't detect its own failure isn't intelligent — it's just confident</strong>. Every project treats reliability the way mathematics treats correctness: as a property you <em>prove</em>, not one you <em>hope for</em>.
     </p>
     <div class="hero-cta">
-      <a class="btn btn-primary" href="#projects">View the work
+      <a class="btn btn-primary" href="#projects" data-i18n="hero.ctaView">View the work
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
       </a>
-      <a class="btn" href="#demo">▶ Run live demo</a>
+      <a class="btn" href="#demo" data-i18n="hero.ctaDemo">▶ Run live demo</a>
       <a class="btn" href="https://github.com/hecaicedol/ai-portfolio" target="_blank" rel="noopener">
         <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0a12 12 0 0 0-3.8 23.4c.6.1.8-.3.8-.6v-2c-3.3.7-4-1.6-4-1.6-.5-1.4-1.3-1.7-1.3-1.7-1-.8.1-.7.1-.7 1.2 0 1.8 1.2 1.8 1.2 1 1.8 2.8 1.3 3.4 1 .1-.8.4-1.3.7-1.6-2.7-.3-5.5-1.3-5.5-5.9 0-1.3.5-2.4 1.2-3.2-.1-.3-.5-1.5.1-3.2 0 0 1-.3 3.3 1.2a11.4 11.4 0 0 1 6 0c2.3-1.5 3.3-1.2 3.3-1.2.6 1.7.2 2.9.1 3.2.8.8 1.2 1.9 1.2 3.2 0 4.6-2.8 5.6-5.5 5.9.4.4.8 1.1.8 2.2v3.3c0 .3.2.7.8.6A12 12 0 0 0 12 0z"/></svg>
         github.com/hecaicedol
@@ -2699,26 +2776,26 @@
       <a class="btn" href="mailto:hecaicedol@unal.edu.co">hecaicedol@unal.edu.co</a>
     </div>
     <div class="hero-meta">
-      <span><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-7.582 8-13a8 8 0 1 0-16 0c0 5.418 8 13 8 13z"/><circle cx="12" cy="9" r="3"/></svg> Bogotá, Colombia · UTC−5</span>
-      <span><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> open to full-time / contract</span>
-      <span><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/></svg> remote-first · EU / USA</span>
+      <span><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-7.582 8-13a8 8 0 1 0-16 0c0 5.418 8 13 8 13z"/><circle cx="12" cy="9" r="3"/></svg> <span data-i18n="hero.meta.location">Bogotá, Colombia · UTC−5</span></span>
+      <span><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> <span data-i18n="hero.meta.availability">open to full-time / contract</span></span>
+      <span><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/></svg> <span data-i18n="hero.meta.remote">remote-first · EU / USA</span></span>
     </div>
     <div class="hero-stats">
       <div>
         <div class="stat-num">6</div>
-        <div class="stat-label">Production-grade designs</div>
+        <div class="stat-label" data-i18n="hero.stats.designs">Production-grade designs</div>
       </div>
       <div>
         <div class="stat-num">2<span class="unit">/ 6</span></div>
-        <div class="stat-label">With verified code · honest status</div>
+        <div class="stat-label" data-i18n="hero.stats.verified">With verified code · honest status</div>
       </div>
       <div>
         <div class="stat-num">65</div>
-        <div class="stat-label">Automated tests across P1 + P6</div>
+        <div class="stat-label" data-i18n="hero.stats.tests">Automated tests across P1 + P6</div>
       </div>
       <div>
         <div class="stat-num">0</div>
-        <div class="stat-label">Silent failures tolerated</div>
+        <div class="stat-label" data-i18n="hero.stats.silent">Silent failures tolerated</div>
       </div>
     </div>
   </div>
@@ -2727,9 +2804,9 @@
 <!-- ============ THESIS ============ -->
 <section id="thesis">
   <div class="container">
-    <div class="section-eyebrow">01 · The thesis</div>
-    <h2>What separates production AI from a demo</h2>
-    <p class="section-sub">Four convictions that drive every architectural decision in this portfolio. Each one maps to a project that proves it.</p>
+    <div class="section-eyebrow" data-i18n="thesis.eyebrow">01 · The thesis</div>
+    <h2 data-i18n="thesis.h2">What separates production AI from a demo</h2>
+    <p class="section-sub" data-i18n="thesis.sub">Four convictions that drive every architectural decision in this portfolio. Each one maps to a project that proves it.</p>
 
     <div class="thesis-grid">
       <div class="thesis-card reveal">
@@ -2763,9 +2840,9 @@
 <!-- ============ WHY A MATHEMATICIAN ============ -->
 <section id="why-math">
   <div class="container">
-    <div class="section-eyebrow">02 · The differentiator</div>
-    <h2>Why hire a mathematician for AI engineering?</h2>
-    <p class="section-sub">The honest answer — and the three things mathematics gives me that a CS degree alone wouldn't.</p>
+    <div class="section-eyebrow" data-i18n="whyMath.eyebrow">02 · The differentiator</div>
+    <h2 data-i18n="whyMath.h2">Why hire a mathematician for AI engineering?</h2>
+    <p class="section-sub" data-i18n="whyMath.sub">The honest answer — and the three things mathematics gives me that a CS degree alone wouldn't.</p>
 
     <div class="why-math reveal">
       <div class="why-math-grid">
@@ -2813,8 +2890,8 @@
 <!-- ============ MATH IN MOTION ============ -->
 <section id="math-in-motion">
   <div class="container">
-    <div class="section-eyebrow">02b · Mathematics in motion · Gradient descent</div>
-    <h2>The same gradient that trains every model in this portfolio</h2>
+    <div class="section-eyebrow" data-i18n="mathGrad.eyebrow">02b · Mathematics in motion · Gradient descent</div>
+    <h2 data-i18n="mathGrad.h2">The same gradient that trains every model in this portfolio</h2>
     <p class="section-sub">Every parameter inside Claude, GPT, and the LangGraph agents you'll see below was set by repeating one rule: <code style="color:var(--accent-3);font-family:'JetBrains Mono',monospace">w<sub>t+1</sub> = w<sub>t</sub> − η · ∇L(w<sub>t</sub>)</code>. Below, that rule runs live. The colored landscape is a 2-parameter loss surface; the small arrows are its gradient field (pointing toward steeper loss); the bright dot is a weight vector descending. <strong style="color:var(--text)">Try every control</strong> — they tell different optimization stories.</p>
 
     <div class="math-card-tour">
@@ -2870,8 +2947,8 @@
 <!-- ============ MATH IN MOTION II · RRF ============ -->
 <section id="rrf-math">
   <div class="container">
-    <div class="section-eyebrow">02c · Mathematics in motion · Reciprocal Rank Fusion</div>
-    <h2>Two parameter-free lines of math beat a model that costs a million dollars to train</h2>
+    <div class="section-eyebrow" data-i18n="mathRRF.eyebrow">02c · Mathematics in motion · Reciprocal Rank Fusion</div>
+    <h2 data-i18n="mathRRF.h2">Two parameter-free lines of math beat a model that costs a million dollars to train</h2>
     <p class="section-sub">
       P6 fuses keyword (BM25) and vector (cosine) retrieval with <strong>Reciprocal Rank Fusion</strong>. The rule has one constant <code>k = 60</code> (recommended in the original 2009 paper and never seriously challenged), no training, no parameters to tune. It consistently beats both signals alone on every published benchmark — and on every internal one I've run. Reorder either list and watch the fused output update live.
     </p>
@@ -2916,8 +2993,8 @@
 <!-- ============ MATH IN MOTION III · ATTENTION ============ -->
 <section id="attention-math">
   <div class="container">
-    <div class="section-eyebrow">02d · Mathematics in motion · Self-attention</div>
-    <h2>The 49-character formula behind every model in this portfolio</h2>
+    <div class="section-eyebrow" data-i18n="mathAttn.eyebrow">02d · Mathematics in motion · Self-attention</div>
+    <h2 data-i18n="mathAttn.h2">The 49-character formula behind every model in this portfolio</h2>
     <p class="section-sub">
       Every LLM you've heard of — Claude, GPT, Llama — is built on stacked layers of one tiny operation: scaled dot-product attention. Below, hover any output token to see which input tokens contributed to it and by how much. The line weight is literally the attention weight after softmax. Click <kbd>shuffle</kbd> for a fresh pattern.
     </p>
@@ -2966,12 +3043,38 @@
   </div>
 </section>
 
+<!-- ============ PORTFOLIO MAP · gradient navigation ============ -->
+<section id="portfolio-map">
+  <div class="container">
+    <div class="section-eyebrow" data-i18n="mathMap.eyebrow">02e · Mathematics in motion · Portfolio as a loss landscape</div>
+    <h2 data-i18n="mathMap.h2">The whole portfolio is one big loss surface</h2>
+    <p class="section-sub">
+      I literally encoded the six projects as attractors of a 2D vector field. Each project is a Gaussian basin at <code>r<sub>i</sub></code> with depth <code>w<sub>i</sub></code> sized to its current state of completion. Click anywhere — a particle drops there, descends −∇L, and lands in the closest project's basin. Click on a project's label to open its details. This is the same math you've been watching above, just turned into a navigation device.
+    </p>
+
+    <div class="math-card-tour">
+      <span class="tour-step"><strong>1.</strong> click anywhere on the map → particle drops & descends</span>
+      <span class="tour-step"><strong>2.</strong> watch which project's basin captures it</span>
+      <span class="tour-step"><strong>3.</strong> click any labeled attractor to open the full project</span>
+    </div>
+
+    <div class="map-card reveal">
+      <canvas id="map-canvas" width="1200" height="500" aria-label="Portfolio map · gradient-navigated landscape"></canvas>
+      <div class="map-overlay">
+        <span class="map-formula">L(x, y) = −Σ<sub>i</sub> &thinsp;w<sub>i</sub>&thinsp;·&thinsp;exp(−‖r − r<sub>i</sub>‖² / 2σ²) &nbsp;·&nbsp; σ = 1.1</span>
+        <button id="map-clear" class="grad-btn">↺ clear particles</button>
+      </div>
+      <div class="map-readout" id="map-readout">click anywhere to drop a particle — it will descend the gradient toward the closest project</div>
+    </div>
+  </div>
+</section>
+
 <!-- ============ CAPABILITIES ============ -->
 <section id="capabilities">
   <div class="container">
-    <div class="section-eyebrow">03 · Capabilities</div>
-    <h2>Six axes of production AI</h2>
-    <p class="section-sub">A radar of the production concerns AI teams hire for. Each axis is grounded in at least one of the six projects.</p>
+    <div class="section-eyebrow" data-i18n="caps.eyebrow">03 · Capabilities</div>
+    <h2 data-i18n="caps.h2">Six axes of production AI</h2>
+    <p class="section-sub" data-i18n="caps.sub">A radar of the production concerns AI teams hire for. Each axis is grounded in at least one of the six projects.</p>
 
     <div class="cap-layout">
       <div class="radar-wrap reveal">
@@ -3073,8 +3176,8 @@
 <!-- ============ PROJECTS ============ -->
 <section id="projects">
   <div class="container">
-    <div class="section-eyebrow">04 · The work</div>
-    <h2>Six projects, one philosophy</h2>
+    <div class="section-eyebrow" data-i18n="work.eyebrow">04 · The work</div>
+    <h2 data-i18n="work.h2">Six projects, one philosophy</h2>
     <p class="section-sub">Each project answers a distinct production question. Status is honest: one functional flagship and five scaffolded designs with full READMEs and code skeletons.</p>
 
     <!-- PROJECT 01 -->
@@ -5435,6 +5538,458 @@
 })();
 </script>
 
+<!-- ============ i18n · language switcher ============ -->
+<script>
+(function () {
+  const I18N = {
+    en: {
+      'nav.thesis': 'Thesis',
+      'nav.whyMath': 'Why math?',
+      'nav.projects': 'Projects',
+      'nav.demo': 'Live demo',
+      'nav.benchmarks': 'Benchmarks',
+      'nav.stack': 'Stack',
+      'nav.about': 'About',
+      'nav.cta': 'Get in touch →',
+
+      'hero.badge': 'Pure Mathematics · UNAL · open to AI Engineer roles · remote-first',
+      'hero.title': 'Most AI ships confidence.<br>I ship systems that <span class="accent">know when they\'re wrong.</span>',
+      'hero.lede': '<strong>Heims Andrés Caicedo Lopera</strong> — pure mathematics undergrad at Universidad Nacional de Colombia, training as an AI Engineer. Six production-grade designs built on a single thesis: <strong>a system that can\'t detect its own failure isn\'t intelligent — it\'s just confident</strong>. Every project treats reliability the way mathematics treats correctness: as a property you <em>prove</em>, not one you <em>hope for</em>.',
+      'hero.ctaView': 'View the work',
+      'hero.ctaDemo': '▶ Run live demo',
+      'hero.meta.location': 'Bogotá, Colombia · UTC−5',
+      'hero.meta.availability': 'open to full-time / contract',
+      'hero.meta.remote': 'remote-first · EU / USA',
+      'hero.stats.designs': 'Production-grade designs',
+      'hero.stats.verified': 'With verified code · honest status',
+      'hero.stats.tests': 'Automated tests across P1 + P6',
+      'hero.stats.silent': 'Silent failures tolerated',
+
+      'thesis.eyebrow': '01 · The thesis',
+      'thesis.h2': 'What separates production AI from a demo',
+      'thesis.sub': 'Four convictions that drive every architectural decision in this portfolio. Each one maps to a project that proves it.',
+
+      'whyMath.eyebrow': '02 · The differentiator',
+      'whyMath.h2': 'Why hire a mathematician for AI engineering?',
+      'whyMath.sub': 'The honest answer — and the three things mathematics gives me that a CS degree alone wouldn\'t.',
+
+      'mathGrad.eyebrow': '02b · Mathematics in motion · Gradient descent',
+      'mathGrad.h2': 'The same gradient that trains every model in this portfolio',
+      'mathRRF.eyebrow': '02c · Mathematics in motion · Reciprocal Rank Fusion',
+      'mathRRF.h2': 'Two parameter-free lines of math beat a model that costs a million dollars to train',
+      'mathAttn.eyebrow': '02d · Mathematics in motion · Self-attention',
+      'mathAttn.h2': 'The 49-character formula behind every model in this portfolio',
+      'mathMap.eyebrow': '02e · Mathematics in motion · Portfolio as a loss landscape',
+      'mathMap.h2': 'The whole portfolio is one big loss surface',
+
+      'caps.eyebrow': '03 · Capabilities',
+      'caps.h2': 'Six axes of production AI',
+      'caps.sub': 'A radar of the production concerns AI teams hire for. Each axis is grounded in at least one of the six projects.',
+
+      'work.eyebrow': '04 · The work',
+      'work.h2': 'Six projects, one philosophy',
+    },
+
+    es: {
+      'nav.thesis': 'Tesis',
+      'nav.whyMath': '¿Por qué matemáticas?',
+      'nav.projects': 'Proyectos',
+      'nav.demo': 'Demo en vivo',
+      'nav.benchmarks': 'Benchmarks',
+      'nav.stack': 'Stack',
+      'nav.about': 'Sobre mí',
+      'nav.cta': 'Hablemos →',
+
+      'hero.badge': 'Matemáticas Puras · UNAL · abierto a roles de AI Engineer · 100% remoto',
+      'hero.title': 'La mayoría de la IA vende confianza.<br>Yo construyo sistemas que <span class="accent">saben cuándo están equivocados.</span>',
+      'hero.lede': '<strong>Heims Andrés Caicedo Lopera</strong> — estudiante de matemáticas puras en la Universidad Nacional de Colombia, formándome como AI Engineer. Seis diseños de nivel de producción construidos sobre una sola tesis: <strong>un sistema que no puede detectar su propia falla no es inteligente — solo está confiado</strong>. Cada proyecto trata la confiabilidad como las matemáticas tratan la corrección: una propiedad que se <em>demuestra</em>, no una que se <em>espera</em>.',
+      'hero.ctaView': 'Ver el trabajo',
+      'hero.ctaDemo': '▶ Probar el demo en vivo',
+      'hero.meta.location': 'Bogotá, Colombia · UTC−5',
+      'hero.meta.availability': 'abierto a tiempo completo / contrato',
+      'hero.meta.remote': 'remoto · EU / USA',
+      'hero.stats.designs': 'Diseños de nivel producción',
+      'hero.stats.verified': 'Con código verificado · estado honesto',
+      'hero.stats.tests': 'Tests automatizados en P1 + P6',
+      'hero.stats.silent': 'Fallos silenciosos tolerados',
+
+      'thesis.eyebrow': '01 · La tesis',
+      'thesis.h2': 'Lo que separa la IA de producción de un demo',
+      'thesis.sub': 'Cuatro convicciones que dirigen cada decisión arquitectónica de este portafolio. Cada una corresponde a un proyecto que la demuestra.',
+
+      'whyMath.eyebrow': '02 · El diferenciador',
+      'whyMath.h2': '¿Por qué contratar a un matemático para ingeniería de IA?',
+      'whyMath.sub': 'La respuesta honesta — y las tres cosas que las matemáticas me dan que un título de CS por sí solo no daría.',
+
+      'mathGrad.eyebrow': '02b · Matemáticas en movimiento · Descenso de gradiente',
+      'mathGrad.h2': 'El mismo gradiente que entrena cada modelo de este portafolio',
+      'mathRRF.eyebrow': '02c · Matemáticas en movimiento · Reciprocal Rank Fusion',
+      'mathRRF.h2': 'Dos líneas de matemáticas sin parámetros le ganan a un modelo de un millón de dólares',
+      'mathAttn.eyebrow': '02d · Matemáticas en movimiento · Self-attention',
+      'mathAttn.h2': 'La fórmula de 49 caracteres detrás de cada modelo de este portafolio',
+      'mathMap.eyebrow': '02e · Matemáticas en movimiento · Portafolio como superficie de pérdida',
+      'mathMap.h2': 'Todo el portafolio es una sola superficie de pérdida',
+
+      'caps.eyebrow': '03 · Capacidades',
+      'caps.h2': 'Seis ejes de la IA de producción',
+      'caps.sub': 'Un radar de las preocupaciones de producción por las que contratan los equipos de IA. Cada eje está aterrizado en al menos uno de los seis proyectos.',
+
+      'work.eyebrow': '04 · El trabajo',
+      'work.h2': 'Seis proyectos, una sola filosofía',
+    },
+
+    pt: {
+      'nav.thesis': 'Tese',
+      'nav.whyMath': 'Por que matemática?',
+      'nav.projects': 'Projetos',
+      'nav.demo': 'Demo ao vivo',
+      'nav.benchmarks': 'Benchmarks',
+      'nav.stack': 'Stack',
+      'nav.about': 'Sobre',
+      'nav.cta': 'Vamos conversar →',
+
+      'hero.badge': 'Matemática Pura · UNAL · aberto a vagas de AI Engineer · remoto',
+      'hero.title': 'A maioria das IAs entrega confiança.<br>Eu entrego sistemas que <span class="accent">sabem quando estão errados.</span>',
+      'hero.lede': '<strong>Heims Andrés Caicedo Lopera</strong> — graduando em matemática pura na Universidad Nacional de Colombia, em formação como AI Engineer. Seis projetos de nível de produção construídos sobre uma única tese: <strong>um sistema que não consegue detectar sua própria falha não é inteligente — apenas confiante</strong>. Cada projeto trata a confiabilidade como a matemática trata a correção: uma propriedade que se <em>demonstra</em>, não que se <em>espera</em>.',
+      'hero.ctaView': 'Ver o trabalho',
+      'hero.ctaDemo': '▶ Rodar demo ao vivo',
+      'hero.meta.location': 'Bogotá, Colômbia · UTC−5',
+      'hero.meta.availability': 'aberto a full-time / contrato',
+      'hero.meta.remote': 'remoto · UE / EUA',
+      'hero.stats.designs': 'Projetos nível produção',
+      'hero.stats.verified': 'Com código verificado · status honesto',
+      'hero.stats.tests': 'Testes automatizados em P1 + P6',
+      'hero.stats.silent': 'Falhas silenciosas toleradas',
+
+      'thesis.eyebrow': '01 · A tese',
+      'thesis.h2': 'O que separa IA de produção de uma demo',
+      'thesis.sub': 'Quatro convicções que guiam cada decisão arquitetônica deste portfólio. Cada uma corresponde a um projeto que a prova.',
+
+      'whyMath.eyebrow': '02 · O diferencial',
+      'whyMath.h2': 'Por que contratar um matemático para engenharia de IA?',
+      'whyMath.sub': 'A resposta honesta — e as três coisas que a matemática me dá que um diploma só de CS não daria.',
+
+      'mathGrad.eyebrow': '02b · Matemática em movimento · Gradiente descendente',
+      'mathGrad.h2': 'O mesmo gradiente que treina cada modelo deste portfólio',
+      'mathRRF.eyebrow': '02c · Matemática em movimento · Reciprocal Rank Fusion',
+      'mathRRF.h2': 'Duas linhas de matemática sem parâmetros ganham de um modelo de um milhão de dólares',
+      'mathAttn.eyebrow': '02d · Matemática em movimento · Self-attention',
+      'mathAttn.h2': 'A fórmula de 49 caracteres por trás de cada modelo deste portfólio',
+      'mathMap.eyebrow': '02e · Matemática em movimento · Portfólio como superfície de perda',
+      'mathMap.h2': 'O portfólio inteiro é uma única superfície de perda',
+
+      'caps.eyebrow': '03 · Capacidades',
+      'caps.h2': 'Seis eixos da IA de produção',
+      'caps.sub': 'Um radar das preocupações de produção pelas quais as equipes de IA contratam. Cada eixo está fundamentado em pelo menos um dos seis projetos.',
+
+      'work.eyebrow': '04 · O trabalho',
+      'work.h2': 'Seis projetos, uma só filosofia',
+    },
+  };
+
+  function applyLang(lang) {
+    if (!I18N[lang]) lang = 'en';
+    document.documentElement.lang = lang;
+    try { localStorage.setItem('lang', lang); } catch (e) {}
+
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+      const key = el.getAttribute('data-i18n');
+      const val = I18N[lang][key];
+      if (val == null) return;
+      if (val.indexOf('<') !== -1) el.innerHTML = val;
+      else el.textContent = val;
+    });
+
+    document.querySelectorAll('.lang-btn').forEach(btn => {
+      btn.classList.toggle('is-active', btn.dataset.lang === lang);
+    });
+  }
+
+  // Wire up the switcher
+  document.querySelectorAll('.lang-btn').forEach(btn => {
+    btn.addEventListener('click', () => applyLang(btn.dataset.lang));
+  });
+
+  // Decide initial language: saved > browser > English
+  const saved = (function () { try { return localStorage.getItem('lang'); } catch (e) { return null; } })();
+  const browser = (navigator.language || 'en').slice(0, 2);
+  const initial = saved || (['en', 'es', 'pt'].indexOf(browser) >= 0 ? browser : 'en');
+  applyLang(initial);
+})();
+</script>
+
+<!-- ============ PORTFOLIO MAP · gradient navigation ============ -->
+<script>
+/**
+ * Portfolio map.
+ *   L(x, y) = − Σ_i  w_i · exp( −‖r − r_i‖² / (2σ²) )
+ * Each of the 6 projects is an attractor r_i with depth w_i. Click anywhere
+ * on the canvas to drop a particle — it follows -∇L and lands in the basin
+ * of the nearest project. Click directly on a labeled attractor to open
+ * that project's modal.
+ */
+(function () {
+  const canvas = document.getElementById('map-canvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const readout = document.getElementById('map-readout');
+  const clearBtn = document.getElementById('map-clear');
+
+  const W = canvas.width;
+  const H = canvas.height;
+  const WORLD_X = 4.4;
+  const WORLD_Y = 2.4;
+  const SIGMA = 1.1;
+  const SIGMA2 = SIGMA * SIGMA;
+
+  const PROJECTS = [
+    { id: '01', x: -2.8, y:  1.05, color: '#8b6dff', label: 'P1 · Self-Healing Pipeline', status: 'live · 22 tests', w: 1.55 },
+    { id: '02', x:  0.0, y:  1.55, color: '#4dd0c2', label: 'P2 · Knowledge OS (GraphRAG)', status: 'scaffolded', w: 1.00 },
+    { id: '03', x:  2.8, y:  1.05, color: '#ff9e6d', label: 'P3 · Research Agent (MemGPT)', status: 'scaffolded', w: 1.00 },
+    { id: '04', x: -2.8, y: -1.05, color: '#fbbf24', label: 'P4 · Multi-Agent Debate', status: 'scaffolded', w: 1.00 },
+    { id: '05', x:  0.0, y: -1.55, color: '#34d399', label: 'P5 · Workflow Engine (MCP)', status: 'scaffolded', w: 1.00 },
+    { id: '06', x:  2.8, y: -1.05, color: '#ec4899', label: 'P6 · Agentic RAG benchmark', status: 'core verified · 43 tests', w: 1.45 },
+  ];
+
+  const toScreen = (wx, wy) => ({
+    x: (wx + WORLD_X) / (2 * WORLD_X) * W,
+    y: (wy + WORLD_Y) / (2 * WORLD_Y) * H,
+  });
+  const toWorld = (sx, sy) => ({
+    x: (sx / W) * (2 * WORLD_X) - WORLD_X,
+    y: (sy / H) * (2 * WORLD_Y) - WORLD_Y,
+  });
+
+  function loss(x, y) {
+    let s = 0;
+    for (const p of PROJECTS) {
+      const dx = x - p.x, dy = y - p.y;
+      s -= p.w * Math.exp(-(dx * dx + dy * dy) / (2 * SIGMA2));
+    }
+    return s;
+  }
+  function grad(x, y) {
+    let gx = 0, gy = 0;
+    for (const p of PROJECTS) {
+      const dx = x - p.x, dy = y - p.y;
+      const e = Math.exp(-(dx * dx + dy * dy) / (2 * SIGMA2));
+      gx += (p.w * dx / SIGMA2) * e;
+      gy += (p.w * dy / SIGMA2) * e;
+    }
+    return { gx, gy };
+  }
+
+  // Pre-render the loss landscape once
+  let surface = null;
+  (function renderSurface() {
+    const img = ctx.createImageData(W, H);
+    let lmin = +Infinity, lmax = -Infinity;
+    const stride = 16;
+    for (let py = 0; py < H; py += stride) {
+      for (let px = 0; px < W; px += stride) {
+        const { x, y } = toWorld(px, py);
+        const L = loss(x, y);
+        if (L < lmin) lmin = L;
+        if (L > lmax) lmax = L;
+      }
+    }
+    const span = Math.max(lmax - lmin, 1e-6);
+    for (let py = 0; py < H; py++) {
+      for (let px = 0; px < W; px++) {
+        const { x, y } = toWorld(px, py);
+        const L = loss(x, y);
+        const t = 1 - Math.min(1, Math.max(0, (L - lmin) / span));
+        const r = Math.floor(12 + t * 100);
+        const g = Math.floor(14 + t * 55);
+        const b = Math.floor(28 + t * 140);
+        const idx = (py * W + px) * 4;
+        img.data[idx + 0] = r;
+        img.data[idx + 1] = g;
+        img.data[idx + 2] = b;
+        img.data[idx + 3] = 255;
+      }
+    }
+    surface = img;
+  })();
+
+  function drawVectorField() {
+    const cols = 26, rows = 12;
+    const dx = (2 * WORLD_X) / cols;
+    const dy = (2 * WORLD_Y) / rows;
+    ctx.save();
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.14)';
+    ctx.lineWidth = 1;
+    for (let i = 0; i <= cols; i++) {
+      for (let j = 0; j <= rows; j++) {
+        const wx = -WORLD_X + i * dx;
+        const wy = -WORLD_Y + j * dy;
+        const g = grad(wx, wy);
+        const mag = Math.sqrt(g.gx * g.gx + g.gy * g.gy);
+        if (mag < 1e-3) continue;
+        const visualLen = 12 * Math.tanh(mag * 0.7);
+        const ux = -g.gx / mag * visualLen;
+        const uy = -g.gy / mag * visualLen;
+        const s = toScreen(wx, wy);
+        ctx.beginPath();
+        ctx.moveTo(s.x, s.y);
+        ctx.lineTo(s.x + ux, s.y + uy);
+        ctx.stroke();
+      }
+    }
+    ctx.restore();
+  }
+
+  function drawAttractors(hoveredId) {
+    for (const p of PROJECTS) {
+      const s = toScreen(p.x, p.y);
+      const isHovered = p.id === hoveredId;
+      ctx.save();
+      ctx.strokeStyle = p.color + (isHovered ? 'AA' : '55');
+      ctx.setLineDash([4, 5]);
+      ctx.lineWidth = 1.2;
+      ctx.beginPath();
+      ctx.arc(s.x, s.y, isHovered ? 78 : 64, 0, Math.PI * 2);
+      ctx.stroke();
+      ctx.restore();
+      ctx.save();
+      ctx.fillStyle = p.color;
+      ctx.shadowColor = p.color;
+      ctx.shadowBlur = isHovered ? 30 : 16;
+      ctx.beginPath();
+      ctx.arc(s.x, s.y, isHovered ? 12 : 9, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+      ctx.save();
+      ctx.font = "12px 'JetBrains Mono', monospace";
+      ctx.fillStyle = '#ffffff';
+      ctx.textAlign = 'center';
+      ctx.fillText(p.label, s.x, s.y - 18);
+      ctx.font = "10px 'JetBrains Mono', monospace";
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.6)';
+      ctx.fillText(p.status, s.x, s.y + 28);
+      ctx.restore();
+    }
+  }
+
+  const particles = [];
+  function dropParticle(wx, wy) {
+    particles.push({ x: wx, y: wy, trail: [], captured: null, ttl: 600 });
+  }
+
+  function nearestAttractor(wx, wy) {
+    let best = null, bestD = Infinity;
+    for (const p of PROJECTS) {
+      const dx = wx - p.x, dy = wy - p.y;
+      const d = dx * dx + dy * dy;
+      if (d < bestD) { bestD = d; best = p; }
+    }
+    return { project: best, dist: Math.sqrt(bestD) };
+  }
+
+  function drawParticles() {
+    for (const p of particles) {
+      for (let i = 0; i < p.trail.length; i++) {
+        const t = p.trail[i];
+        const alpha = (i + 1) / p.trail.length;
+        const s = toScreen(t.x, t.y);
+        ctx.beginPath();
+        ctx.arc(s.x, s.y, 2.2, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(255, 255, 255, ${alpha * 0.55})`;
+        ctx.fill();
+      }
+      const s = toScreen(p.x, p.y);
+      ctx.save();
+      ctx.fillStyle = '#ffffff';
+      ctx.shadowColor = '#c4b5fd';
+      ctx.shadowBlur = 18;
+      ctx.beginPath();
+      ctx.arc(s.x, s.y, 5, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+    }
+  }
+
+  let hoveredId = null;
+
+  function frame() {
+    ctx.putImageData(surface, 0, 0);
+    drawVectorField();
+    drawAttractors(hoveredId);
+
+    for (let i = particles.length - 1; i >= 0; i--) {
+      const p = particles[i];
+      if (p.captured) continue;
+      const g = grad(p.x, p.y);
+      const mag = Math.sqrt(g.gx * g.gx + g.gy * g.gy);
+      const stepLen = Math.min(0.06, 0.10 * mag);
+      if (mag > 1e-4) {
+        p.x -= (g.gx / mag) * stepLen;
+        p.y -= (g.gy / mag) * stepLen;
+      }
+      p.trail.push({ x: p.x, y: p.y });
+      if (p.trail.length > 80) p.trail.shift();
+      p.ttl -= 1;
+      const { project, dist } = nearestAttractor(p.x, p.y);
+      if (dist < 0.22) {
+        p.captured = project;
+        readout.innerHTML = `particle descended into <strong>${project.label}</strong> · status: <em>${project.status}</em> · <a href="javascript:void(0)" id="map-open-${project.id}" style="color:var(--accent);text-decoration:underline">open project →</a>`;
+        const openEl = document.getElementById(`map-open-${project.id}`);
+        if (openEl) openEl.addEventListener('click', () => {
+          if (typeof openModal === 'function') openModal(project.id);
+        });
+      }
+      if (p.ttl <= 0) particles.splice(i, 1);
+    }
+
+    drawParticles();
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+
+  function getCanvasCoords(evt) {
+    const rect = canvas.getBoundingClientRect();
+    const sx = (evt.clientX - rect.left) * (W / rect.width);
+    const sy = (evt.clientY - rect.top) * (H / rect.height);
+    return { sx, sy, world: toWorld(sx, sy) };
+  }
+
+  canvas.addEventListener('mousemove', (e) => {
+    const { world } = getCanvasCoords(e);
+    let nearest = null, bestD = Infinity;
+    for (const p of PROJECTS) {
+      const dx = world.x - p.x, dy = world.y - p.y;
+      const d = dx * dx + dy * dy;
+      if (d < bestD) { bestD = d; nearest = p; }
+    }
+    hoveredId = bestD < 0.4 ? nearest.id : null;
+    canvas.style.cursor = hoveredId ? 'pointer' : 'crosshair';
+  });
+
+  canvas.addEventListener('click', (e) => {
+    const { world } = getCanvasCoords(e);
+    let nearest = null, bestD = Infinity;
+    for (const p of PROJECTS) {
+      const dx = world.x - p.x, dy = world.y - p.y;
+      const d = dx * dx + dy * dy;
+      if (d < bestD) { bestD = d; nearest = p; }
+    }
+    if (bestD < 0.4 && nearest) {
+      if (typeof openModal === 'function') openModal(nearest.id);
+      return;
+    }
+    const cx = Math.max(-WORLD_X, Math.min(WORLD_X, world.x));
+    const cy = Math.max(-WORLD_Y, Math.min(WORLD_Y, world.y));
+    dropParticle(cx, cy);
+    readout.textContent = `particle dropped at (${cx.toFixed(2)}, ${cy.toFixed(2)}) — descending …`;
+  });
+
+  clearBtn.addEventListener('click', () => {
+    particles.length = 0;
+    readout.textContent = 'click anywhere to drop a particle — it will descend the gradient toward the closest project';
+  });
+})();
+</script>
+
 <!-- ============ CUSTOM CURSOR ============ -->
 <script>
 /**
@@ -5516,24 +6071,24 @@
   document.addEventListener('mousedown', () => aura.classList.add('is-pressing'));
   document.addEventListener('mouseup', () => aura.classList.remove('is-pressing'));
 
-  // ── Particle burst on click ────────────────────────────────────────────
+  // ── Particle ripple on click — gentle, monochrome ──────────────────────
   const particles = [];
-  const BURST_COUNT = 16;
-  const PALETTE = ['#8b6dff', '#a78bfa', '#4dd0c2', '#ff9e6d'];
+  const BURST_COUNT = 10;
+  const PALETTE = ['#c4b5fd', '#a78bfa', '#8b6dff'];
 
   function burst(x, y) {
     for (let i = 0; i < BURST_COUNT; i++) {
       const baseAngle = (Math.PI * 2 * i) / BURST_COUNT;
-      const jitter = (Math.random() - 0.5) * 0.4;
+      const jitter = (Math.random() - 0.5) * 0.25;
       const angle = baseAngle + jitter;
-      const speed = 2.5 + Math.random() * 3.5;
+      const speed = 0.9 + Math.random() * 1.4;
       particles.push({
         x, y,
         vx: Math.cos(angle) * speed,
         vy: Math.sin(angle) * speed,
         life: 1,
-        decay: 0.018 + Math.random() * 0.012,
-        size: 2.2 + Math.random() * 2.4,
+        decay: 0.010 + Math.random() * 0.006,
+        size: 1.6 + Math.random() * 1.4,
         color: PALETTE[Math.floor(Math.random() * PALETTE.length)],
       });
     }
@@ -5554,9 +6109,9 @@
       const p = particles[i];
       p.x += p.vx;
       p.y += p.vy;
-      p.vx *= 0.94;
-      p.vy *= 0.94;
-      p.vy += 0.06; // a little gravity
+      p.vx *= 0.93;
+      p.vy *= 0.93;
+      // no gravity — the particles just drift out and fade
       p.life -= p.decay;
       if (p.life <= 0) {
         particles.splice(i, 1);
