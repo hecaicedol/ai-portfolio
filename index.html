@@ -3485,6 +3485,7 @@
   </div>
 </header>
 
+
 <!-- ============ THESIS ============ -->
 <section id="thesis">
   <div class="container">
@@ -3521,269 +3522,6 @@
   </div>
 </section>
 
-<!-- ============ WHY A MATHEMATICIAN ============ -->
-<section id="why-math">
-  <div class="container">
-    <div class="section-eyebrow" data-i18n="whyMath.eyebrow">02 · The differentiator</div>
-    <h2 data-i18n="whyMath.h2">Why hire a mathematician for AI engineering?</h2>
-    <p class="section-sub" data-i18n="whyMath.sub">The honest answer — and the three things mathematics gives me that a CS degree alone wouldn't.</p>
-
-    <div class="why-math reveal">
-      <div class="why-math-grid">
-        <div>
-          <h3 data-i18n="whyMath.quote">"AI engineering is hard because correctness is hard."</h3>
-          <p class="preamble" data-i18n="whyMath.p1">
-            Mathematics is the only discipline that spends years teaching you how to <strong>prove</strong> what you claim — and how to know exactly when your proof breaks. Production AI fails the same way undergraduate proofs fail: hidden assumptions, untested cases, ambiguous definitions, missing edge cases.
-          </p>
-          <p class="preamble" style="margin-top:14px" data-i18n="whyMath.p2">
-            The difference is that in production, <strong>no one is grading you</strong>. The system just quietly produces a wrong answer — and someone pays for it. That's the gap this portfolio is built to close.
-          </p>
-          <p class="preamble" style="margin-top:14px;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--text-faint)" data-i18n="whyMath.footnote">
-            ↳ Anthropic, DeepMind, OpenAI hire heavily from math and physics. Not by accident.
-          </p>
-        </div>
-
-        <div class="why-math-pts">
-          <div class="why-math-pt">
-            <div class="why-math-pt-num">01</div>
-            <div>
-              <h4 data-i18n="whyMath.pt1.h">Failure modes are theorems.</h4>
-              <p data-i18n="whyMath.pt1.p">A mathematician spends years learning to enumerate every case before claiming a result. <strong>Critic agents, reflection loops, eval suites</strong> are the same instinct, applied to LLMs. <em>(See: Project 01)</em></p>
-            </div>
-          </div>
-          <div class="why-math-pt">
-            <div class="why-math-pt-num">02</div>
-            <div>
-              <h4 data-i18n="whyMath.pt2.h">Abstraction is the daily job.</h4>
-              <p data-i18n="whyMath.pt2.p">Three-tier memory, hybrid retrieval, multi-agent debate — these are all <strong>structural problems</strong>. Naming the right abstraction is what mathematics teaches; engineering it is what production teaches. I do both. <em>(See: Projects 03, 04, 06)</em></p>
-            </div>
-          </div>
-          <div class="why-math-pt">
-            <div class="why-math-pt-num">03</div>
-            <div>
-              <h4 data-i18n="whyMath.pt3.h">Rigor scales. Vibes don't.</h4>
-              <p data-i18n="whyMath.pt3.p">Most AI work is "ship the thing and pray." Mathematics doesn't permit that. Every claim here has an <strong>explicit metric</strong>, an <strong>explicit baseline</strong>, and <strong>conditions under which it stops working</strong>. <em>(See: any project's metrics block)</em></p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ============ MATH IN MOTION ============ -->
-<section id="math-in-motion">
-  <div class="container">
-    <div class="section-eyebrow" data-i18n="mathGrad.eyebrow">02b · Mathematics in motion · Gradient descent</div>
-    <h2 data-i18n="mathGrad.h2">The same gradient that trains every model in this portfolio</h2>
-    <p class="section-sub" data-i18n="mathGrad.sub">Every parameter inside Claude, GPT, and the LangGraph agents you'll see below was set by repeating one rule: <code style="color:var(--accent-3);font-family:'JetBrains Mono',monospace">w<sub>t+1</sub> = w<sub>t</sub> − η · ∇L(w<sub>t</sub>)</code>. Below, that rule runs live. The colored landscape is a 2-parameter loss surface; the small arrows are its gradient field (pointing toward steeper loss); the bright dot is a weight vector descending. <strong style="color:var(--text)">Try every control</strong> — they tell different optimization stories.</p>
-
-    <div class="math-card-tour">
-      <span class="tour-step" data-i18n="mathGrad.tour.1"><strong>1.</strong> click anywhere on the surface to drop the weight there</span>
-      <span class="tour-step" data-i18n="mathGrad.tour.2"><strong>2.</strong> change the loss function to see SGD's behavior on different landscapes</span>
-      <span class="tour-step" data-i18n="mathGrad.tour.3"><strong>3.</strong> raise η too high → watch divergence; too low → glacial convergence</span>
-    </div>
-
-    <div class="grad-descent-wrap reveal">
-      <canvas id="grad-canvas" width="1000" height="500" aria-label="Interactive gradient-descent visualization"></canvas>
-      <div class="grad-descent-overlay">
-        <div class="hint" id="grad-fn-hint">paraboloid · narrow valley</div>
-        <div class="readout" id="grad-readout">step <strong>—</strong> · loss <strong>—</strong> · ‖∇L‖ <strong>—</strong></div>
-      </div>
-      <div class="grad-controls">
-        <div class="grad-control-group">
-          <label data-i18n="mathGrad.label.scenario">project scenario</label>
-          <select id="grad-fn">
-            <option value="p1_critic" selected>P1 · Critic threshold × max iterations</option>
-            <option value="p6_rrf">P6 · RRF k constant (symmetric bowl)</option>
-            <option value="p4_debate">P4 · agents × rounds (saddle)</option>
-            <option value="p3_rosenbrock">P3 · MemGPT memory thresholds (banana)</option>
-            <option value="p5_planner">P5 · planner greedy vs exhaustive (twin valleys)</option>
-          </select>
-        </div>
-        <div class="grad-control-group">
-          <label>learning rate η</label>
-          <div class="grad-slider-row">
-            <input id="grad-lr" type="range" min="2" max="35" value="14" step="1">
-            <span id="grad-lr-readout">0.14</span>
-          </div>
-        </div>
-        <div class="grad-control-group grad-control-buttons">
-          <button id="grad-pause" class="grad-btn">⏸ <span data-i18n="mathGrad.btn.pause">pause</span></button>
-          <button id="grad-reset" class="grad-btn">↺ <span data-i18n="mathGrad.btn.reset">reset</span></button>
-          <button id="grad-random" class="grad-btn">🎲 <span data-i18n="mathGrad.btn.random">random start</span></button>
-          <button id="grad-open" class="grad-btn" style="background:var(--accent);color:#fff;border-color:var(--accent)">↗ <span data-i18n="mathGrad.btn.openProject">open this project</span></button>
-          <label class="grad-toggle">
-            <input type="checkbox" id="grad-field" checked> <span data-i18n="mathGrad.toggle.field">vector field</span>
-          </label>
-        </div>
-      </div>
-      <div class="grad-descent-legend">
-        <span><span class="legend-dot" style="background:#ffffff;color:#fff;box-shadow:0 0 8px #fff"></span>weight vector w<sub>t</sub></span>
-        <span><span class="legend-dot" style="background:rgba(139,109,255,0.55);color:rgba(139,109,255,0.55)"></span>trajectory (last 60 steps)</span>
-        <span><span class="legend-dot" style="background:#ff9e6d;color:#ff9e6d"></span>negative gradient (direction the weight moves)</span>
-        <span><span class="legend-dot" style="background:#4dd0c2;color:#4dd0c2"></span>optimum (loss = 0)</span>
-        <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text-faint);margin-left:auto" id="grad-fn-desc">narrow valley · curvature mismatch causes SGD to zigzag in the steep direction.</span>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ============ MATH IN MOTION II · RRF ============ -->
-<section id="rrf-math">
-  <div class="container">
-    <div class="section-eyebrow" data-i18n="mathRRF.eyebrow">02c · Mathematics in motion · Reciprocal Rank Fusion</div>
-    <h2 data-i18n="mathRRF.h2">Two parameter-free lines of math beat a model that costs a million dollars to train</h2>
-    <p class="section-sub" data-i18n="mathRRF.sub">
-      P6 fuses keyword (BM25) and vector (cosine) retrieval with <strong>Reciprocal Rank Fusion</strong>. One constant <code>k = 60</code> (recommended in the 2009 paper and never seriously challenged), no training, no parameters to tune. It beats both signals alone on every published benchmark. Try it across <strong>four different corpora</strong>, toggle the retrieval mode, change <code>k</code>, then hit the LLM-synthesis button to see what a downstream model would actually return.
-    </p>
-
-    <div class="math-card-tour">
-      <span class="tour-step" data-i18n="mathRRF.tour.1"><strong>1.</strong> pick a corpus → see how vector vs keyword split on real data</span>
-      <span class="tour-step" data-i18n="mathRRF.tour.2"><strong>2.</strong> slide <code>k</code> and switch between Vector / Keyword / Hybrid modes</span>
-      <span class="tour-step" data-i18n="mathRRF.tour.3"><strong>3.</strong> hit 🤖 Synthesize → the top-3 contexts go into a streaming "LLM" answer</span>
-    </div>
-
-    <div class="rrf-demo reveal">
-      <div class="rrf-formula">
-        <div class="formula-line">score(d) = Σ<sub>i</sub> &nbsp;1 / (<span id="rrf-k-label">k</span> + rank<sub>i</sub>(d)) &nbsp; · &nbsp; <span id="rrf-k-readout" style="color:var(--accent-3)">k = 60</span></div>
-        <div class="formula-where" data-i18n="mathRRF.formulaWhere">A doc ranks higher when it sits near the top of multiple lists. The reciprocal damps any single signal — no list can completely overrule another. Bigger k = more "patience" (a doc at rank 20 still contributes meaningfully); smaller k = aggressive top-of-list weighting.</div>
-      </div>
-
-      <div class="rrf-controls">
-        <div class="rrf-control-row">
-          <label class="rrf-control-label" data-i18n="mathRRF.controls.dataset">corpus</label>
-          <div class="rrf-chip-group" id="rrf-dataset-group">
-            <button class="rrf-chip is-active" data-dataset="ai"     data-i18n="mathRRF.dataset.ai">AI / ML papers</button>
-            <button class="rrf-chip"           data-dataset="code"   data-i18n="mathRRF.dataset.code">Code search</button>
-            <button class="rrf-chip"           data-dataset="ecom"   data-i18n="mathRRF.dataset.ecom">E-commerce</button>
-            <button class="rrf-chip"           data-dataset="support" data-i18n="mathRRF.dataset.support">Customer support</button>
-          </div>
-        </div>
-        <div class="rrf-control-row">
-          <label class="rrf-control-label" data-i18n="mathRRF.controls.mode">retrieval mode</label>
-          <div class="rrf-chip-group" id="rrf-mode-group">
-            <button class="rrf-chip" data-mode="vector"  data-i18n="mathRRF.mode.vector">vector only</button>
-            <button class="rrf-chip" data-mode="keyword" data-i18n="mathRRF.mode.keyword">keyword only</button>
-            <button class="rrf-chip is-active" data-mode="hybrid" data-i18n="mathRRF.mode.hybrid">hybrid (RRF)</button>
-          </div>
-        </div>
-        <div class="rrf-control-row">
-          <label class="rrf-control-label">k</label>
-          <input type="range" id="rrf-k" min="1" max="200" value="60" step="1" style="flex:1;max-width:300px;accent-color:#8b6dff">
-          <span id="rrf-k-display" style="font-family:'JetBrains Mono',monospace;color:var(--accent);min-width:40px;text-align:right">60</span>
-        </div>
-        <div class="rrf-query-display">
-          <span class="rrf-query-label" data-i18n="mathRRF.controls.query">user query:</span>
-          <span class="rrf-query-text" id="rrf-query"></span>
-        </div>
-      </div>
-
-      <div class="rrf-grid">
-        <div class="rrf-list">
-          <h6><span class="dot" style="background:#8b6dff"></span><span data-i18n="mathRRF.list.vector">Vector similarity · Voyage AI</span></h6>
-          <ul id="rrf-list-vec"></ul>
-          <div class="rrf-list-note" data-i18n="mathRRF.list.vectorNote">cosine over 1024-dim embeddings</div>
-        </div>
-        <div class="rrf-list">
-          <h6><span class="dot" style="background:#4dd0c2"></span><span data-i18n="mathRRF.list.keyword">BM25 keyword</span></h6>
-          <ul id="rrf-list-kw"></ul>
-          <div class="rrf-list-note" data-i18n="mathRRF.list.keywordNote">TF-IDF with length normalization</div>
-        </div>
-        <div class="rrf-list rrf-fused">
-          <h6><span class="dot" style="background:#fbbf24"></span><span id="rrf-result-label" data-i18n="mathRRF.list.hybrid">Hybrid (RRF) result</span></h6>
-          <ul id="rrf-list-fused"></ul>
-          <div class="rrf-list-note" id="rrf-result-note" data-i18n="mathRRF.list.hybridNote">live · top-3 fed to the synthesizer below</div>
-        </div>
-      </div>
-
-      <div class="rrf-llm-card">
-        <div class="rrf-llm-header">
-          <div>
-            <div class="rrf-llm-title" data-i18n="mathRRF.llm.title">🤖 Synthesizer · Claude with the top-3 contexts</div>
-            <div class="rrf-llm-sub" data-i18n="mathRRF.llm.sub">The retrieved chunks above become the context window for a fake LLM call. The response below is precomputed per corpus but the streaming is real.</div>
-          </div>
-          <button class="rrf-llm-button" id="rrf-synthesize">
-            <span data-i18n="mathRRF.llm.button">Synthesize answer</span>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
-          </button>
-        </div>
-        <div class="rrf-llm-output" id="rrf-llm-output">
-          <span class="rrf-llm-placeholder" data-i18n="mathRRF.llm.placeholder">Generated answer will stream here. Click "Synthesize" above to start.</span>
-        </div>
-        <div class="rrf-ask-row">
-          <span class="rrf-ask-label" data-i18n="mathRRF.ask.label">or · ask your own question about the portfolio</span>
-          <div class="rrf-ask-input-row">
-            <input type="text" id="rrf-ask-input" placeholder="how many tests does P1 have? · who built this? · what is RRF?" />
-            <button class="rrf-llm-button" id="rrf-ask-btn">
-              <span data-i18n="mathRRF.ask.button">Ask</span>
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
-            </button>
-          </div>
-          <div class="rrf-ask-suggestions" id="rrf-ask-suggestions"></div>
-        </div>
-      </div>
-
-      <div class="rrf-explanation">
-        <p data-i18n="mathRRF.explanation"><strong>Why this matters for production RAG.</strong> Vector embeddings are good at <em>semantic</em> matches: "auth token" ≈ "JWT" ≈ "session credential". BM25 is good at <em>exact</em> matches: product codes, version numbers, acronyms, the names of internal services. Real corpora need both. The rest of the field snaps to vector-only — which is why so many RAG demos work on a curated wiki and fall over on real enterprise documents. Choosing the fusion math is the actual engineering decision.</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ============ MATH IN MOTION III · ATTENTION ============ -->
-<section id="attention-math">
-  <div class="container">
-    <div class="section-eyebrow" data-i18n="mathAttn.eyebrow">02d · Mathematics in motion · Self-attention</div>
-    <h2 data-i18n="mathAttn.h2">The 49-character formula behind every model in this portfolio</h2>
-    <p class="section-sub" data-i18n="mathAttn.sub">
-      Every LLM you've heard of — Claude, GPT, Llama — is built on stacked layers of one tiny operation: scaled dot-product attention. Below, hover any output token to see which input tokens contributed to it and by how much. The line weight is literally the attention weight after softmax. Click <kbd>shuffle</kbd> for a fresh pattern.
-    </p>
-
-    <div class="math-card-tour">
-      <span class="tour-step" data-i18n="mathAttn.tour.1"><strong>1.</strong> hover any token in the bottom (output) row</span>
-      <span class="tour-step" data-i18n="mathAttn.tour.2"><strong>2.</strong> the cubic-bezier edges show that token's attention distribution after softmax</span>
-      <span class="tour-step" data-i18n="mathAttn.tour.3"><strong>3.</strong> press <kbd>↻ Shuffle attention</kbd> to regenerate the weights from a fresh kernel</span>
-    </div>
-
-    <div class="attention-demo reveal">
-      <div class="attention-formula">
-        <div class="formula-line">Attention(Q, K, V) = softmax(QK<sup>T</sup> / √d<sub>k</sub>) · V</div>
-        <div class="formula-where">
-          Q, K, V are linear projections of the input (queries, keys, values). The dot product QK<sup>T</sup> measures alignment; dividing by √d<sub>k</sub> keeps the variance ≈ 1 so softmax doesn't saturate as the embedding dimension grows; the softmax row turns alignments into a probability distribution that weights V. The whole portfolio is layers of this on top of each other.
-        </div>
-      </div>
-
-      <div class="attention-viz">
-        <div class="attention-controls">
-          <button class="btn" id="attn-shuffle" style="padding:7px 14px; font-size:12px">↻ Shuffle attention</button>
-          <span style="margin-left:auto;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text-faint)">hover an output token →</span>
-        </div>
-        <svg id="attn-svg" viewBox="0 0 900 320" xmlns="http://www.w3.org/2000/svg">
-          <defs>
-            <linearGradient id="attn-edge" x1="0%" y1="0%" x2="100%" y2="0%">
-              <stop offset="0%" stop-color="#8b6dff" stop-opacity="0"/>
-              <stop offset="50%" stop-color="#8b6dff" stop-opacity="1"/>
-              <stop offset="100%" stop-color="#4dd0c2" stop-opacity="0"/>
-            </linearGradient>
-          </defs>
-          <g id="attn-edges"></g>
-          <g id="attn-input-row"></g>
-          <g id="attn-output-row"></g>
-        </svg>
-        <div class="attention-readout" id="attn-readout">
-          Hover a token in the bottom row to see its attention distribution.
-        </div>
-      </div>
-
-      <div class="attention-explanation">
-        <p><strong>What you're seeing.</strong> The bottom row is the model "generating" each output token; the top row is what it "looked at". For a translation task, you'd expect the model to attend to a roughly diagonal pattern (each output token aligns with one or two input tokens) — but for actual language, attention is often surprisingly distributed: pronouns attend to their antecedents many tokens away, verbs attend to subjects, articles barely attend to anything. This is why attention is the mechanism that lets a model handle long-range dependencies <em>without</em> a recurrent state.</p>
-        <p><strong>Why the √d<sub>k</sub> matters.</strong> Without it, as you scale embedding dimension d<sub>k</sub> from 64 to 1024, the variance of Q·K grows linearly, the softmax saturates (one weight becomes ≈1, all others ≈0), and gradients vanish. The √d<sub>k</sub> normalization preserves a healthy gradient signal across model scales. It's a one-character fix, and it's why the 2017 "Attention is All You Need" paper works at all.</p>
-      </div>
-    </div>
-  </div>
-</section>
-
 <!-- ============ PORTFOLIO MAP · gradient navigation ============ -->
 <section id="portfolio-map">
   <div class="container">
@@ -3811,211 +3549,6 @@
         <div class="map-tooltip-body"></div>
         <div class="map-tooltip-cta" id="map-tooltip-cta"></div>
         <button class="map-tooltip-continue" id="map-tooltip-continue" type="button"></button>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ============ CONCEPT MAP · shared vocabulary across projects ============ -->
-<section id="concepts-map">
-  <div class="container">
-    <div class="section-eyebrow" data-i18n="concepts.eyebrow">02g · The portfolio's shared vocabulary</div>
-    <h2 data-i18n="concepts.h2">Concept map · the techniques that connect the six projects</h2>
-    <p class="section-sub" data-i18n="concepts.sub">
-      Each project answers a different question, but they share a small library of techniques: LangGraph, pgvector, BM25, MCP, RRF, Ragas. Below, that shared vocabulary is rendered as a force-directed graph — projects are the colored disks, concepts the smaller dots, edges show "this project uses this technique." Drag, zoom, click anything. The simulation runs live.
-    </p>
-
-    <div class="math-card-tour">
-      <span class="tour-step" data-i18n="concepts.tour.1"><strong>1.</strong> hover a concept → see which projects it powers</span>
-      <span class="tour-step" data-i18n="concepts.tour.2"><strong>2.</strong> click a concept → its edges erupt into a spiral / loop animation + the side panel explains it</span>
-      <span class="tour-step" data-i18n="concepts.tour.3"><strong>3.</strong> drag any node to perturb the simulation · scroll to zoom · drag empty space to pan</span>
-    </div>
-
-    <div class="concepts-card reveal">
-      <div class="concepts-canvas-wrap">
-        <svg id="concepts-svg" viewBox="0 0 1200 600" xmlns="http://www.w3.org/2000/svg">
-          <defs>
-            <filter id="concept-glow" x="-50%" y="-50%" width="200%" height="200%">
-              <feGaussianBlur in="SourceGraphic" stdDeviation="2.5"/>
-              <feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>
-            </filter>
-            <linearGradient id="edge-default" x1="0%" y1="0%" x2="100%" y2="0%">
-              <stop offset="0%" stop-color="#8b6dff" stop-opacity="0.2"/>
-              <stop offset="100%" stop-color="#4dd0c2" stop-opacity="0.4"/>
-            </linearGradient>
-          </defs>
-          <g id="concepts-viewport">
-            <g id="concepts-edges"></g>
-            <g id="concepts-spirals"></g>
-            <g id="concepts-nodes"></g>
-          </g>
-        </svg>
-        <div class="concepts-detail" id="concepts-detail">
-          <div class="concepts-detail-empty" data-i18n="concepts.detailDefault">Click any concept node to see what it does and which projects use it.</div>
-        </div>
-      </div>
-      <div class="concepts-legend">
-        <span><span class="dot" style="background:#8b6dff;box-shadow:0 0 8px #8b6dff"></span><span data-i18n="concepts.legend.project">project</span></span>
-        <span><span class="dot" style="background:#4dd0c2;box-shadow:0 0 8px #4dd0c2"></span><span data-i18n="concepts.legend.concept">technique / pattern</span></span>
-        <span><span class="dot" style="background:rgba(255,255,255,0.5)"></span><span data-i18n="concepts.legend.edge">"this project uses this technique"</span></span>
-        <span style="margin-left:auto;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text-faint)" id="concepts-zoom-readout">zoom 1.00× · scroll to zoom · drag empty space to pan</span>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ============ MATH IN MOTION IV · WORDS AS VECTORS ============ -->
-<section id="words-math">
-  <div class="container">
-    <div class="section-eyebrow" data-i18n="mathWords.eyebrow">02f · Mathematics in motion · Words as vectors (Project 06)</div>
-    <h2 data-i18n="mathWords.h2">Every word in this portfolio is literally a vector</h2>
-    <p class="section-sub" data-i18n="mathWords.sub">
-      Before P6 can retrieve anything, it asks <strong>Voyage AI</strong> to turn each chunk into a 1024-dim vector. Words with related meaning land near each other in that space. Even better: <strong>relationships become arithmetic</strong>. Below, ~40 words from this portfolio's actual vocabulary, projected to 2D. Hover any word to see its nearest neighbors. Click the demo buttons to watch a vector arithmetic land on its target.
-    </p>
-
-    <div class="math-card-tour">
-      <span class="tour-step" data-i18n="mathWords.tour.1"><strong>1.</strong> hover any word → 5 nearest neighbors light up with edges</span>
-      <span class="tour-step" data-i18n="mathWords.tour.2"><strong>2.</strong> click a demo → watch <code>A − B + C</code> land near its expected word</span>
-      <span class="tour-step" data-i18n="mathWords.tour.3"><strong>3.</strong> pick your own A, B, C in the free-mode dropdowns at the bottom</span>
-    </div>
-
-    <div class="words-demo reveal">
-      <div class="words-canvas-wrap">
-        <canvas id="words-canvas" width="1100" height="540" aria-label="Word-embedding scatter plot"></canvas>
-        <div class="words-overlay">
-          <span class="words-formula"><strong>cos(u, v) = (u · v) / (‖u‖ ‖v‖)</strong> &nbsp;·&nbsp; <span style="color:var(--text-faint)">cosine similarity in the embedding space (P6's vector store backend)</span></span>
-        </div>
-      </div>
-
-      <div class="words-controls">
-        <div class="words-control-group">
-          <label data-i18n="mathWords.demo.label">Pre-baked vector arithmetic</label>
-          <div class="words-chip-group">
-            <button class="words-chip" data-demo="king" data-i18n="mathWords.demo.king">king − man + woman ≈ queen</button>
-            <button class="words-chip" data-demo="paris" data-i18n="mathWords.demo.paris">paris − france + germany ≈ berlin</button>
-            <button class="words-chip" data-demo="claude" data-i18n="mathWords.demo.claude">claude − anthropic + openai ≈ gpt</button>
-            <button class="words-chip" data-demo="walking" data-i18n="mathWords.demo.walking">walking − walk + run ≈ running</button>
-          </div>
-        </div>
-        <div class="words-control-group words-arith-row">
-          <label data-i18n="mathWords.free.label">Free mode &nbsp;·&nbsp; A − B + C ≈ ?</label>
-          <select id="words-a"></select>
-          <span class="words-arith-op">−</span>
-          <select id="words-b"></select>
-          <span class="words-arith-op">+</span>
-          <select id="words-c"></select>
-          <button class="words-compute" id="words-compute"><span data-i18n="mathWords.compute">compute</span> →</button>
-          <button class="words-compute words-clear" id="words-clear"><span data-i18n="mathWords.clear">clear</span></button>
-        </div>
-        <div class="words-readout" id="words-readout" data-i18n="mathWords.readoutDefault">Hover a word above to see its 5 nearest neighbors in the embedding space.</div>
-      </div>
-
-      <div class="rrf-explanation">
-        <p data-i18n="mathWords.explanation"><strong>Why this is the core of P6.</strong> P6's vector store doesn't store words — it stores chunks of text, each represented as a 1024-dimensional vector via Voyage AI. The math you just watched is exactly what happens internally when the system decides that "auth token" should match a document containing "JWT credential": the cosine between their embedding vectors is near 1. The 2D projection here uses PCA on a tiny vocabulary — real chunks live in 1024 dimensions, where these clusters are far more separated and the arithmetic identities (like the famous <em>king − man + woman</em>) are even cleaner.</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ============ CAPABILITIES ============ -->
-<section id="capabilities">
-  <div class="container">
-    <div class="section-eyebrow" data-i18n="caps.eyebrow">03 · Capabilities</div>
-    <h2 data-i18n="caps.h2">Six axes of production AI</h2>
-    <p class="section-sub" data-i18n="caps.sub">A radar of the production concerns AI teams hire for. Each axis is grounded in at least one of the six projects.</p>
-
-    <div class="cap-layout">
-      <div class="radar-wrap reveal">
-        <h5>Capability map · self-assessed</h5>
-        <svg viewBox="0 0 320 320" xmlns="http://www.w3.org/2000/svg">
-          <defs>
-            <radialGradient id="radarFill" cx="50%" cy="50%" r="50%">
-              <stop offset="0%" stop-color="#8b6dff" stop-opacity="0.45"/>
-              <stop offset="100%" stop-color="#4dd0c2" stop-opacity="0.18"/>
-            </radialGradient>
-          </defs>
-          <g transform="translate(160,160)">
-            <!-- 4 concentric hexagons -->
-            <g fill="none" stroke="#1c2030" stroke-width="1">
-              <polygon points="0,-120 103.9,-60 103.9,60 0,120 -103.9,60 -103.9,-60"/>
-              <polygon points="0,-90 77.9,-45 77.9,45 0,90 -77.9,45 -77.9,-45"/>
-              <polygon points="0,-60 52,-30 52,30 0,60 -52,30 -52,-30"/>
-              <polygon points="0,-30 26,-15 26,15 0,30 -26,15 -26,-15"/>
-            </g>
-            <!-- 6 axes -->
-            <g stroke="#1c2030" stroke-width="1">
-              <line x1="0" y1="0" x2="0" y2="-120"/>
-              <line x1="0" y1="0" x2="103.9" y2="-60"/>
-              <line x1="0" y1="0" x2="103.9" y2="60"/>
-              <line x1="0" y1="0" x2="0" y2="120"/>
-              <line x1="0" y1="0" x2="-103.9" y2="60"/>
-              <line x1="0" y1="0" x2="-103.9" y2="-60"/>
-            </g>
-            <!-- data polygon: reliability=0.88, memory=0.82, retrieval=0.85, multi-agent=0.78, mcp=0.72, observability=0.9 -->
-            <polygon points="0,-105.6 88.3,-51 88.3,51 0,93.6 -86.5,49.9 -91.5,-52.8"
-              fill="url(#radarFill)" stroke="#8b6dff" stroke-width="1.8" stroke-linejoin="round">
-              <animate attributeName="opacity" values="0;1" dur="1.2s" fill="freeze"/>
-            </polygon>
-            <!-- vertex dots -->
-            <g fill="#8b6dff">
-              <circle cx="0" cy="-105.6" r="3.5"/>
-              <circle cx="88.3" cy="-51" r="3.5"/>
-              <circle cx="88.3" cy="51" r="3.5"/>
-              <circle cx="0" cy="93.6" r="3.5"/>
-              <circle cx="-86.5" cy="49.9" r="3.5"/>
-              <circle cx="-91.5" cy="-52.8" r="3.5"/>
-            </g>
-            <!-- labels -->
-            <g font-family="JetBrains Mono, monospace" font-size="10" fill="#8b91a3" text-anchor="middle">
-              <text x="0" y="-135">Reliability</text>
-              <text x="120" y="-66">Memory</text>
-              <text x="120" y="74">Retrieval</text>
-              <text x="0" y="142">Multi-agent</text>
-              <text x="-120" y="74">MCP / DAGs</text>
-              <text x="-120" y="-66">Observability</text>
-            </g>
-          </g>
-        </svg>
-      </div>
-
-      <div class="cap-text">
-        <h3 data-i18n="caps.lead.h">Engineered for the boring parts of AI.</h3>
-        <p data-i18n="caps.lead.p1">Most "AI portfolios" are a chatbot in a Streamlit. The six projects in this repository each answer one production question that hiring managers will ask in the loop: <strong>"how does it fail, and how does it know it failed?"</strong></p>
-        <p data-i18n="caps.lead.p2">The radar is self-assessed against a rubric: each axis scores higher when the relevant project has a working orchestrator, a real eval suite, and a written rationale for the architectural choice over the obvious alternative. There are no "10/10" axes — every project still has a TODO list.</p>
-        <p data-i18n="caps.lead.p3">The capabilities below map 1:1 to the six projects in the next section.</p>
-      </div>
-    </div>
-
-    <div class="capabilities">
-      <div class="cap reveal">
-        <div class="cap-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
-        <h4 data-i18n="caps.c1.h">Reliability under failure</h4>
-        <p data-i18n="caps.c1.p">Self-healing pipelines with critic agents, bounded reflection loops, episodic error memory queried before every evaluation.</p>
-      </div>
-      <div class="cap reveal">
-        <div class="cap-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96.44 2.5 2.5 0 0 1-2.96-3.08 3 3 0 0 1-.34-5.58 2.5 2.5 0 0 1 1.32-4.24 2.5 2.5 0 0 1 4.44-2.04Z"/><path d="M14.5 2A2.5 2.5 0 0 0 12 4.5v15a2.5 2.5 0 0 0 4.96.44 2.5 2.5 0 0 0 2.96-3.08 3 3 0 0 0 .34-5.58 2.5 2.5 0 0 0-1.32-4.24 2.5 2.5 0 0 0-4.44-2.04Z"/></svg></div>
-        <h4 data-i18n="caps.c2.h">Memory architecture</h4>
-        <p data-i18n="caps.c2.p">Three-tier MemGPT patterns, episodic stores on pgvector, semantic consolidation jobs. State that survives sessions.</p>
-      </div>
-      <div class="cap reveal">
-        <div class="cap-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg></div>
-        <h4 data-i18n="caps.c3.h">Advanced retrieval</h4>
-        <p data-i18n="caps.c3.p">GraphRAG, contextual retrieval (Anthropic), hybrid BM25 + vector + Cohere rerank with RRF, Ragas evaluation harness.</p>
-      </div>
-      <div class="cap reveal">
-        <div class="cap-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
-        <h4 data-i18n="caps.c4.h">Multi-agent collaboration</h4>
-        <p data-i18n="caps.c4.p">Society-of-Mind debate, parallel orchestration, consensus measurement. Distinct roles produce emergent insight.</p>
-      </div>
-      <div class="cap reveal">
-        <div class="cap-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></div>
-        <h4 data-i18n="caps.c5.h">MCP &amp; dynamic workflows</h4>
-        <p data-i18n="caps.c5.p">Meta-agents generating DAGs at runtime, executing via MCP servers connected to GitHub, Jira, Slack, and Drive.</p>
-      </div>
-      <div class="cap reveal">
-        <div class="cap-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="m7 14 4-4 4 4 5-5"/></svg></div>
-        <h4 data-i18n="caps.c6.h">Production observability</h4>
-        <p data-i18n="caps.c6.p">Docker Compose everywhere, Langfuse traces on every LLM call, Pydantic boundaries, cost tracking per pipeline run.</p>
       </div>
     </div>
   </div>
@@ -4670,6 +4203,110 @@
   </div>
 </section>
 
+<!-- ============ CAPABILITIES ============ -->
+<section id="capabilities">
+  <div class="container">
+    <div class="section-eyebrow" data-i18n="caps.eyebrow">03 · Capabilities</div>
+    <h2 data-i18n="caps.h2">Six axes of production AI</h2>
+    <p class="section-sub" data-i18n="caps.sub">A radar of the production concerns AI teams hire for. Each axis is grounded in at least one of the six projects.</p>
+
+    <div class="cap-layout">
+      <div class="radar-wrap reveal">
+        <h5>Capability map · self-assessed</h5>
+        <svg viewBox="0 0 320 320" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <radialGradient id="radarFill" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stop-color="#8b6dff" stop-opacity="0.45"/>
+              <stop offset="100%" stop-color="#4dd0c2" stop-opacity="0.18"/>
+            </radialGradient>
+          </defs>
+          <g transform="translate(160,160)">
+            <!-- 4 concentric hexagons -->
+            <g fill="none" stroke="#1c2030" stroke-width="1">
+              <polygon points="0,-120 103.9,-60 103.9,60 0,120 -103.9,60 -103.9,-60"/>
+              <polygon points="0,-90 77.9,-45 77.9,45 0,90 -77.9,45 -77.9,-45"/>
+              <polygon points="0,-60 52,-30 52,30 0,60 -52,30 -52,-30"/>
+              <polygon points="0,-30 26,-15 26,15 0,30 -26,15 -26,-15"/>
+            </g>
+            <!-- 6 axes -->
+            <g stroke="#1c2030" stroke-width="1">
+              <line x1="0" y1="0" x2="0" y2="-120"/>
+              <line x1="0" y1="0" x2="103.9" y2="-60"/>
+              <line x1="0" y1="0" x2="103.9" y2="60"/>
+              <line x1="0" y1="0" x2="0" y2="120"/>
+              <line x1="0" y1="0" x2="-103.9" y2="60"/>
+              <line x1="0" y1="0" x2="-103.9" y2="-60"/>
+            </g>
+            <!-- data polygon: reliability=0.88, memory=0.82, retrieval=0.85, multi-agent=0.78, mcp=0.72, observability=0.9 -->
+            <polygon points="0,-105.6 88.3,-51 88.3,51 0,93.6 -86.5,49.9 -91.5,-52.8"
+              fill="url(#radarFill)" stroke="#8b6dff" stroke-width="1.8" stroke-linejoin="round">
+              <animate attributeName="opacity" values="0;1" dur="1.2s" fill="freeze"/>
+            </polygon>
+            <!-- vertex dots -->
+            <g fill="#8b6dff">
+              <circle cx="0" cy="-105.6" r="3.5"/>
+              <circle cx="88.3" cy="-51" r="3.5"/>
+              <circle cx="88.3" cy="51" r="3.5"/>
+              <circle cx="0" cy="93.6" r="3.5"/>
+              <circle cx="-86.5" cy="49.9" r="3.5"/>
+              <circle cx="-91.5" cy="-52.8" r="3.5"/>
+            </g>
+            <!-- labels -->
+            <g font-family="JetBrains Mono, monospace" font-size="10" fill="#8b91a3" text-anchor="middle">
+              <text x="0" y="-135">Reliability</text>
+              <text x="120" y="-66">Memory</text>
+              <text x="120" y="74">Retrieval</text>
+              <text x="0" y="142">Multi-agent</text>
+              <text x="-120" y="74">MCP / DAGs</text>
+              <text x="-120" y="-66">Observability</text>
+            </g>
+          </g>
+        </svg>
+      </div>
+
+      <div class="cap-text">
+        <h3 data-i18n="caps.lead.h">Engineered for the boring parts of AI.</h3>
+        <p data-i18n="caps.lead.p1">Most "AI portfolios" are a chatbot in a Streamlit. The six projects in this repository each answer one production question that hiring managers will ask in the loop: <strong>"how does it fail, and how does it know it failed?"</strong></p>
+        <p data-i18n="caps.lead.p2">The radar is self-assessed against a rubric: each axis scores higher when the relevant project has a working orchestrator, a real eval suite, and a written rationale for the architectural choice over the obvious alternative. There are no "10/10" axes — every project still has a TODO list.</p>
+        <p data-i18n="caps.lead.p3">The capabilities below map 1:1 to the six projects in the next section.</p>
+      </div>
+    </div>
+
+    <div class="capabilities">
+      <div class="cap reveal">
+        <div class="cap-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+        <h4 data-i18n="caps.c1.h">Reliability under failure</h4>
+        <p data-i18n="caps.c1.p">Self-healing pipelines with critic agents, bounded reflection loops, episodic error memory queried before every evaluation.</p>
+      </div>
+      <div class="cap reveal">
+        <div class="cap-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96.44 2.5 2.5 0 0 1-2.96-3.08 3 3 0 0 1-.34-5.58 2.5 2.5 0 0 1 1.32-4.24 2.5 2.5 0 0 1 4.44-2.04Z"/><path d="M14.5 2A2.5 2.5 0 0 0 12 4.5v15a2.5 2.5 0 0 0 4.96.44 2.5 2.5 0 0 0 2.96-3.08 3 3 0 0 0 .34-5.58 2.5 2.5 0 0 0-1.32-4.24 2.5 2.5 0 0 0-4.44-2.04Z"/></svg></div>
+        <h4 data-i18n="caps.c2.h">Memory architecture</h4>
+        <p data-i18n="caps.c2.p">Three-tier MemGPT patterns, episodic stores on pgvector, semantic consolidation jobs. State that survives sessions.</p>
+      </div>
+      <div class="cap reveal">
+        <div class="cap-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg></div>
+        <h4 data-i18n="caps.c3.h">Advanced retrieval</h4>
+        <p data-i18n="caps.c3.p">GraphRAG, contextual retrieval (Anthropic), hybrid BM25 + vector + Cohere rerank with RRF, Ragas evaluation harness.</p>
+      </div>
+      <div class="cap reveal">
+        <div class="cap-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+        <h4 data-i18n="caps.c4.h">Multi-agent collaboration</h4>
+        <p data-i18n="caps.c4.p">Society-of-Mind debate, parallel orchestration, consensus measurement. Distinct roles produce emergent insight.</p>
+      </div>
+      <div class="cap reveal">
+        <div class="cap-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></div>
+        <h4 data-i18n="caps.c5.h">MCP &amp; dynamic workflows</h4>
+        <p data-i18n="caps.c5.p">Meta-agents generating DAGs at runtime, executing via MCP servers connected to GitHub, Jira, Slack, and Drive.</p>
+      </div>
+      <div class="cap reveal">
+        <div class="cap-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="m7 14 4-4 4 4 5-5"/></svg></div>
+        <h4 data-i18n="caps.c6.h">Production observability</h4>
+        <p data-i18n="caps.c6.p">Docker Compose everywhere, Langfuse traces on every LLM call, Pydantic boundaries, cost tracking per pipeline run.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- ============ LIVE DEMO ============ -->
 <section id="demo">
   <div class="container">
@@ -4928,6 +4565,370 @@
   </div>
 </section>
 
+<!-- ============ WHY A MATHEMATICIAN ============ -->
+<section id="why-math">
+  <div class="container">
+    <div class="section-eyebrow" data-i18n="whyMath.eyebrow">02 · The differentiator</div>
+    <h2 data-i18n="whyMath.h2">Why hire a mathematician for AI engineering?</h2>
+    <p class="section-sub" data-i18n="whyMath.sub">The honest answer — and the three things mathematics gives me that a CS degree alone wouldn't.</p>
+
+    <div class="why-math reveal">
+      <div class="why-math-grid">
+        <div>
+          <h3 data-i18n="whyMath.quote">"AI engineering is hard because correctness is hard."</h3>
+          <p class="preamble" data-i18n="whyMath.p1">
+            Mathematics is the only discipline that spends years teaching you how to <strong>prove</strong> what you claim — and how to know exactly when your proof breaks. Production AI fails the same way undergraduate proofs fail: hidden assumptions, untested cases, ambiguous definitions, missing edge cases.
+          </p>
+          <p class="preamble" style="margin-top:14px" data-i18n="whyMath.p2">
+            The difference is that in production, <strong>no one is grading you</strong>. The system just quietly produces a wrong answer — and someone pays for it. That's the gap this portfolio is built to close.
+          </p>
+          <p class="preamble" style="margin-top:14px;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--text-faint)" data-i18n="whyMath.footnote">
+            ↳ Anthropic, DeepMind, OpenAI hire heavily from math and physics. Not by accident.
+          </p>
+        </div>
+
+        <div class="why-math-pts">
+          <div class="why-math-pt">
+            <div class="why-math-pt-num">01</div>
+            <div>
+              <h4 data-i18n="whyMath.pt1.h">Failure modes are theorems.</h4>
+              <p data-i18n="whyMath.pt1.p">A mathematician spends years learning to enumerate every case before claiming a result. <strong>Critic agents, reflection loops, eval suites</strong> are the same instinct, applied to LLMs. <em>(See: Project 01)</em></p>
+            </div>
+          </div>
+          <div class="why-math-pt">
+            <div class="why-math-pt-num">02</div>
+            <div>
+              <h4 data-i18n="whyMath.pt2.h">Abstraction is the daily job.</h4>
+              <p data-i18n="whyMath.pt2.p">Three-tier memory, hybrid retrieval, multi-agent debate — these are all <strong>structural problems</strong>. Naming the right abstraction is what mathematics teaches; engineering it is what production teaches. I do both. <em>(See: Projects 03, 04, 06)</em></p>
+            </div>
+          </div>
+          <div class="why-math-pt">
+            <div class="why-math-pt-num">03</div>
+            <div>
+              <h4 data-i18n="whyMath.pt3.h">Rigor scales. Vibes don't.</h4>
+              <p data-i18n="whyMath.pt3.p">Most AI work is "ship the thing and pray." Mathematics doesn't permit that. Every claim here has an <strong>explicit metric</strong>, an <strong>explicit baseline</strong>, and <strong>conditions under which it stops working</strong>. <em>(See: any project's metrics block)</em></p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ MATH IN MOTION ============ -->
+<section id="math-in-motion">
+  <div class="container">
+    <div class="section-eyebrow" data-i18n="mathGrad.eyebrow">02b · Mathematics in motion · Gradient descent</div>
+    <h2 data-i18n="mathGrad.h2">The same gradient that trains every model in this portfolio</h2>
+    <p class="section-sub" data-i18n="mathGrad.sub">Every parameter inside Claude, GPT, and the LangGraph agents you'll see below was set by repeating one rule: <code style="color:var(--accent-3);font-family:'JetBrains Mono',monospace">w<sub>t+1</sub> = w<sub>t</sub> − η · ∇L(w<sub>t</sub>)</code>. Below, that rule runs live. The colored landscape is a 2-parameter loss surface; the small arrows are its gradient field (pointing toward steeper loss); the bright dot is a weight vector descending. <strong style="color:var(--text)">Try every control</strong> — they tell different optimization stories.</p>
+
+    <div class="math-card-tour">
+      <span class="tour-step" data-i18n="mathGrad.tour.1"><strong>1.</strong> click anywhere on the surface to drop the weight there</span>
+      <span class="tour-step" data-i18n="mathGrad.tour.2"><strong>2.</strong> change the loss function to see SGD's behavior on different landscapes</span>
+      <span class="tour-step" data-i18n="mathGrad.tour.3"><strong>3.</strong> raise η too high → watch divergence; too low → glacial convergence</span>
+    </div>
+
+    <div class="grad-descent-wrap reveal">
+      <canvas id="grad-canvas" width="1000" height="500" aria-label="Interactive gradient-descent visualization"></canvas>
+      <div class="grad-descent-overlay">
+        <div class="hint" id="grad-fn-hint">paraboloid · narrow valley</div>
+        <div class="readout" id="grad-readout">step <strong>—</strong> · loss <strong>—</strong> · ‖∇L‖ <strong>—</strong></div>
+      </div>
+      <div class="grad-controls">
+        <div class="grad-control-group">
+          <label data-i18n="mathGrad.label.scenario">project scenario</label>
+          <select id="grad-fn">
+            <option value="p1_critic" selected>P1 · Critic threshold × max iterations</option>
+            <option value="p6_rrf">P6 · RRF k constant (symmetric bowl)</option>
+            <option value="p4_debate">P4 · agents × rounds (saddle)</option>
+            <option value="p3_rosenbrock">P3 · MemGPT memory thresholds (banana)</option>
+            <option value="p5_planner">P5 · planner greedy vs exhaustive (twin valleys)</option>
+          </select>
+        </div>
+        <div class="grad-control-group">
+          <label>learning rate η</label>
+          <div class="grad-slider-row">
+            <input id="grad-lr" type="range" min="2" max="35" value="14" step="1">
+            <span id="grad-lr-readout">0.14</span>
+          </div>
+        </div>
+        <div class="grad-control-group grad-control-buttons">
+          <button id="grad-pause" class="grad-btn">⏸ <span data-i18n="mathGrad.btn.pause">pause</span></button>
+          <button id="grad-reset" class="grad-btn">↺ <span data-i18n="mathGrad.btn.reset">reset</span></button>
+          <button id="grad-random" class="grad-btn">🎲 <span data-i18n="mathGrad.btn.random">random start</span></button>
+          <button id="grad-open" class="grad-btn" style="background:var(--accent);color:#fff;border-color:var(--accent)">↗ <span data-i18n="mathGrad.btn.openProject">open this project</span></button>
+          <label class="grad-toggle">
+            <input type="checkbox" id="grad-field" checked> <span data-i18n="mathGrad.toggle.field">vector field</span>
+          </label>
+        </div>
+      </div>
+      <div class="grad-descent-legend">
+        <span><span class="legend-dot" style="background:#ffffff;color:#fff;box-shadow:0 0 8px #fff"></span>weight vector w<sub>t</sub></span>
+        <span><span class="legend-dot" style="background:rgba(139,109,255,0.55);color:rgba(139,109,255,0.55)"></span>trajectory (last 60 steps)</span>
+        <span><span class="legend-dot" style="background:#ff9e6d;color:#ff9e6d"></span>negative gradient (direction the weight moves)</span>
+        <span><span class="legend-dot" style="background:#4dd0c2;color:#4dd0c2"></span>optimum (loss = 0)</span>
+        <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text-faint);margin-left:auto" id="grad-fn-desc">narrow valley · curvature mismatch causes SGD to zigzag in the steep direction.</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ MATH IN MOTION II · RRF ============ -->
+<section id="rrf-math">
+  <div class="container">
+    <div class="section-eyebrow" data-i18n="mathRRF.eyebrow">02c · Mathematics in motion · Reciprocal Rank Fusion</div>
+    <h2 data-i18n="mathRRF.h2">Two parameter-free lines of math beat a model that costs a million dollars to train</h2>
+    <p class="section-sub" data-i18n="mathRRF.sub">
+      P6 fuses keyword (BM25) and vector (cosine) retrieval with <strong>Reciprocal Rank Fusion</strong>. One constant <code>k = 60</code> (recommended in the 2009 paper and never seriously challenged), no training, no parameters to tune. It beats both signals alone on every published benchmark. Try it across <strong>four different corpora</strong>, toggle the retrieval mode, change <code>k</code>, then hit the LLM-synthesis button to see what a downstream model would actually return.
+    </p>
+
+    <div class="math-card-tour">
+      <span class="tour-step" data-i18n="mathRRF.tour.1"><strong>1.</strong> pick a corpus → see how vector vs keyword split on real data</span>
+      <span class="tour-step" data-i18n="mathRRF.tour.2"><strong>2.</strong> slide <code>k</code> and switch between Vector / Keyword / Hybrid modes</span>
+      <span class="tour-step" data-i18n="mathRRF.tour.3"><strong>3.</strong> hit 🤖 Synthesize → the top-3 contexts go into a streaming "LLM" answer</span>
+    </div>
+
+    <div class="rrf-demo reveal">
+      <div class="rrf-formula">
+        <div class="formula-line">score(d) = Σ<sub>i</sub> &nbsp;1 / (<span id="rrf-k-label">k</span> + rank<sub>i</sub>(d)) &nbsp; · &nbsp; <span id="rrf-k-readout" style="color:var(--accent-3)">k = 60</span></div>
+        <div class="formula-where" data-i18n="mathRRF.formulaWhere">A doc ranks higher when it sits near the top of multiple lists. The reciprocal damps any single signal — no list can completely overrule another. Bigger k = more "patience" (a doc at rank 20 still contributes meaningfully); smaller k = aggressive top-of-list weighting.</div>
+      </div>
+
+      <div class="rrf-controls">
+        <div class="rrf-control-row">
+          <label class="rrf-control-label" data-i18n="mathRRF.controls.dataset">corpus</label>
+          <div class="rrf-chip-group" id="rrf-dataset-group">
+            <button class="rrf-chip is-active" data-dataset="ai"     data-i18n="mathRRF.dataset.ai">AI / ML papers</button>
+            <button class="rrf-chip"           data-dataset="code"   data-i18n="mathRRF.dataset.code">Code search</button>
+            <button class="rrf-chip"           data-dataset="ecom"   data-i18n="mathRRF.dataset.ecom">E-commerce</button>
+            <button class="rrf-chip"           data-dataset="support" data-i18n="mathRRF.dataset.support">Customer support</button>
+          </div>
+        </div>
+        <div class="rrf-control-row">
+          <label class="rrf-control-label" data-i18n="mathRRF.controls.mode">retrieval mode</label>
+          <div class="rrf-chip-group" id="rrf-mode-group">
+            <button class="rrf-chip" data-mode="vector"  data-i18n="mathRRF.mode.vector">vector only</button>
+            <button class="rrf-chip" data-mode="keyword" data-i18n="mathRRF.mode.keyword">keyword only</button>
+            <button class="rrf-chip is-active" data-mode="hybrid" data-i18n="mathRRF.mode.hybrid">hybrid (RRF)</button>
+          </div>
+        </div>
+        <div class="rrf-control-row">
+          <label class="rrf-control-label">k</label>
+          <input type="range" id="rrf-k" min="1" max="200" value="60" step="1" style="flex:1;max-width:300px;accent-color:#8b6dff">
+          <span id="rrf-k-display" style="font-family:'JetBrains Mono',monospace;color:var(--accent);min-width:40px;text-align:right">60</span>
+        </div>
+        <div class="rrf-query-display">
+          <span class="rrf-query-label" data-i18n="mathRRF.controls.query">user query:</span>
+          <span class="rrf-query-text" id="rrf-query"></span>
+        </div>
+      </div>
+
+      <div class="rrf-grid">
+        <div class="rrf-list">
+          <h6><span class="dot" style="background:#8b6dff"></span><span data-i18n="mathRRF.list.vector">Vector similarity · Voyage AI</span></h6>
+          <ul id="rrf-list-vec"></ul>
+          <div class="rrf-list-note" data-i18n="mathRRF.list.vectorNote">cosine over 1024-dim embeddings</div>
+        </div>
+        <div class="rrf-list">
+          <h6><span class="dot" style="background:#4dd0c2"></span><span data-i18n="mathRRF.list.keyword">BM25 keyword</span></h6>
+          <ul id="rrf-list-kw"></ul>
+          <div class="rrf-list-note" data-i18n="mathRRF.list.keywordNote">TF-IDF with length normalization</div>
+        </div>
+        <div class="rrf-list rrf-fused">
+          <h6><span class="dot" style="background:#fbbf24"></span><span id="rrf-result-label" data-i18n="mathRRF.list.hybrid">Hybrid (RRF) result</span></h6>
+          <ul id="rrf-list-fused"></ul>
+          <div class="rrf-list-note" id="rrf-result-note" data-i18n="mathRRF.list.hybridNote">live · top-3 fed to the synthesizer below</div>
+        </div>
+      </div>
+
+      <div class="rrf-llm-card">
+        <div class="rrf-llm-header">
+          <div>
+            <div class="rrf-llm-title" data-i18n="mathRRF.llm.title">🤖 Synthesizer · Claude with the top-3 contexts</div>
+            <div class="rrf-llm-sub" data-i18n="mathRRF.llm.sub">The retrieved chunks above become the context window for a fake LLM call. The response below is precomputed per corpus but the streaming is real.</div>
+          </div>
+          <button class="rrf-llm-button" id="rrf-synthesize">
+            <span data-i18n="mathRRF.llm.button">Synthesize answer</span>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+          </button>
+        </div>
+        <div class="rrf-llm-output" id="rrf-llm-output">
+          <span class="rrf-llm-placeholder" data-i18n="mathRRF.llm.placeholder">Generated answer will stream here. Click "Synthesize" above to start.</span>
+        </div>
+        <div class="rrf-ask-row">
+          <span class="rrf-ask-label" data-i18n="mathRRF.ask.label">or · ask your own question about the portfolio</span>
+          <div class="rrf-ask-input-row">
+            <input type="text" id="rrf-ask-input" placeholder="how many tests does P1 have? · who built this? · what is RRF?" />
+            <button class="rrf-llm-button" id="rrf-ask-btn">
+              <span data-i18n="mathRRF.ask.button">Ask</span>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+            </button>
+          </div>
+          <div class="rrf-ask-suggestions" id="rrf-ask-suggestions"></div>
+        </div>
+      </div>
+
+      <div class="rrf-explanation">
+        <p data-i18n="mathRRF.explanation"><strong>Why this matters for production RAG.</strong> Vector embeddings are good at <em>semantic</em> matches: "auth token" ≈ "JWT" ≈ "session credential". BM25 is good at <em>exact</em> matches: product codes, version numbers, acronyms, the names of internal services. Real corpora need both. The rest of the field snaps to vector-only — which is why so many RAG demos work on a curated wiki and fall over on real enterprise documents. Choosing the fusion math is the actual engineering decision.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ MATH IN MOTION III · ATTENTION ============ -->
+<section id="attention-math">
+  <div class="container">
+    <div class="section-eyebrow" data-i18n="mathAttn.eyebrow">02d · Mathematics in motion · Self-attention</div>
+    <h2 data-i18n="mathAttn.h2">The 49-character formula behind every model in this portfolio</h2>
+    <p class="section-sub" data-i18n="mathAttn.sub">
+      Every LLM you've heard of — Claude, GPT, Llama — is built on stacked layers of one tiny operation: scaled dot-product attention. Below, hover any output token to see which input tokens contributed to it and by how much. The line weight is literally the attention weight after softmax. Click <kbd>shuffle</kbd> for a fresh pattern.
+    </p>
+
+    <div class="math-card-tour">
+      <span class="tour-step" data-i18n="mathAttn.tour.1"><strong>1.</strong> hover any token in the bottom (output) row</span>
+      <span class="tour-step" data-i18n="mathAttn.tour.2"><strong>2.</strong> the cubic-bezier edges show that token's attention distribution after softmax</span>
+      <span class="tour-step" data-i18n="mathAttn.tour.3"><strong>3.</strong> press <kbd>↻ Shuffle attention</kbd> to regenerate the weights from a fresh kernel</span>
+    </div>
+
+    <div class="attention-demo reveal">
+      <div class="attention-formula">
+        <div class="formula-line">Attention(Q, K, V) = softmax(QK<sup>T</sup> / √d<sub>k</sub>) · V</div>
+        <div class="formula-where">
+          Q, K, V are linear projections of the input (queries, keys, values). The dot product QK<sup>T</sup> measures alignment; dividing by √d<sub>k</sub> keeps the variance ≈ 1 so softmax doesn't saturate as the embedding dimension grows; the softmax row turns alignments into a probability distribution that weights V. The whole portfolio is layers of this on top of each other.
+        </div>
+      </div>
+
+      <div class="attention-viz">
+        <div class="attention-controls">
+          <button class="btn" id="attn-shuffle" style="padding:7px 14px; font-size:12px">↻ Shuffle attention</button>
+          <span style="margin-left:auto;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text-faint)">hover an output token →</span>
+        </div>
+        <svg id="attn-svg" viewBox="0 0 900 320" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="attn-edge" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stop-color="#8b6dff" stop-opacity="0"/>
+              <stop offset="50%" stop-color="#8b6dff" stop-opacity="1"/>
+              <stop offset="100%" stop-color="#4dd0c2" stop-opacity="0"/>
+            </linearGradient>
+          </defs>
+          <g id="attn-edges"></g>
+          <g id="attn-input-row"></g>
+          <g id="attn-output-row"></g>
+        </svg>
+        <div class="attention-readout" id="attn-readout">
+          Hover a token in the bottom row to see its attention distribution.
+        </div>
+      </div>
+
+      <div class="attention-explanation">
+        <p><strong>What you're seeing.</strong> The bottom row is the model "generating" each output token; the top row is what it "looked at". For a translation task, you'd expect the model to attend to a roughly diagonal pattern (each output token aligns with one or two input tokens) — but for actual language, attention is often surprisingly distributed: pronouns attend to their antecedents many tokens away, verbs attend to subjects, articles barely attend to anything. This is why attention is the mechanism that lets a model handle long-range dependencies <em>without</em> a recurrent state.</p>
+        <p><strong>Why the √d<sub>k</sub> matters.</strong> Without it, as you scale embedding dimension d<sub>k</sub> from 64 to 1024, the variance of Q·K grows linearly, the softmax saturates (one weight becomes ≈1, all others ≈0), and gradients vanish. The √d<sub>k</sub> normalization preserves a healthy gradient signal across model scales. It's a one-character fix, and it's why the 2017 "Attention is All You Need" paper works at all.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ MATH IN MOTION IV · WORDS AS VECTORS ============ -->
+<section id="words-math">
+  <div class="container">
+    <div class="section-eyebrow" data-i18n="mathWords.eyebrow">02f · Mathematics in motion · Words as vectors (Project 06)</div>
+    <h2 data-i18n="mathWords.h2">Every word in this portfolio is literally a vector</h2>
+    <p class="section-sub" data-i18n="mathWords.sub">
+      Before P6 can retrieve anything, it asks <strong>Voyage AI</strong> to turn each chunk into a 1024-dim vector. Words with related meaning land near each other in that space. Even better: <strong>relationships become arithmetic</strong>. Below, ~40 words from this portfolio's actual vocabulary, projected to 2D. Hover any word to see its nearest neighbors. Click the demo buttons to watch a vector arithmetic land on its target.
+    </p>
+
+    <div class="math-card-tour">
+      <span class="tour-step" data-i18n="mathWords.tour.1"><strong>1.</strong> hover any word → 5 nearest neighbors light up with edges</span>
+      <span class="tour-step" data-i18n="mathWords.tour.2"><strong>2.</strong> click a demo → watch <code>A − B + C</code> land near its expected word</span>
+      <span class="tour-step" data-i18n="mathWords.tour.3"><strong>3.</strong> pick your own A, B, C in the free-mode dropdowns at the bottom</span>
+    </div>
+
+    <div class="words-demo reveal">
+      <div class="words-canvas-wrap">
+        <canvas id="words-canvas" width="1100" height="540" aria-label="Word-embedding scatter plot"></canvas>
+        <div class="words-overlay">
+          <span class="words-formula"><strong>cos(u, v) = (u · v) / (‖u‖ ‖v‖)</strong> &nbsp;·&nbsp; <span style="color:var(--text-faint)">cosine similarity in the embedding space (P6's vector store backend)</span></span>
+        </div>
+      </div>
+
+      <div class="words-controls">
+        <div class="words-control-group">
+          <label data-i18n="mathWords.demo.label">Pre-baked vector arithmetic</label>
+          <div class="words-chip-group">
+            <button class="words-chip" data-demo="king" data-i18n="mathWords.demo.king">king − man + woman ≈ queen</button>
+            <button class="words-chip" data-demo="paris" data-i18n="mathWords.demo.paris">paris − france + germany ≈ berlin</button>
+            <button class="words-chip" data-demo="claude" data-i18n="mathWords.demo.claude">claude − anthropic + openai ≈ gpt</button>
+            <button class="words-chip" data-demo="walking" data-i18n="mathWords.demo.walking">walking − walk + run ≈ running</button>
+          </div>
+        </div>
+        <div class="words-control-group words-arith-row">
+          <label data-i18n="mathWords.free.label">Free mode &nbsp;·&nbsp; A − B + C ≈ ?</label>
+          <select id="words-a"></select>
+          <span class="words-arith-op">−</span>
+          <select id="words-b"></select>
+          <span class="words-arith-op">+</span>
+          <select id="words-c"></select>
+          <button class="words-compute" id="words-compute"><span data-i18n="mathWords.compute">compute</span> →</button>
+          <button class="words-compute words-clear" id="words-clear"><span data-i18n="mathWords.clear">clear</span></button>
+        </div>
+        <div class="words-readout" id="words-readout" data-i18n="mathWords.readoutDefault">Hover a word above to see its 5 nearest neighbors in the embedding space.</div>
+      </div>
+
+      <div class="rrf-explanation">
+        <p data-i18n="mathWords.explanation"><strong>Why this is the core of P6.</strong> P6's vector store doesn't store words — it stores chunks of text, each represented as a 1024-dimensional vector via Voyage AI. The math you just watched is exactly what happens internally when the system decides that "auth token" should match a document containing "JWT credential": the cosine between their embedding vectors is near 1. The 2D projection here uses PCA on a tiny vocabulary — real chunks live in 1024 dimensions, where these clusters are far more separated and the arithmetic identities (like the famous <em>king − man + woman</em>) are even cleaner.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CONCEPT MAP · shared vocabulary across projects ============ -->
+<section id="concepts-map">
+  <div class="container">
+    <div class="section-eyebrow" data-i18n="concepts.eyebrow">02g · The portfolio's shared vocabulary</div>
+    <h2 data-i18n="concepts.h2">Concept map · the techniques that connect the six projects</h2>
+    <p class="section-sub" data-i18n="concepts.sub">
+      Each project answers a different question, but they share a small library of techniques: LangGraph, pgvector, BM25, MCP, RRF, Ragas. Below, that shared vocabulary is rendered as a force-directed graph — projects are the colored disks, concepts the smaller dots, edges show "this project uses this technique." Drag, zoom, click anything. The simulation runs live.
+    </p>
+
+    <div class="math-card-tour">
+      <span class="tour-step" data-i18n="concepts.tour.1"><strong>1.</strong> hover a concept → see which projects it powers</span>
+      <span class="tour-step" data-i18n="concepts.tour.2"><strong>2.</strong> click a concept → its edges erupt into a spiral / loop animation + the side panel explains it</span>
+      <span class="tour-step" data-i18n="concepts.tour.3"><strong>3.</strong> drag any node to perturb the simulation · scroll to zoom · drag empty space to pan</span>
+    </div>
+
+    <div class="concepts-card reveal">
+      <div class="concepts-canvas-wrap">
+        <svg id="concepts-svg" viewBox="0 0 1200 600" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <filter id="concept-glow" x="-50%" y="-50%" width="200%" height="200%">
+              <feGaussianBlur in="SourceGraphic" stdDeviation="2.5"/>
+              <feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>
+            </filter>
+            <linearGradient id="edge-default" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stop-color="#8b6dff" stop-opacity="0.2"/>
+              <stop offset="100%" stop-color="#4dd0c2" stop-opacity="0.4"/>
+            </linearGradient>
+          </defs>
+          <g id="concepts-viewport">
+            <g id="concepts-edges"></g>
+            <g id="concepts-spirals"></g>
+            <g id="concepts-nodes"></g>
+          </g>
+        </svg>
+        <div class="concepts-detail" id="concepts-detail">
+          <div class="concepts-detail-empty" data-i18n="concepts.detailDefault">Click any concept node to see what it does and which projects use it.</div>
+        </div>
+      </div>
+      <div class="concepts-legend">
+        <span><span class="dot" style="background:#8b6dff;box-shadow:0 0 8px #8b6dff"></span><span data-i18n="concepts.legend.project">project</span></span>
+        <span><span class="dot" style="background:#4dd0c2;box-shadow:0 0 8px #4dd0c2"></span><span data-i18n="concepts.legend.concept">technique / pattern</span></span>
+        <span><span class="dot" style="background:rgba(255,255,255,0.5)"></span><span data-i18n="concepts.legend.edge">"this project uses this technique"</span></span>
+        <span style="margin-left:auto;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text-faint)" id="concepts-zoom-readout">zoom 1.00× · scroll to zoom · drag empty space to pan</span>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- ============ ABOUT ============ -->
 <section id="about">
   <div class="container">
@@ -5018,6 +5019,7 @@
     </div>
   </div>
 </section>
+
 
 <!-- ============ PROJECT MODAL ============ -->
 <div class="modal-backdrop" id="modalBackdrop"></div>
@@ -7371,8 +7373,11 @@
     },
   };
 
-  let current = 'paraboloid';
-  function F() { return FUNCTIONS[current]; }
+  // Default must match a key in FUNCTIONS — 'paraboloid' was a stale
+  // name from an older version and caused F() to return undefined,
+  // breaking the entire visualization on first render.
+  let current = fnSelect ? fnSelect.value : 'p1_critic';
+  function F() { return FUNCTIONS[current] || FUNCTIONS.p1_critic; }
 
   // ── World ↔ screen ─────────────────────────────────────────────────────
   function toScreen(wx, wy) {
