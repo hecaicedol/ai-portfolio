@@ -1,5 +1,16 @@
+"""Meta-agent that turns a natural-language goal into a DAG of MCP tool
+calls. The model is injected (production: ChatAnthropic; tests:
+ScriptedPlannerLLM) so the same code path runs without API keys."""
+from __future__ import annotations
+
+import json
+import re
 from typing import Any
+
+from pydantic import ValidationError
+
 from planner.dag_parser import DAG
+from planner.workflow_memory import WorkflowMemory
 
 
 PLANNER_SYSTEM_PROMPT = """You are a Workflow Planner. Given a user goal in
@@ -27,25 +38,76 @@ Output format (strict JSON):
 
 Rules:
 - Mark `requires_approval: true` for any write/destructive action.
-- Reuse the structure of past successful workflows if relevant ones are provided.
+- Reuse the structure of past successful workflows when relevant ones are provided.
 - Do NOT invent tools or actions outside the available list.
+- Reply with ONE JSON object — no prose before or after.
 """
 
 
-class PlannerAgent:
-    """
-    Meta-agent that:
-      1. Queries workflow_memory.find_similar(goal, k=3) — past successful DAGs.
-      2. Constructs a tool catalogue from MCP server introspection.
-      3. Calls Claude with structured output (instructor) → DAG (Pydantic-validated).
-      4. Returns DAG; caller persists & asks for approval.
-    """
+def _extract_json(raw: str) -> dict[str, Any]:
+    raw = raw.strip()
+    if raw.startswith("```"):
+        raw = re.sub(r"^```(?:json)?\s*|\s*```\s*$", "", raw)
+    try:
+        return json.loads(raw)
+    except json.JSONDecodeError:
+        match = re.search(r"\{.*\}", raw, flags=re.DOTALL)
+        if not match:
+            raise
+        return json.loads(match.group(0))
 
-    def __init__(self, *, model: str, api_key: str, workflow_memory, tool_catalogue: dict[str, Any]) -> None:
+
+class PlannerAgent:
+    """Plans a DAG for a goal, optionally seeded with similar past workflows."""
+
+    MAX_JSON_RETRIES: int = 2
+
+    def __init__(
+        self,
+        *,
+        model: Any,
+        workflow_memory: WorkflowMemory,
+        tool_catalogue: dict[str, Any],
+    ) -> None:
         self.model = model
-        self.api_key = api_key
         self.workflow_memory = workflow_memory
         self.tool_catalogue = tool_catalogue
 
     async def plan(self, goal: str) -> DAG:
-        raise NotImplementedError
+        similar = await self.workflow_memory.find_similar(goal, k=3)
+        catalogue_text = json.dumps(self.tool_catalogue, indent=2, sort_keys=True)
+        if similar:
+            seed = "\n".join(
+                f"- goal={s['goal']!r} · {len(s['dag']['nodes'])} nodes · sim={s.get('similarity', 0):.2f}"
+                for s in similar
+            )
+        else:
+            seed = "(no similar past workflows)"
+
+        try:
+            from langchain_core.messages import HumanMessage, SystemMessage
+            sys_msg: Any = SystemMessage(content=PLANNER_SYSTEM_PROMPT)
+            user_factory = lambda body: HumanMessage(content=body)
+        except ImportError:  # pragma: no cover
+            sys_msg = {"role": "system", "content": PLANNER_SYSTEM_PROMPT}
+            user_factory = lambda body: {"role": "user", "content": body}
+
+        body = (
+            f"<goal>{goal}</goal>\n\n"
+            f"<tool_catalogue>\n{catalogue_text}\n</tool_catalogue>\n\n"
+            f"<similar_past_workflows>\n{seed}\n</similar_past_workflows>"
+        )
+
+        last_error: Exception | None = None
+        for _ in range(self.MAX_JSON_RETRIES + 1):
+            response = await self.model.ainvoke([sys_msg, user_factory(body)])
+            try:
+                payload = _extract_json(response.content)
+                return DAG(**payload)
+            except (json.JSONDecodeError, ValidationError, KeyError, TypeError) as exc:
+                last_error = exc
+                continue
+        raise RuntimeError(
+            f"PlannerAgent: invalid JSON after {self.MAX_JSON_RETRIES + 1} attempts "
+            f"(last error: {last_error})"
+        )

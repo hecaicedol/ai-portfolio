@@ -2,7 +2,8 @@
 
 > A meta-agent that builds workflow DAGs from natural-language goals at runtime, executes them through MCP servers connected to real enterprise tools, and learns from past successful workflows.
 
-[![Status](https://img.shields.io/badge/status-scaffolded-blueviolet)]()
+[![Status](https://img.shields.io/badge/status-executor%20verified-2ec27e)]()
+[![Tests](https://img.shields.io/badge/tests-24%20passing-2ec27e)]()
 [![Python](https://img.shields.io/badge/python-3.12-blue)]()
 [![Protocol](https://img.shields.io/badge/protocol-MCP-7c5cff)]()
 [![Pattern](https://img.shields.io/badge/pattern-meta--agent-orange)]()
@@ -171,14 +172,36 @@ Watch execution live: `GET /api/workflows/{workflow_id}/stream` (SSE).
 
 ---
 
-## Build order
+## Status — Slice 1 (executor verified, no API keys spent)
 
-1. `backend/mcp/client.py` and one MCP server (start with `github_server.py`)
-2. `backend/planner/planner_agent.py` + `dag_parser.py`
-3. `backend/executor/engine.py` — LangGraph dynamic build
-4. `backend/executor/hitl.py` + `replanner.py`
-5. `backend/planner/workflow_memory.py`
-6. `frontend/` — `react-flow` DAG view
+**Built and tested without external services:**
+
+| Component | Status | Tests |
+|---|---|---|
+| `dag_parser` — Pydantic DAG with duplicate-id / unknown-dep / cycle detection + Kahn topological layers | ✅ | 5 |
+| `InMemoryWorkflowMemory` — cosine over hash-bag embed, `find_similar` + `recent` | ✅ | 3 |
+| `InMemoryHITLBroker` — asyncio.Event per (workflow, node); `request → wait_for → resolve` with edited params + `pending()` | ✅ | 3 |
+| `PlannerAgent` — strict JSON envelope + 2-retry recovery; seeds prompt with similar past workflows | ✅ | 3 |
+| `Replanner` — JSON-envelope replacement subgraph; raises if model returns empty | ✅ | 2 |
+| `DAGExecutor` — parallel layers (asyncio.gather), `{{nX.field}}` interpolation (preserves int types), HITL gate, replan-on-failure with subgraph splicing that rewires downstream `depends_on` | ✅ | 8 |
+| `PostgresWorkflowMemory` + `RedisHITLBroker` — stubs for Slice 2 | ⏳ | — |
+| Real MCP servers (GitHub / Jira / Slack / GDrive) | ⏳ | — |
+| `react-flow` DAG view + live executor stream frontend | ⏳ | — |
+
+**24 tests passing in 0.6 s.** Run them with `cd backend && .venv/Scripts/python -m pytest tests -q`.
+
+### Design notes uncovered while building
+
+- **The replanner does not splice.** It only returns replacement nodes. The DAGExecutor performs the splice so it can also rewire downstream `depends_on`: the first replacement inherits the failed node's upstream deps; the last replacement becomes the new terminal that downstream nodes point at. Keeping splice math in the executor makes it testable without an LLM.
+- **`{{nX.field}}` interpolation preserves types when the WHOLE value is a single reference.** `"PR #{{n1.pr_number}}"` returns `"PR #42"` (stringified, embedded). `"{{n1.pr_number}}"` returns the raw `int(42)`. Same rule applies inside nested dicts/lists. Same syntax as GitHub Actions.
+- **HITL is an out-of-band channel, not a graph node.** The executor calls `hitl.request(...)` then awaits `hitl.wait_for(...)` — an `asyncio.Event` per (workflow_id, node_id). The frontend (or another worker) calls `hitl.resolve(approved=..., edited_params=...)` whenever the human responds. Tests race a real `asyncio.create_task` against `resolve()` to prove the pause/resume actually works.
+
+### Pending (Slice 2)
+
+1. Real `MCPClient` over stdio against actual MCP servers.
+2. Wire `PostgresWorkflowMemory` (pgvector) and `RedisHITLBroker` (pub/sub).
+3. SSE stream from the executor + `react-flow` frontend visualization.
+4. End-to-end demo against a sandbox GitHub / Slack workspace (needs tokens — out of scope for the no-budget run).
 
 ---
 

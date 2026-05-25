@@ -3440,12 +3440,12 @@
         <div class="stat-label" data-i18n="hero.stats.designs">Production-grade designs</div>
       </div>
       <div>
-        <div class="stat-num">4<span class="unit">/ 6</span></div>
+        <div class="stat-num">5<span class="unit">/ 6</span></div>
         <div class="stat-label" data-i18n="hero.stats.verified">With verified code · honest status</div>
       </div>
       <div>
-        <div class="stat-num">145</div>
-        <div class="stat-label" data-i18n="hero.stats.tests">Automated tests across P1 + P3 + P4 + P6</div>
+        <div class="stat-num">169</div>
+        <div class="stat-label" data-i18n="hero.stats.tests">Automated tests across P1 + P3 + P4 + P5 + P6</div>
       </div>
       <div>
         <div class="stat-num">0</div>
@@ -4391,7 +4391,7 @@
     <article class="project-detail reveal">
       <div class="project-head">
         <span class="project-num">PROJECT 05 / 06</span>
-        <span class="badge badge-scaffold">◐ Scaffolded</span>
+        <span class="badge badge-ok">● Executor verified</span>
       </div>
       <h3>Adaptive Workflow Engine · MCP</h3>
       <p class="project-subtitle" data-i18n="proj.p5.subtitle">Meta-agent generates DAGs at runtime · MCP servers · Human-in-the-loop approvals</p>
@@ -4409,6 +4409,14 @@
               <tr><td data-i18n="p5.dec.2a">Planner learns from past DAGs</td><td data-i18n="p5.dec.2b">Successful workflows are embedded; planner retrieves similar past plans before generating</td></tr>
               <tr><td data-i18n="p5.dec.3a">HITL approvals on critical nodes</td><td data-i18n="p5.dec.3b">"Send email" or "post to channel" require explicit approval. Auditable, reversible.</td></tr>
             </table>
+          </div>
+          <div class="project-block">
+            <h5 data-i18n="proj.status">Implementation status</h5>
+            <ul>
+              <li data-i18n="p5.status.1"><strong>Implemented + tested:</strong> the dag_parser (cycle / duplicate-id / unknown-dep detection + Kahn topological layers); InMemoryWorkflowMemory (cosine over hash-bag embeddings) with similar-past-workflow seeding into the planner prompt; PlannerAgent + Replanner with strict JSON envelopes and 2-attempt recovery; InMemoryHITLBroker built on per-(workflow, node) asyncio.Event with edited-params propagation; and the DAGExecutor — parallel layers via asyncio.gather, <code>{{nX.field}}</code> interpolation that preserves int types when the whole value is a single reference, HITL gate that pauses/resumes a node, replan-on-failure with subgraph splicing that also rewires downstream <code>depends_on</code>. <strong>24 pytest tests passing in ~0.6 s</strong>, zero MCP servers, zero API keys.</li>
+              <li data-i18n="p5.status.2"><strong>Scaffolded:</strong> the real MCPClient over stdio against actual MCP servers (GitHub / Jira / Slack / GDrive), PostgresWorkflowMemory (pgvector) + RedisHITLBroker (pub/sub), react-flow DAG view + SSE executor stream.</li>
+              <li data-i18n="p5.status.3">The Replanner does NOT splice — it only returns replacement nodes. The executor performs the splice so it can also rewire downstream <code>depends_on</code>: first replacement inherits the failed node's upstream deps; last replacement becomes the new terminal that downstream nodes point at. Splice math is unit-tested without an LLM.</li>
+            </ul>
           </div>
         </div>
         <div>
@@ -5425,7 +5433,7 @@
 
     '05': {
       num: 'PROJECT 05 / 06',
-      status: { label: '◐ Scaffolded', cls: 'badge-scaffold' },
+      status: { label: '● Executor verified', cls: 'badge-ok' },
       title: 'Adaptive Workflow Engine · MCP',
       tagline: 'An AI that builds custom workflows for any business request — on the fly.',
       pitch: 'Your ops team says: <em>"Whenever a P0 bug is filed, ping the lead engineer, search past tickets for similar incidents, and post a summary to the #incidents Slack channel — but if it\'s a customer-facing outage, also page the on-call manager."</em> Normally that\'s a sprint of engineering work. Here, a meta-agent <strong>reads the sentence and builds the workflow on the spot</strong>. Each step talks to real tools — GitHub, Jira, Slack, Drive — through Model Context Protocol (MCP), the emerging standard for tool integration.',
@@ -6374,6 +6382,13 @@
       pt: 'O P6 (benchmark de RAG agêntico) atualmente vem com <strong>74 testes pytest</strong>, as três slices estão code-complete: in-memory vector store + query rewriter + busca híbrida RRF (slice 1); metrics store + auto-optimizer + avaliador com scorer Ragas injetável (slice 2); backends pgvector / Qdrant / Pinecone + Cohere rerank + enricher contextual da Anthropic + wrapper Ragas (slice 3, todos unit-testados contra mocks). Só falta o run de benchmark real contra os serviços.',
     },
     {
+      id: 'p5_tests',
+      kws: ['p5','workflow','mcp','dag','planner','replanner','executor','executora','hitl','approval','aprobacion','aprobación','aprovação','splice'],
+      en: 'P5 (the Adaptive Workflow Engine) ships <strong>24 pytest tests passing in ~0.6 seconds</strong>. They cover the dag_parser (cycle/duplicate-id/unknown-dep detection + Kahn topological layers), the InMemoryWorkflowMemory with similar-past-workflow seeding into the planner prompt, the PlannerAgent + Replanner JSON contracts, the asyncio.Event-based HITL gate (with a race-based pause/resume test), and the DAGExecutor — parallel layer fan-out, <code>{{nX.field}}</code> interpolation that preserves int types when the whole value is a single reference, HITL rejection short-circuits, and the on-failure replan that splices a replacement subgraph in-place and rewires downstream <code>depends_on</code>. Real MCP servers and the react-flow frontend are the pending slice — no API keys spent.',
+      es: 'P5 (el Adaptive Workflow Engine) trae <strong>24 tests de pytest pasando en ~0.6 segundos</strong>. Cubren el dag_parser (detección de ciclos/id duplicado/dependencia desconocida + capas topológicas Kahn), el InMemoryWorkflowMemory que inyecta workflows pasados similares en el prompt del planner, los contratos JSON del PlannerAgent + Replanner, el gate HITL basado en asyncio.Event (con un test de pausa/reanudación por race), y el DAGExecutor — fan-out de capas en paralelo, interpolación <code>{{nX.field}}</code> que preserva tipos int cuando el valor entero es una sola referencia, rechazo HITL que corta el flujo, y el replan-en-fallo que hace splice de un subgrafo de reemplazo in-place y re-cablea los <code>depends_on</code> downstream. Servidores MCP reales y el frontend react-flow son el slice pendiente — cero API keys gastadas.',
+      pt: 'O P5 (Adaptive Workflow Engine) vem com <strong>24 testes pytest passando em ~0.6 segundos</strong>. Cobrem o dag_parser (detecção de ciclos/id duplicado/dependência desconhecida + camadas topológicas Kahn), o InMemoryWorkflowMemory que injeta workflows passados similares no prompt do planner, os contratos JSON do PlannerAgent + Replanner, o gate HITL baseado em asyncio.Event (com um teste de pausa/retomada por race), e o DAGExecutor — fan-out de camadas em paralelo, interpolação <code>{{nX.field}}</code> que preserva tipos int quando o valor inteiro é uma única referência, rejeição HITL que corta o fluxo, e o replan-em-falha que faz splice de um subgrafo de substituição in-place e religa os <code>depends_on</code> downstream. Servidores MCP reais e o frontend react-flow são a slice pendente — zero API keys gastas.',
+    },
+    {
       id: 'p4_tests',
       kws: ['p4','debate','debates','agentes','agents','consensus','consenso','optimist','optimista','skeptic','escéptico','escetico','cético','cetico','devil','financial','risk','synthesizer','sintetizador'],
       en: 'P4 (the Multi-Agent Debate System) ships <strong>18 pytest tests passing in ~2.4 seconds</strong>. They cover the JSON envelope each agent must emit (with two-attempt recovery), the deterministic consensus math (variance on a {-2..+2} stance axis), the in-memory shared store with TTL eviction, the synthesizer\'s ExecutiveMemo with LLM-injected consensus correctly overridden, and the full LangGraph debate end-to-end via a ScriptedLLM — including a pinned sequence test that proves the rebuttal round reads SEQUENTIALLY (5, 6, 7, 8, 9 visible statements as each agent speaks). Redis backend and WebSocket frontend are the pending slice — no API keys spent.',
@@ -6432,9 +6447,9 @@
     {
       id: 'tests_total',
       kws: ['tests','test','pruebas','testes','total','sumados','todos','all','overall'],
-      en: 'Across the whole portfolio: <strong>145 automated tests</strong> currently passing — 22 in P1, 31 in P3, 18 in P4, 74 in P6. All run in under 9 seconds combined, no Docker, no API keys, no money spent. Every test uses fakes (FakeMemory, ScriptedLLM, ScriptedDebateLLM, FakeWebSearch) so the test suite is the same speed as the linter.',
-      es: 'En todo el portafolio: <strong>145 tests automatizados</strong> pasando actualmente — 22 en P1, 31 en P3, 18 en P4, 74 en P6. Todos corren en menos de 9 segundos combinados, sin Docker, sin API keys, sin gastar dinero. Cada test usa fakes (FakeMemory, ScriptedLLM, ScriptedDebateLLM, FakeWebSearch) así la suite es tan rápida como el linter.',
-      pt: 'Em todo o portfólio: <strong>145 testes automatizados</strong> passando no momento — 22 no P1, 31 no P3, 18 no P4, 74 no P6. Todos rodam em menos de 9 segundos combinados, sem Docker, sem API keys, sem gastar dinheiro. Cada teste usa fakes (FakeMemory, ScriptedLLM, ScriptedDebateLLM, FakeWebSearch) então a suite roda na mesma velocidade que o linter.',
+      en: 'Across the whole portfolio: <strong>169 automated tests</strong> currently passing — 22 in P1, 31 in P3, 18 in P4, 24 in P5, 74 in P6. All run in under 10 seconds combined, no Docker, no API keys, no money spent. Every test uses fakes (FakeMemory, ScriptedLLM, ScriptedDebateLLM, FakeWebSearch, FakeMCPClient) so the test suite is the same speed as the linter.',
+      es: 'En todo el portafolio: <strong>169 tests automatizados</strong> pasando actualmente — 22 en P1, 31 en P3, 18 en P4, 24 en P5, 74 en P6. Todos corren en menos de 10 segundos combinados, sin Docker, sin API keys, sin gastar dinero. Cada test usa fakes (FakeMemory, ScriptedLLM, ScriptedDebateLLM, FakeWebSearch, FakeMCPClient) así la suite es tan rápida como el linter.',
+      pt: 'Em todo o portfólio: <strong>169 testes automatizados</strong> passando no momento — 22 no P1, 31 no P3, 18 no P4, 24 no P5, 74 no P6. Todos rodam em menos de 10 segundos combinados, sem Docker, sem API keys, sem gastar dinheiro. Cada teste usa fakes (FakeMemory, ScriptedLLM, ScriptedDebateLLM, FakeWebSearch, FakeMCPClient) então a suite roda na mesma velocidade que o linter.',
     },
   ];
 
@@ -7092,7 +7107,7 @@
       'hero.meta.remote': 'remote-first · EU / USA',
       'hero.stats.designs': 'Production-grade designs',
       'hero.stats.verified': 'With verified code · honest status',
-      'hero.stats.tests': 'Automated tests across P1 + P3 + P4 + P6',
+      'hero.stats.tests': 'Automated tests across P1 + P3 + P4 + P5 + P6',
       'hero.stats.silent': 'Silent failures tolerated',
 
       'thesis.eyebrow': '01 · The thesis',
@@ -7390,6 +7405,9 @@
       'p5.dec.2b': 'Successful workflows are embedded; planner retrieves similar past plans before generating',
       'p5.dec.3a': 'HITL approvals on critical nodes',
       'p5.dec.3b': '"Send email" or "post to channel" require explicit approval. Auditable, reversible.',
+      'p5.status.1': '<strong>Implemented + tested:</strong> the dag_parser (cycle / duplicate-id / unknown-dep detection + Kahn topological layers); InMemoryWorkflowMemory (cosine over hash-bag embeddings) with similar-past-workflow seeding into the planner prompt; PlannerAgent + Replanner with strict JSON envelopes and 2-attempt recovery; InMemoryHITLBroker built on per-(workflow, node) asyncio.Event with edited-params propagation; and the DAGExecutor — parallel layers via asyncio.gather, <code>{{nX.field}}</code> interpolation that preserves int types when the whole value is a single reference, HITL gate that pauses/resumes a node, replan-on-failure with subgraph splicing that also rewires downstream <code>depends_on</code>. <strong>24 pytest tests passing in ~0.6 s</strong>, zero MCP servers, zero API keys.',
+      'p5.status.2': '<strong>Scaffolded:</strong> the real MCPClient over stdio against actual MCP servers (GitHub / Jira / Slack / GDrive), PostgresWorkflowMemory (pgvector) + RedisHITLBroker (pub/sub), react-flow DAG view + SSE executor stream.',
+      'p5.status.3': 'The Replanner does NOT splice — it only returns replacement nodes. The executor performs the splice so it can also rewire downstream <code>depends_on</code>: first replacement inherits the failed node\'s upstream deps; last replacement becomes the new terminal that downstream nodes point at. Splice math is unit-tested without an LLM.',
 
       // Project 06
       'p6.arch.h': 'Architecture · parallel retrieval + closed-loop tuning <span class="arch-live-dot"></span><span class="arch-live-label">animated · hover the nodes</span>',
@@ -7432,7 +7450,7 @@
       'hero.meta.remote': 'remoto · EU / USA',
       'hero.stats.designs': 'Diseños de nivel producción',
       'hero.stats.verified': 'Con código verificado · estado honesto',
-      'hero.stats.tests': 'Tests automatizados en P1 + P3 + P4 + P6',
+      'hero.stats.tests': 'Tests automatizados en P1 + P3 + P4 + P5 + P6',
       'hero.stats.silent': 'Fallos silenciosos tolerados',
 
       'thesis.eyebrow': '01 · La tesis',
@@ -7730,6 +7748,9 @@
       'p5.dec.2b': 'Los workflows exitosos se embeben; el planner recupera planes pasados similares antes de generar uno nuevo',
       'p5.dec.3a': 'Aprobaciones HITL en nodos críticos',
       'p5.dec.3b': '"Enviar email" o "publicar en canal" requieren aprobación explícita. Auditable, reversible.',
+      'p5.status.1': '<strong>Implementado + testeado:</strong> el dag_parser (detección de ciclos / id duplicado / dependencias desconocidas + capas topológicas Kahn); InMemoryWorkflowMemory (coseno sobre embeddings hash-bag) que inyecta workflows pasados similares en el prompt del planner; PlannerAgent + Replanner con envelopes JSON estrictos y recuperación a dos intentos; InMemoryHITLBroker sobre asyncio.Event por (workflow, nodo) con propagación de edited-params; y el DAGExecutor — capas en paralelo vía asyncio.gather, interpolación <code>{{nX.field}}</code> que preserva tipos int cuando el valor completo es una sola referencia, gate HITL que pausa/reanuda un nodo, replan-en-fallo con splicing del subgrafo que también re-cablea los <code>depends_on</code> downstream. <strong>24 tests de pytest pasando en ~0.6 s</strong>, sin servidores MCP, sin API keys.',
+      'p5.status.2': '<strong>Scaffolded:</strong> el MCPClient real sobre stdio contra servidores MCP reales (GitHub / Jira / Slack / GDrive), PostgresWorkflowMemory (pgvector) + RedisHITLBroker (pub/sub), vista de DAG en react-flow + stream SSE del executor.',
+      'p5.status.3': 'El Replanner NO hace el splice — solo devuelve los nodos de reemplazo. El executor hace el splice porque también necesita re-cablear los <code>depends_on</code> downstream: el primer reemplazo hereda las deps upstream del nodo fallido; el último reemplazo es el nuevo terminal al que apuntan los nodos downstream. La matemática del splice está unit-tested sin LLM.',
 
       // Project 06 — ES
       'p6.arch.h': 'Arquitectura · retrieval paralelo + tuning en loop cerrado <span class="arch-live-dot"></span><span class="arch-live-label">animado · pasa por los nodos</span>',
@@ -7772,7 +7793,7 @@
       'hero.meta.remote': 'remoto · UE / EUA',
       'hero.stats.designs': 'Projetos nível produção',
       'hero.stats.verified': 'Com código verificado · status honesto',
-      'hero.stats.tests': 'Testes automatizados em P1 + P3 + P4 + P6',
+      'hero.stats.tests': 'Testes automatizados em P1 + P3 + P4 + P5 + P6',
       'hero.stats.silent': 'Falhas silenciosas toleradas',
 
       'thesis.eyebrow': '01 · A tese',
@@ -8070,6 +8091,9 @@
       'p5.dec.2b': 'Workflows bem-sucedidos são embedados; o planner recupera planos passados similares antes de gerar um novo',
       'p5.dec.3a': 'Aprovações HITL em nós críticos',
       'p5.dec.3b': '"Enviar email" ou "postar em canal" exigem aprovação explícita. Auditável, reversível.',
+      'p5.status.1': '<strong>Implementado + testado:</strong> o dag_parser (detecção de ciclos / id duplicado / dependências desconhecidas + camadas topológicas Kahn); InMemoryWorkflowMemory (cosseno sobre embeddings hash-bag) que injeta workflows passados similares no prompt do planner; PlannerAgent + Replanner com envelopes JSON estritos e recuperação em duas tentativas; InMemoryHITLBroker sobre asyncio.Event por (workflow, nó) com propagação de edited-params; e o DAGExecutor — camadas em paralelo via asyncio.gather, interpolação <code>{{nX.field}}</code> que preserva tipos int quando o valor inteiro é uma única referência, gate HITL que pausa/retoma um nó, replan-em-falha com splicing do subgrafo que também religa os <code>depends_on</code> downstream. <strong>24 testes pytest passando em ~0.6 s</strong>, sem servidores MCP, sem API keys.',
+      'p5.status.2': '<strong>Scaffolded:</strong> o MCPClient real sobre stdio contra servidores MCP reais (GitHub / Jira / Slack / GDrive), PostgresWorkflowMemory (pgvector) + RedisHITLBroker (pub/sub), visualização de DAG em react-flow + stream SSE do executor.',
+      'p5.status.3': 'O Replanner NÃO faz o splice — só devolve os nós de substituição. O executor faz o splice porque também precisa religar os <code>depends_on</code> downstream: a primeira substituição herda as deps upstream do nó que falhou; a última substituição vira o novo terminal pra onde apontam os nós downstream. A matemática do splice é unit-testada sem LLM.',
 
       // Project 06 — PT
       'p6.arch.h': 'Arquitetura · retrieval paralelo + tuning em loop fechado <span class="arch-live-dot"></span><span class="arch-live-label">animado · passe pelos nós</span>',
@@ -8578,8 +8602,8 @@
       info: 'Autonomous research agent with three-tier memory (working / episodic / semantic). The MemGPT controller auto-archives evictions, assembles cross-tier context, and consolidates facts at session end — all driven by a LangGraph planner → executor → reflector → reporter loop. 31 tests cover every tier + the controller + the graph end-to-end via a ScriptedLLM, with no network and no API keys.' },
     { id: '04', x: -2.8, y: -1.05, color: '#fbbf24', label: 'P4 · Multi-Agent Debate', status: 'debate graph · 18 tests', w: 1.45,
       info: 'Five specialized agents (Optimist, Skeptic, Financial, Risk, Devil\'s Advocate) argue across opening → rebuttal → final, then a synthesizer produces an executive memo. The consensus number is computed deterministically from final-round stances (variance on a {-2..+2} axis) — the LLM does not own it. 18 tests cover the JSON envelope, the consensus math, the in-memory shared store, and the full LangGraph debate end-to-end via a ScriptedLLM.' },
-    { id: '05', x:  0.0, y: -1.55, color: '#34d399', label: 'P5 · Workflow Engine (MCP)', status: 'scaffolded', w: 1.00,
-      info: 'Meta-agent generates execution DAGs at runtime from natural-language goals, then executes them via Model Context Protocol servers (GitHub, Jira, Slack, GDrive). Human-in-the-loop approvals on critical nodes; the planner retrieves similar past DAGs before generating.' },
+    { id: '05', x:  0.0, y: -1.55, color: '#34d399', label: 'P5 · Workflow Engine (MCP)', status: 'executor · 24 tests', w: 1.45,
+      info: 'Meta-agent turns natural language ("when a P0 bug is filed, ping the lead engineer, search past tickets, post to #incidents") into a runnable DAG. The executor runs layer-by-layer in parallel via asyncio.gather, interpolates {{nX.field}} references from upstream outputs (preserves int types), pauses at HITL gates with edited-params propagation, and on node failure asks a replanner for a replacement subgraph that the executor splices in-place — rewiring downstream depends_on so the rest of the DAG continues. 24 tests cover every path including parallel fan-out, pause/resume races, and the splice math, all without any real MCP server.' },
     { id: '06', x:  2.8, y: -1.05, color: '#ec4899', label: 'P6 · Agentic RAG benchmark', status: 'code complete · 74 tests', w: 1.45,
       info: 'Three vector stores (pgvector / Qdrant / Pinecone) indexed with the same Anthropic-contextual-retrieval chunks, queried with RRF hybrid of BM25 + vector + Cohere rerank. An auto-optimizer agent watches Ragas scores and tunes parameters when faithfulness drops. 74 tests, all three slices code-complete with mocked integrations.' },
   ];

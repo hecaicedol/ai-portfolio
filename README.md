@@ -31,7 +31,7 @@ Each project answers a question recruiters in EU/USA actually ask: *"Can this pe
 | 2 | [Enterprise Knowledge OS (GraphRAG)](./02-knowledge-os) | Knowledge graph + vector hybrid retrieval (Neo4j + LlamaIndex) | Scaffolded |
 | 3 | [Autonomous Research Agent (MemGPT)](./03-research-agent) | Three-tier memory architecture (working/episodic/semantic) | **Core memory verified** · 31 tests |
 | 4 | [Multi-Agent Debate System](./04-debate-system) | Society of Mind pattern, 5 specialized agents, consensus measurement | **Debate graph verified** · 18 tests |
-| 5 | [Adaptive Workflow Engine (MCP)](./05-workflow-engine) | Meta-agent generates DAGs at runtime, executes via MCP servers | Scaffolded |
+| 5 | [Adaptive Workflow Engine (MCP)](./05-workflow-engine) | Meta-agent generates DAGs at runtime, executes via MCP servers | **Executor verified** · 24 tests |
 | 6 | [Agentic RAG with Vector DB Benchmark](./06-agentic-rag) | Contextual retrieval + hybrid search + auto-optimizer agent | **Core retrieval verified** · 23 tests |
 
 > **Why one flagship + five scaffolds?** A recruiter scanning the portfolio in 90 seconds needs (a) proof of end-to-end execution and (b) breadth of architectural thinking. Project 1 proves execution; the other five prove I can design six different non-trivial systems without copy-pasting the same template.
@@ -123,7 +123,7 @@ ai-portfolio/
 | Q1 | P1 fully shipped + deployed + metrics on README | In progress — code + tests + frontend + eval harness done; deployment + real metrics pending |
 | Q2 | P6 (Agentic RAG) — second most important for AI roles | Scaffolded |
 | Q3 | P3 (Research Agent) — memory architecture is a hiring filter | Slice 1 verified — 31 tests covering working/episodic/semantic + MemGPT controller + research graph |
-| Q4 | P2, P4, P5 — finish breadth | P4 Slice 1 verified — 18 tests across consensus math, JSON parsing, in-memory shared store, and the full opening→rebuttal→final→synthesis graph |
+| Q4 | P2, P4, P5 — finish breadth | P4 Slice 1 verified (18 tests) + P5 Slice 1 verified (24 tests across DAG parser, planner/replanner, HITL gate, in-memory workflow memory, and the executor's parallel-layer fan-out + interpolation + replan-and-splice) |
 
 ---
 
