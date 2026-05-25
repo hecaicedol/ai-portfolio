@@ -28,7 +28,7 @@ Each project answers a question recruiters in EU/USA actually ask: *"Can this pe
 | # | Project | Core Technique | Status |
 |---|---------|---------------|--------|
 | 1 | [Self-Healing Multi-Agent Pipeline](./01-self-healing-pipeline) | Constitutional AI critic + reflection loops + episodic memory | **Functional · tested · evaluated** |
-| 2 | [Enterprise Knowledge OS (GraphRAG)](./02-knowledge-os) | Knowledge graph + vector hybrid retrieval (Neo4j + LlamaIndex) | Scaffolded |
+| 2 | [Enterprise Knowledge OS (GraphRAG)](./02-knowledge-os) | Knowledge graph + vector hybrid retrieval (Neo4j + LlamaIndex) | **Graph RAG verified** · 19 tests |
 | 3 | [Autonomous Research Agent (MemGPT)](./03-research-agent) | Three-tier memory architecture (working/episodic/semantic) | **Core memory verified** · 31 tests |
 | 4 | [Multi-Agent Debate System](./04-debate-system) | Society of Mind pattern, 5 specialized agents, consensus measurement | **Debate graph verified** · 18 tests |
 | 5 | [Adaptive Workflow Engine (MCP)](./05-workflow-engine) | Meta-agent generates DAGs at runtime, executes via MCP servers | **Executor verified** · 24 tests |
@@ -123,7 +123,7 @@ ai-portfolio/
 | Q1 | P1 fully shipped + deployed + metrics on README | In progress — code + tests + frontend + eval harness done; deployment + real metrics pending |
 | Q2 | P6 (Agentic RAG) — second most important for AI roles | Scaffolded |
 | Q3 | P3 (Research Agent) — memory architecture is a hiring filter | Slice 1 verified — 31 tests covering working/episodic/semantic + MemGPT controller + research graph |
-| Q4 | P2, P4, P5 — finish breadth | P4 Slice 1 verified (18 tests) + P5 Slice 1 verified (24 tests across DAG parser, planner/replanner, HITL gate, in-memory workflow memory, and the executor's parallel-layer fan-out + interpolation + replan-and-splice) |
+| Q4 | P2, P4, P5 — finish breadth | All three Slice 1 verified — P2 (19 tests · graph store + RRF fusion + GraphRAG), P4 (18 tests · debate graph + consensus math), P5 (24 tests · DAG executor + replan-and-splice). 6 / 6 projects now have verified code, 188 tests total. |
 
 ---
 

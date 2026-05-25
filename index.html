@@ -3440,12 +3440,12 @@
         <div class="stat-label" data-i18n="hero.stats.designs">Production-grade designs</div>
       </div>
       <div>
-        <div class="stat-num">5<span class="unit">/ 6</span></div>
+        <div class="stat-num">6<span class="unit">/ 6</span></div>
         <div class="stat-label" data-i18n="hero.stats.verified">With verified code · honest status</div>
       </div>
       <div>
-        <div class="stat-num">169</div>
-        <div class="stat-label" data-i18n="hero.stats.tests">Automated tests across P1 + P3 + P4 + P5 + P6</div>
+        <div class="stat-num">188</div>
+        <div class="stat-label" data-i18n="hero.stats.tests">Automated tests across all 6 projects</div>
       </div>
       <div>
         <div class="stat-num">0</div>
@@ -4185,7 +4185,7 @@
     <article class="project-detail reveal">
       <div class="project-head">
         <span class="project-num">PROJECT 02 / 06</span>
-        <span class="badge badge-scaffold">◐ Scaffolded</span>
+        <span class="badge badge-ok">● Graph RAG verified</span>
       </div>
       <h3>Enterprise Knowledge OS · GraphRAG</h3>
       <p class="project-subtitle" data-i18n="proj.p2.subtitle">Neo4j + LlamaIndex · Entity extraction · Hybrid graph + vector retrieval</p>
@@ -4203,6 +4203,14 @@
               <tr><td data-i18n="p2.dec.2a">Hybrid: graph + vector</td><td data-i18n="p2.dec.2b">Graph for structure, vector for unstructured chunks. RRF fusion at retrieval</td></tr>
               <tr><td data-i18n="p2.dec.3a">Background staleness agent</td><td data-i18n="p2.dec.3b">Flags entities whose embeddings drift from the source documents — knowledge decay is a real bug class</td></tr>
             </table>
+          </div>
+          <div class="project-block">
+            <h5 data-i18n="proj.status">Implementation status</h5>
+            <ul>
+              <li data-i18n="p2.status.1"><strong>Implemented + tested:</strong> InMemoryGraphStore under a shared GraphStore Protocol (upsert nodes/relationships with dedupe, cosine vector_search, BFS traverse with <code>max_hops</code>, snapshot, stale_nodes); EntityExtractor with strict JSON envelope + 2-attempt recovery; GraphRAGEngine that extracts query entities → vector-matches across labels → BFS-traverses → RRF-fuses vector + traversal lists → calls a synthesizer that must cite node ids the engine knows about; <code>reciprocal_rank_fusion</code> helper (k=60 default, same math as P6); StalenessAgent with an injectable summarizer (defaults to a deterministic no-LLM stub). <strong>19 pytest tests passing in ~0.8 s</strong>, zero Neo4j, zero API keys.</li>
+              <li data-i18n="p2.status.2"><strong>Scaffolded:</strong> the real Neo4jClient over the production driver (lazy import; the docker-compose service is already declared), ingestion pipeline (PDF/HTML connectors → extractor → upsert), react-force-graph frontend + query panel.</li>
+              <li data-i18n="p2.status.3">The synthesizer must cite node ids the engine knows about. When the LLM hallucinates an id, the engine silently drops it from <code>cited_nodes</code> rather than returning a fake citation. A test pins this so the contract can't silently regress.</li>
+            </ul>
           </div>
         </div>
         <div>
@@ -5294,7 +5302,7 @@
 
     '02': {
       num: 'PROJECT 02 / 06',
-      status: { label: '◐ Scaffolded', cls: 'badge-scaffold' },
+      status: { label: '● Graph RAG verified', cls: 'badge-ok' },
       title: 'Enterprise Knowledge OS · GraphRAG',
       tagline: 'A knowledge system that understands relationships — not just keywords.',
       pitch: 'Most corporate knowledge bases can only answer "where is X documented?" But the real questions look like: <strong>"Has anyone on the API team worked on payment processing in the last 3 years?"</strong> or <strong>"Which competitors employ ex-Stripe engineers?"</strong> These require <strong>connections</strong>, not just text similarity. This system builds a living graph of every entity in your company — people, projects, systems, concepts — and the relationships between them. Then it combines that graph with traditional search to answer questions other systems can\'t.',
@@ -6382,6 +6390,13 @@
       pt: 'O P6 (benchmark de RAG agêntico) atualmente vem com <strong>74 testes pytest</strong>, as três slices estão code-complete: in-memory vector store + query rewriter + busca híbrida RRF (slice 1); metrics store + auto-optimizer + avaliador com scorer Ragas injetável (slice 2); backends pgvector / Qdrant / Pinecone + Cohere rerank + enricher contextual da Anthropic + wrapper Ragas (slice 3, todos unit-testados contra mocks). Só falta o run de benchmark real contra os serviços.',
     },
     {
+      id: 'p2_tests',
+      kws: ['p2','knowledge','graph','graphrag','neo4j','entity','entidad','entidade','staleness','stale','triple','tripla','tripleta'],
+      en: 'P2 (the Knowledge OS GraphRAG) ships <strong>19 pytest tests passing in ~0.8 seconds</strong>. They cover the InMemoryGraphStore (upsert dedupe, cosine vector_search, BFS traverse honoring max_hops, stale_nodes), the EntityExtractor JSON envelope with two-attempt recovery, the RRF fusion math (including the rank-2-in-both beats rank-1-in-one test), the StalenessAgent grouping nodes by label with an injectable summarizer, and the GraphRAGEngine end-to-end via ScriptedLLM — including the contract that says hallucinated cited node ids must be silently dropped. The Neo4j backend is lazy-imported (stubbed for Slice 2) and the react-force-graph frontend is pending — no API keys spent.',
+      es: 'P2 (el Knowledge OS GraphRAG) trae <strong>19 tests de pytest pasando en ~0.8 segundos</strong>. Cubren el InMemoryGraphStore (dedupe en upsert, vector_search por coseno, BFS traverse respetando max_hops, stale_nodes), el envelope JSON del EntityExtractor con recuperación a dos intentos, la matemática RRF (incluyendo el test de que el doc rank-2 en ambas listas le gana al rank-1 en una sola), el StalenessAgent agrupando nodos por label con summarizer inyectable, y el GraphRAGEngine end-to-end vía ScriptedLLM — incluyendo el contrato de que los ids de nodos alucinados deben ser descartados silenciosamente. El backend Neo4j queda lazy-import (stub para Slice 2) y el frontend react-force-graph está pendiente — cero API keys gastadas.',
+      pt: 'O P2 (Knowledge OS GraphRAG) vem com <strong>19 testes pytest passando em ~0.8 segundos</strong>. Cobrem o InMemoryGraphStore (dedupe no upsert, vector_search por cosseno, BFS traverse respeitando max_hops, stale_nodes), o envelope JSON do EntityExtractor com recuperação em duas tentativas, a matemática RRF (incluindo o teste de que o doc rank-2 em ambas as listas ganha do rank-1 em uma só), o StalenessAgent agrupando nós por label com summarizer injetável, e o GraphRAGEngine end-to-end via ScriptedLLM — incluindo o contrato de que ids de nós alucinados devem ser descartados silenciosamente. O backend Neo4j fica em lazy-import (stub pra Slice 2) e o frontend react-force-graph fica pendente — zero API keys gastas.',
+    },
+    {
       id: 'p5_tests',
       kws: ['p5','workflow','mcp','dag','planner','replanner','executor','executora','hitl','approval','aprobacion','aprobación','aprovação','splice'],
       en: 'P5 (the Adaptive Workflow Engine) ships <strong>24 pytest tests passing in ~0.6 seconds</strong>. They cover the dag_parser (cycle/duplicate-id/unknown-dep detection + Kahn topological layers), the InMemoryWorkflowMemory with similar-past-workflow seeding into the planner prompt, the PlannerAgent + Replanner JSON contracts, the asyncio.Event-based HITL gate (with a race-based pause/resume test), and the DAGExecutor — parallel layer fan-out, <code>{{nX.field}}</code> interpolation that preserves int types when the whole value is a single reference, HITL rejection short-circuits, and the on-failure replan that splices a replacement subgraph in-place and rewires downstream <code>depends_on</code>. Real MCP servers and the react-flow frontend are the pending slice — no API keys spent.',
@@ -6447,9 +6462,9 @@
     {
       id: 'tests_total',
       kws: ['tests','test','pruebas','testes','total','sumados','todos','all','overall'],
-      en: 'Across the whole portfolio: <strong>169 automated tests</strong> currently passing — 22 in P1, 31 in P3, 18 in P4, 24 in P5, 74 in P6. All run in under 10 seconds combined, no Docker, no API keys, no money spent. Every test uses fakes (FakeMemory, ScriptedLLM, ScriptedDebateLLM, FakeWebSearch, FakeMCPClient) so the test suite is the same speed as the linter.',
-      es: 'En todo el portafolio: <strong>169 tests automatizados</strong> pasando actualmente — 22 en P1, 31 en P3, 18 en P4, 24 en P5, 74 en P6. Todos corren en menos de 10 segundos combinados, sin Docker, sin API keys, sin gastar dinero. Cada test usa fakes (FakeMemory, ScriptedLLM, ScriptedDebateLLM, FakeWebSearch, FakeMCPClient) así la suite es tan rápida como el linter.',
-      pt: 'Em todo o portfólio: <strong>169 testes automatizados</strong> passando no momento — 22 no P1, 31 no P3, 18 no P4, 24 no P5, 74 no P6. Todos rodam em menos de 10 segundos combinados, sem Docker, sem API keys, sem gastar dinheiro. Cada teste usa fakes (FakeMemory, ScriptedLLM, ScriptedDebateLLM, FakeWebSearch, FakeMCPClient) então a suite roda na mesma velocidade que o linter.',
+      en: 'Across the whole portfolio: <strong>188 automated tests</strong> currently passing — 22 in P1, 19 in P2, 31 in P3, 18 in P4, 24 in P5, 74 in P6. All run in under 10 seconds combined, no Docker, no API keys, no money spent. Every test uses fakes (FakeMemory, ScriptedLLM, ScriptedDebateLLM, FakeWebSearch, FakeMCPClient, InMemoryGraphStore) so the test suite is the same speed as the linter.',
+      es: 'En todo el portafolio: <strong>188 tests automatizados</strong> pasando actualmente — 22 en P1, 19 en P2, 31 en P3, 18 en P4, 24 en P5, 74 en P6. Todos corren en menos de 10 segundos combinados, sin Docker, sin API keys, sin gastar dinero. Cada test usa fakes (FakeMemory, ScriptedLLM, ScriptedDebateLLM, FakeWebSearch, FakeMCPClient, InMemoryGraphStore) así la suite es tan rápida como el linter.',
+      pt: 'Em todo o portfólio: <strong>188 testes automatizados</strong> passando no momento — 22 no P1, 19 no P2, 31 no P3, 18 no P4, 24 no P5, 74 no P6. Todos rodam em menos de 10 segundos combinados, sem Docker, sem API keys, sem gastar dinheiro. Cada teste usa fakes (FakeMemory, ScriptedLLM, ScriptedDebateLLM, FakeWebSearch, FakeMCPClient, InMemoryGraphStore) então a suite roda na mesma velocidade que o linter.',
     },
   ];
 
@@ -7107,7 +7122,7 @@
       'hero.meta.remote': 'remote-first · EU / USA',
       'hero.stats.designs': 'Production-grade designs',
       'hero.stats.verified': 'With verified code · honest status',
-      'hero.stats.tests': 'Automated tests across P1 + P3 + P4 + P5 + P6',
+      'hero.stats.tests': 'Automated tests across all 6 projects',
       'hero.stats.silent': 'Silent failures tolerated',
 
       'thesis.eyebrow': '01 · The thesis',
@@ -7367,6 +7382,9 @@
       'p2.dec.2b': 'Graph for structure, vector for unstructured chunks. RRF fusion at retrieval',
       'p2.dec.3a': 'Background staleness agent',
       'p2.dec.3b': 'Flags entities whose embeddings drift from the source documents — knowledge decay is a real bug class',
+      'p2.status.1': '<strong>Implemented + tested:</strong> InMemoryGraphStore under a shared GraphStore Protocol (upsert nodes/relationships with dedupe, cosine vector_search, BFS traverse with <code>max_hops</code>, snapshot, stale_nodes); EntityExtractor with strict JSON envelope + 2-attempt recovery; GraphRAGEngine that extracts query entities → vector-matches across labels → BFS-traverses → RRF-fuses vector + traversal lists → calls a synthesizer that must cite node ids the engine knows about; <code>reciprocal_rank_fusion</code> helper (k=60 default, same math as P6); StalenessAgent with an injectable summarizer (defaults to a deterministic no-LLM stub). <strong>19 pytest tests passing in ~0.8 s</strong>, zero Neo4j, zero API keys.',
+      'p2.status.2': '<strong>Scaffolded:</strong> the real Neo4jClient over the production driver (lazy import; the docker-compose service is already declared), ingestion pipeline (PDF/HTML connectors → extractor → upsert), react-force-graph frontend + query panel.',
+      'p2.status.3': 'The synthesizer must cite node ids the engine knows about. When the LLM hallucinates an id, the engine silently drops it from <code>cited_nodes</code> rather than returning a fake citation. A test pins this so the contract can\'t silently regress.',
 
       // Project 03
       'p3.arch.h': 'Architecture · memory tiers',
@@ -7450,7 +7468,7 @@
       'hero.meta.remote': 'remoto · EU / USA',
       'hero.stats.designs': 'Diseños de nivel producción',
       'hero.stats.verified': 'Con código verificado · estado honesto',
-      'hero.stats.tests': 'Tests automatizados en P1 + P3 + P4 + P5 + P6',
+      'hero.stats.tests': 'Tests automatizados en los 6 proyectos',
       'hero.stats.silent': 'Fallos silenciosos tolerados',
 
       'thesis.eyebrow': '01 · La tesis',
@@ -7710,6 +7728,9 @@
       'p2.dec.2b': 'Grafo para estructura, vector para chunks no estructurados. Fusión RRF en el retrieval',
       'p2.dec.3a': 'Agente de obsolescencia en background',
       'p2.dec.3b': 'Marca entidades cuyos embeddings divergen de los documentos fuente — el "knowledge decay" es una clase de bug real',
+      'p2.status.1': '<strong>Implementado + testeado:</strong> InMemoryGraphStore bajo un GraphStore Protocol compartido (upsert de nodos/relaciones con dedupe, vector_search por coseno, traverse BFS con <code>max_hops</code>, snapshot, stale_nodes); EntityExtractor con envelope JSON estricto + recuperación a 2 intentos; GraphRAGEngine que extrae entidades de la query → hace vector-match cruzando labels → BFS traverse → fusiona vector + traversal por RRF → llama a un sintetizador que debe citar ids de nodos que el engine conoce; helper <code>reciprocal_rank_fusion</code> (k=60 por defecto, misma matemática que P6); StalenessAgent con summarizer inyectable (por defecto un stub determinístico sin LLM). <strong>19 tests de pytest pasando en ~0.8 s</strong>, sin Neo4j, sin API keys.',
+      'p2.status.2': '<strong>Scaffolded:</strong> el Neo4jClient real sobre el driver de producción (import lazy; el servicio de docker-compose ya está declarado), pipeline de ingestión (conectores PDF/HTML → extractor → upsert), frontend react-force-graph + panel de query.',
+      'p2.status.3': 'El sintetizador debe citar ids de nodos que el engine conoce. Cuando el LLM alucina un id, el engine lo descarta silenciosamente de <code>cited_nodes</code> en vez de devolver una citación falsa. Un test blinda esto para que el contrato no se rompa en silencio.',
 
       // Project 03 — ES
       'p3.arch.h': 'Arquitectura · capas de memoria',
@@ -7793,7 +7814,7 @@
       'hero.meta.remote': 'remoto · UE / EUA',
       'hero.stats.designs': 'Projetos nível produção',
       'hero.stats.verified': 'Com código verificado · status honesto',
-      'hero.stats.tests': 'Testes automatizados em P1 + P3 + P4 + P5 + P6',
+      'hero.stats.tests': 'Testes automatizados nos 6 projetos',
       'hero.stats.silent': 'Falhas silenciosas toleradas',
 
       'thesis.eyebrow': '01 · A tese',
@@ -8053,6 +8074,9 @@
       'p2.dec.2b': 'Grafo para estrutura, vetor para chunks não-estruturados. Fusão RRF no retrieval',
       'p2.dec.3a': 'Agente de obsolescência em background',
       'p2.dec.3b': 'Marca entidades cujos embeddings divergem dos documentos fonte — knowledge decay é uma classe de bug real',
+      'p2.status.1': '<strong>Implementado + testado:</strong> InMemoryGraphStore sob um GraphStore Protocol compartilhado (upsert de nós/relações com dedupe, vector_search por cosseno, traverse BFS com <code>max_hops</code>, snapshot, stale_nodes); EntityExtractor com envelope JSON estrito + recuperação em 2 tentativas; GraphRAGEngine que extrai entidades da query → faz vector-match cruzando labels → BFS traverse → funde vector + traversal por RRF → chama um sintetizador que precisa citar ids de nós que o engine conhece; helper <code>reciprocal_rank_fusion</code> (k=60 por padrão, mesma matemática do P6); StalenessAgent com summarizer injetável (padrão: stub determinístico sem LLM). <strong>19 testes pytest passando em ~0.8 s</strong>, sem Neo4j, sem API keys.',
+      'p2.status.2': '<strong>Scaffolded:</strong> o Neo4jClient real sobre o driver de produção (import lazy; o serviço do docker-compose já está declarado), pipeline de ingestão (conectores PDF/HTML → extractor → upsert), frontend react-force-graph + painel de query.',
+      'p2.status.3': 'O sintetizador precisa citar ids de nós que o engine conhece. Quando o LLM alucina um id, o engine descarta silenciosamente de <code>cited_nodes</code> em vez de devolver uma citação falsa. Um teste blinda isso pra que o contrato não quebre em silêncio.',
 
       // Project 03 — PT
       'p3.arch.h': 'Arquitetura · camadas de memória',
@@ -8596,8 +8620,8 @@
   const PROJECTS = [
     { id: '01', x: -2.8, y:  1.05, color: '#8b6dff', label: 'P1 · Self-Healing Pipeline', status: 'live · 22 tests', w: 1.55,
       info: 'LangGraph orchestrates 5 nodes (extract → validate → critique → reflect → synthesize). A Constitutional AI critic scores extractions across 4 principles; failures trigger a bounded reflection loop, and every error is persisted to pgvector episodic memory so the critic gets stricter over time. 22 pytest tests, 15-doc eval corpus, Next.js demo frontend.' },
-    { id: '02', x:  0.0, y:  1.55, color: '#4dd0c2', label: 'P2 · Knowledge OS (GraphRAG)', status: 'scaffolded', w: 1.00,
-      info: 'Hybrid retrieval that joins a Neo4j knowledge graph with vector search. Cypher pattern matching for multi-hop questions, RRF fusion for unstructured chunks, plus a background staleness agent that flags entities whose embeddings drift from their source documents.' },
+    { id: '02', x:  0.0, y:  1.55, color: '#4dd0c2', label: 'P2 · Knowledge OS (GraphRAG)', status: 'graph RAG · 19 tests', w: 1.45,
+      info: 'Hybrid retrieval that joins a graph store with vector search. The GraphRAG engine extracts query entities → vector-matches across labels → BFS-traverses up to max_hops → RRF-fuses both lists → calls a synthesizer that must cite node ids the engine knows about (hallucinated ids are silently dropped — a test pins this). InMemoryGraphStore + entity extractor + staleness agent ship under fakes-only tests; the Neo4j backend stays lazy-imported.' },
     { id: '03', x:  2.8, y:  1.05, color: '#ff9e6d', label: 'P3 · Research Agent (MemGPT)', status: 'core memory · 31 tests', w: 1.45,
       info: 'Autonomous research agent with three-tier memory (working / episodic / semantic). The MemGPT controller auto-archives evictions, assembles cross-tier context, and consolidates facts at session end — all driven by a LangGraph planner → executor → reflector → reporter loop. 31 tests cover every tier + the controller + the graph end-to-end via a ScriptedLLM, with no network and no API keys.' },
     { id: '04', x: -2.8, y: -1.05, color: '#fbbf24', label: 'P4 · Multi-Agent Debate', status: 'debate graph · 18 tests', w: 1.45,

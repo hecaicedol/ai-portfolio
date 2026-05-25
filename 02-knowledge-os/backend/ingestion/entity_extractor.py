@@ -1,6 +1,15 @@
+"""Calls an LLM with a strict system prompt to extract entities and
+relationships from a document chunk. The model is injected (production:
+ChatAnthropic; tests: ScriptedLLM) so the same code path runs without
+API keys."""
+from __future__ import annotations
+
+import json
+import re
 from enum import Enum
 from typing import Any
-from pydantic import BaseModel, Field
+
+from pydantic import BaseModel, Field, ValidationError
 
 
 class EntityType(str, Enum):
@@ -34,13 +43,7 @@ class ExtractedKnowledge(BaseModel):
     relationships: list[Relationship]
 
 
-class EntityExtractor:
-    """
-    Calls Claude with a strict system prompt to extract entities and relationships
-    from a document chunk. Returns ExtractedKnowledge (Pydantic-validated).
-    """
-
-    SYSTEM_PROMPT = """You extract structured knowledge from business documents.
+EXTRACTOR_SYSTEM_PROMPT = """You extract structured knowledge from business documents.
 Return ONLY a JSON object matching this schema:
 {
   "entities": [
@@ -58,11 +61,53 @@ Rules:
 - Use existing ids if the entity is the same person/org/project — do not duplicate.
 - relationship.type = UPPER_SNAKE_CASE verb phrase.
 - Skip entities you cannot ground in the text.
+- Reply with ONE JSON object — no prose before or after.
 """
 
-    def __init__(self, *, model: str, api_key: str) -> None:
+
+def _extract_json(raw: str) -> dict[str, Any]:
+    raw = raw.strip()
+    if raw.startswith("```"):
+        raw = re.sub(r"^```(?:json)?\s*|\s*```\s*$", "", raw)
+    try:
+        return json.loads(raw)
+    except json.JSONDecodeError:
+        match = re.search(r"\{.*\}", raw, flags=re.DOTALL)
+        if not match:
+            raise
+        return json.loads(match.group(0))
+
+
+class EntityExtractor:
+    MAX_JSON_RETRIES: int = 2
+
+    def __init__(self, *, model: Any) -> None:
         self.model = model
-        self.api_key = api_key
 
     async def extract(self, *, document_text: str, document_id: str) -> ExtractedKnowledge:
-        raise NotImplementedError("Call Claude with SYSTEM_PROMPT + document; parse JSON; validate as ExtractedKnowledge")
+        try:
+            from langchain_core.messages import HumanMessage, SystemMessage
+            sys_msg: Any = SystemMessage(content=EXTRACTOR_SYSTEM_PROMPT)
+            user_factory = lambda body: HumanMessage(content=body)
+        except ImportError:  # pragma: no cover
+            sys_msg = {"role": "system", "content": EXTRACTOR_SYSTEM_PROMPT}
+            user_factory = lambda body: {"role": "user", "content": body}
+
+        body = (
+            f"<document_id>{document_id}</document_id>\n\n"
+            f"<text>\n{document_text}\n</text>"
+        )
+
+        last_error: Exception | None = None
+        for _ in range(self.MAX_JSON_RETRIES + 1):
+            response = await self.model.ainvoke([sys_msg, user_factory(body)])
+            try:
+                payload = _extract_json(response.content)
+                return ExtractedKnowledge(**payload)
+            except (json.JSONDecodeError, ValidationError, KeyError, TypeError) as exc:
+                last_error = exc
+                continue
+        raise RuntimeError(
+            f"EntityExtractor: invalid JSON after {self.MAX_JSON_RETRIES + 1} attempts "
+            f"(last error: {last_error})"
+        )

@@ -2,7 +2,8 @@
 
 > A knowledge system that builds a dynamic graph of entities and relationships from heterogeneous documents — and reasons across those connections instead of just retrieving similar chunks.
 
-[![Status](https://img.shields.io/badge/status-scaffolded-blueviolet)]()
+[![Status](https://img.shields.io/badge/status-graph%20RAG%20verified-2ec27e)]()
+[![Tests](https://img.shields.io/badge/tests-19%20passing-2ec27e)]()
 [![Python](https://img.shields.io/badge/python-3.12-blue)]()
 [![Neo4j](https://img.shields.io/badge/graph-Neo4j-008cc1)]()
 [![RAG](https://img.shields.io/badge/RAG-LlamaIndex%20GraphRAG-purple)]()
@@ -144,16 +145,34 @@ Response includes the **reasoning path** — which nodes were traversed and why 
 
 ---
 
-## Build order (if you're picking this up)
+## Status — Slice 1 (graph + GraphRAG verified, no Neo4j, no API keys)
 
-1. `backend/graph/neo4j_client.py` — wrapper over Neo4j Python driver, vector + Cypher
-2. `backend/ingestion/entity_extractor.py` — Claude prompt + Pydantic
-3. `backend/ingestion/pipeline.py` — orchestrates connectors → extractor → Neo4j
-4. `backend/graph/graph_rag.py` — query-time GraphRAG engine
-5. `backend/graph/staleness_agent.py` — background task
-6. `frontend/` — `react-force-graph-2d` viz + query panel
+**Built and tested without external services:**
 
-Each file in this scaffold has docstrings and method signatures matching the architecture above — fill in the bodies.
+| Component | Status | Tests |
+|---|---|---|
+| `InMemoryGraphStore` under a shared `GraphStore` Protocol — upsert nodes/relationships (deduped), cosine vector_search, BFS traverse with `max_hops`, snapshot, stale_nodes | ✅ | 6 |
+| `EntityExtractor` — strict JSON envelope, 2-attempt recovery, code-fence tolerant | ✅ | 3 |
+| `GraphRAGEngine` — extract query entities → vector match → BFS traverse → RRF-fuse the two lists → synthesize with cited node ids; falls back to question embedding when no entities surface | ✅ | 4 |
+| `reciprocal_rank_fusion` — same math as P6, used here to fuse vector + traversal | ✅ | 3 |
+| `StalenessAgent._build_report` — groups stale nodes by label, runs an injected summarizer (defaults to a deterministic no-LLM stub) | ✅ | 3 |
+| `Neo4jClient` — production backend, lazy `from neo4j import …` so dev tests run without it | ⏳ | — |
+| Frontend (`react-force-graph-2d` viz + query panel) | ⏳ | — |
+
+**19 tests passing in 0.8 s.** Run them with `cd backend && .venv/Scripts/python -m pytest tests -q`.
+
+### Design notes uncovered while building
+
+- **GraphRAG is a fusion problem, not a retrieval problem.** Vector search alone retrieves chunks; graph traversal alone retrieves neighbors. Reciprocal Rank Fusion (the same `1/(k+rank)` math that anchors P6) combines them into a single ranking that the synthesizer cites from. A node that surfaces from BOTH retrievers gets boosted above either alone — the test pins this behavior at `k=60`.
+- **The synthesizer must cite ids the engine knows about.** When the LLM hallucinates a node id (`"nonexistent-node"`), the engine silently drops it from `cited_nodes` rather than returning a fake citation. The pinned test makes that explicit so the contract can't silently regress.
+- **`StalenessAgent` works without an LLM.** A `summarizer` callable is injected; the default produces a deterministic "{N} {label}(s) past freshness threshold: {sample}" string. Tests cover both paths so the agent can be deployed in environments without Anthropic credentials.
+
+### Pending (Slice 2)
+
+1. Wire `Neo4jClient` against a real Neo4j 5+ instance (docker-compose already declares the service + APOC plugin).
+2. Ingestion pipeline (PDF/HTML connectors → EntityExtractor → upsert into store).
+3. `react-force-graph-2d` frontend + query panel.
+4. End-to-end run against a real corpus + Claude synthesizer (needs API keys — out of scope for the no-budget run).
 
 ---
 
