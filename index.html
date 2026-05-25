@@ -3502,13 +3502,13 @@
       </div>
       <div class="grad-controls">
         <div class="grad-control-group">
-          <label>loss function</label>
+          <label data-i18n="mathGrad.label.scenario">project scenario</label>
           <select id="grad-fn">
-            <option value="paraboloid" selected>Paraboloid (narrow valley)</option>
-            <option value="bowl">Symmetric bowl</option>
-            <option value="saddle">Saddle point</option>
-            <option value="rosenbrock">Rosenbrock banana</option>
-            <option value="doublewell">Twin valleys (non-convex)</option>
+            <option value="p1_critic" selected>P1 · Critic threshold × max iterations</option>
+            <option value="p6_rrf">P6 · RRF k constant (symmetric bowl)</option>
+            <option value="p4_debate">P4 · agents × rounds (saddle)</option>
+            <option value="p3_rosenbrock">P3 · MemGPT memory thresholds (banana)</option>
+            <option value="p5_planner">P5 · planner greedy vs exhaustive (twin valleys)</option>
           </select>
         </div>
         <div class="grad-control-group">
@@ -3519,11 +3519,12 @@
           </div>
         </div>
         <div class="grad-control-group grad-control-buttons">
-          <button id="grad-pause" class="grad-btn">⏸ pause</button>
-          <button id="grad-reset" class="grad-btn">↺ reset</button>
-          <button id="grad-random" class="grad-btn">🎲 random start</button>
+          <button id="grad-pause" class="grad-btn">⏸ <span data-i18n="mathGrad.btn.pause">pause</span></button>
+          <button id="grad-reset" class="grad-btn">↺ <span data-i18n="mathGrad.btn.reset">reset</span></button>
+          <button id="grad-random" class="grad-btn">🎲 <span data-i18n="mathGrad.btn.random">random start</span></button>
+          <button id="grad-open" class="grad-btn" style="background:var(--accent);color:#fff;border-color:var(--accent)">↗ <span data-i18n="mathGrad.btn.openProject">open this project</span></button>
           <label class="grad-toggle">
-            <input type="checkbox" id="grad-field" checked> vector field
+            <input type="checkbox" id="grad-field" checked> <span data-i18n="mathGrad.toggle.field">vector field</span>
           </label>
         </div>
       </div>
@@ -6466,38 +6467,43 @@
   const W = canvas.width;
   const H = canvas.height;
 
-  // ── Loss-function registry ─────────────────────────────────────────────
+  // ── Loss-function registry — each scenario is framed as a real
+  //    optimization that happens inside one of the portfolio's projects.
   const FUNCTIONS = {
-    paraboloid: {
-      label: 'paraboloid · narrow valley',
-      desc: 'L = ½(x² + 8y²) — anisotropic quadratic. Curvature mismatch makes SGD zigzag in y.',
+    p1_critic: {
+      label: 'P1 · critic threshold × max reflection iterations',
+      desc: 'x = critic pass threshold (0.7–1.0) · y = max reflection iterations (1–3). Narrow valley: raise the threshold and the system needs more iterations to converge — burns tokens. Drop it and you accept worse extractions. The minimum is the cheap-but-good corner.',
+      projectId: '01',
       worldX: 5, worldY: 2.6,
       start: { x: -3.6, y: -2.0 },
       optima: [{ x: 0, y: 0 }],
       loss: (x, y) => 0.5 * (x * x + 8 * y * y),
       grad: (x, y) => ({ gx: x, gy: 8 * y }),
     },
-    bowl: {
-      label: 'symmetric bowl · trivial convex',
-      desc: 'L = ½(x² + y²) — isotropic. Gradient always points straight at the minimum.',
+    p6_rrf: {
+      label: 'P6 · RRF k constant · symmetric bowl',
+      desc: 'x = log(k) · y = vector-vs-keyword weight bias. Convex landscape: any sensible starting point slides smoothly toward the published k ≈ 60. This is the "boring, just works" half of P6 — it lets the auto-optimizer focus its budget on the harder knobs.',
+      projectId: '06',
       worldX: 5, worldY: 2.6,
       start: { x: -3.5, y: -1.8 },
       optima: [{ x: 0, y: 0 }],
       loss: (x, y) => 0.5 * (x * x + y * y),
       grad: (x, y) => ({ gx: x, gy: y }),
     },
-    saddle: {
-      label: 'saddle point · non-convex',
-      desc: 'L = ½(x² − y²) + 2 — saddle at origin. Vanilla SGD escapes slowly; momentum or noise helps.',
+    p4_debate: {
+      label: 'P4 · agents count × rounds · saddle',
+      desc: 'x = agent count · y = round count. Saddle landscape: too few agents and the debate collapses to majority; too many and it never converges. SGD escapes only along y (more rounds), which doesn\'t actually help — this is why P4 fixes 5 agents and 3 rounds.',
+      projectId: '04',
       worldX: 5, worldY: 2.6,
       start: { x: -3.5, y: 0.02 },
-      optima: [], // unbounded below in y
+      optima: [],
       loss: (x, y) => 0.5 * (x * x - y * y) + 4,
       grad: (x, y) => ({ gx: x, gy: -y }),
     },
-    rosenbrock: {
-      label: 'Rosenbrock banana · classic test',
-      desc: 'L = (1−x)² + 10(y−x²)² — curved valley. Even tuned SGD takes hundreds of steps to converge.',
+    p3_rosenbrock: {
+      label: 'P3 · MemGPT working→episodic→semantic thresholds',
+      desc: 'x = working→episodic promotion threshold · y = episodic→semantic consolidation threshold. A curved valley like the Rosenbrock banana: the two thresholds aren\'t independent — the promotion rate dictates how much pressure semantic consolidation actually sees. Hard to tune by hand.',
+      projectId: '03',
       worldX: 2.5, worldY: 1.6,
       start: { x: -1.5, y: 1.0 },
       optima: [{ x: 1, y: 1 }],
@@ -6507,9 +6513,10 @@
         gy: 10 * (y - x * x),
       }),
     },
-    doublewell: {
-      label: 'twin valleys · non-convex',
-      desc: 'L = ⅛(x²−4)² + ½y² — two minima at x = ±2. Final basin depends entirely on initialization.',
+    p5_planner: {
+      label: 'P5 · planner: greedy vs exhaustive · twin valleys',
+      desc: 'x = exploration budget (greedy ↔ exhaustive) · y = workflow size. Two local minima: fast/cheap greedy plans for small DAGs, slow/thorough exhaustive search for big ones. Final basin depends entirely on initialization — same reason P5\'s planner retrieves past DAGs before generating.',
+      projectId: '05',
       worldX: 3.6, worldY: 1.8,
       start: { x: -0.05, y: 1.2 },
       optima: [{ x: -2, y: 0 }, { x: 2, y: 0 }],
@@ -6794,6 +6801,12 @@
     const ry = (Math.random() * 2 - 1) * f.worldY * 0.85;
     resetWeight(rx, ry);
   });
+
+  const openProjectBtn = document.getElementById('grad-open');
+  if (openProjectBtn) openProjectBtn.addEventListener('click', () => {
+    const pid = F().projectId;
+    if (pid && typeof openModal === 'function') openModal(pid);
+  });
 })();
 </script>
 
@@ -6885,9 +6898,15 @@
       'mathGrad.eyebrow': '02b · Mathematics in motion · Gradient descent',
       'mathGrad.h2': 'The same gradient that trains every model in this portfolio',
       'mathGrad.sub': 'Every parameter inside Claude, GPT, and the LangGraph agents you\'ll see below was set by repeating one rule: <code style="color:var(--accent-3);font-family:\'JetBrains Mono\',monospace">w<sub>t+1</sub> = w<sub>t</sub> − η · ∇L(w<sub>t</sub>)</code>. Below, that rule runs live. The colored landscape is a 2-parameter loss surface; the small arrows are its gradient field; the bright dot is a weight vector descending. <strong style="color:var(--text)">Try every control</strong> — they tell different optimization stories.',
-      'mathGrad.tour.1': '<strong>1.</strong> click anywhere on the surface to drop the weight there',
-      'mathGrad.tour.2': '<strong>2.</strong> change the loss function to see SGD\'s behavior on different landscapes',
-      'mathGrad.tour.3': '<strong>3.</strong> raise η too high → watch divergence; too low → glacial convergence',
+      'mathGrad.tour.1': '<strong>1.</strong> pick a project scenario → each one is a real optimization happening inside that project',
+      'mathGrad.tour.2': '<strong>2.</strong> click anywhere on the surface to drop the weight, change η to break things',
+      'mathGrad.tour.3': '<strong>3.</strong> hit "open this project" to read the actual code that lives behind the scenario',
+      'mathGrad.label.scenario': 'project scenario',
+      'mathGrad.btn.pause': 'pause',
+      'mathGrad.btn.reset': 'reset',
+      'mathGrad.btn.random': 'random start',
+      'mathGrad.btn.openProject': 'open this project',
+      'mathGrad.toggle.field': 'vector field',
 
       'mathRRF.eyebrow': '02c · Mathematics in motion · Reciprocal Rank Fusion',
       'mathRRF.h2': 'Two parameter-free lines of math beat a model that costs a million dollars to train',
@@ -7207,9 +7226,15 @@
       'mathGrad.eyebrow': '02b · Matemáticas en movimiento · Descenso de gradiente',
       'mathGrad.h2': 'El mismo gradiente que entrena cada modelo de este portafolio',
       'mathGrad.sub': 'Cada parámetro dentro de Claude, GPT y los agentes LangGraph que verás abajo fue fijado repitiendo una sola regla: <code style="color:var(--accent-3);font-family:\'JetBrains Mono\',monospace">w<sub>t+1</sub> = w<sub>t</sub> − η · ∇L(w<sub>t</sub>)</code>. Abajo, esa regla corre en vivo. El terreno coloreado es una superficie de pérdida de 2 parámetros; las flechas pequeñas son su campo gradiente; el punto brillante es un vector de pesos descendiendo. <strong style="color:var(--text)">Prueba todos los controles</strong> — cada uno cuenta una historia distinta de optimización.',
-      'mathGrad.tour.1': '<strong>1.</strong> clic en cualquier punto de la superficie para soltar el peso ahí',
-      'mathGrad.tour.2': '<strong>2.</strong> cambia la función de pérdida y observa cómo SGD se comporta en cada paisaje',
-      'mathGrad.tour.3': '<strong>3.</strong> sube η demasiado → divergencia; bájalo → convergencia glacial',
+      'mathGrad.tour.1': '<strong>1.</strong> escoge un escenario de proyecto → cada uno es una optimización real dentro de ese proyecto',
+      'mathGrad.tour.2': '<strong>2.</strong> clic en cualquier punto para soltar el peso, mueve η para romper la cosa',
+      'mathGrad.tour.3': '<strong>3.</strong> dale a "abrir este proyecto" para leer el código real detrás del escenario',
+      'mathGrad.label.scenario': 'escenario de proyecto',
+      'mathGrad.btn.pause': 'pausar',
+      'mathGrad.btn.reset': 'reset',
+      'mathGrad.btn.random': 'inicio aleatorio',
+      'mathGrad.btn.openProject': 'abrir este proyecto',
+      'mathGrad.toggle.field': 'campo vectorial',
 
       'mathRRF.eyebrow': '02c · Matemáticas en movimiento · Reciprocal Rank Fusion',
       'mathRRF.h2': 'Dos líneas de matemáticas sin parámetros le ganan a un modelo de un millón de dólares',
@@ -7529,9 +7554,15 @@
       'mathGrad.eyebrow': '02b · Matemática em movimento · Gradiente descendente',
       'mathGrad.h2': 'O mesmo gradiente que treina cada modelo deste portfólio',
       'mathGrad.sub': 'Cada parâmetro dentro do Claude, GPT e dos agentes LangGraph que você verá abaixo foi definido repetindo uma única regra: <code style="color:var(--accent-3);font-family:\'JetBrains Mono\',monospace">w<sub>t+1</sub> = w<sub>t</sub> − η · ∇L(w<sub>t</sub>)</code>. Abaixo, essa regra roda ao vivo. O terreno colorido é uma superfície de perda de 2 parâmetros; as setinhas são seu campo gradiente; o ponto brilhante é um vetor de pesos descendo. <strong style="color:var(--text)">Mexa em cada controle</strong> — cada um conta uma história de otimização diferente.',
-      'mathGrad.tour.1': '<strong>1.</strong> clique em qualquer ponto da superfície para soltar o peso lá',
-      'mathGrad.tour.2': '<strong>2.</strong> troque a função de perda e veja como o SGD se comporta em cada paisagem',
-      'mathGrad.tour.3': '<strong>3.</strong> suba η demais → divergência; abaixe → convergência lenta',
+      'mathGrad.tour.1': '<strong>1.</strong> escolha um cenário de projeto → cada um é uma otimização real dentro daquele projeto',
+      'mathGrad.tour.2': '<strong>2.</strong> clique em qualquer ponto pra soltar o peso, mexa em η pra quebrar tudo',
+      'mathGrad.tour.3': '<strong>3.</strong> clique em "abrir este projeto" pra ler o código real por trás do cenário',
+      'mathGrad.label.scenario': 'cenário de projeto',
+      'mathGrad.btn.pause': 'pausar',
+      'mathGrad.btn.reset': 'reset',
+      'mathGrad.btn.random': 'início aleatório',
+      'mathGrad.btn.openProject': 'abrir este projeto',
+      'mathGrad.toggle.field': 'campo vetorial',
 
       'mathRRF.eyebrow': '02c · Matemática em movimento · Reciprocal Rank Fusion',
       'mathRRF.h2': 'Duas linhas de matemática sem parâmetros ganham de um modelo de um milhão de dólares',
