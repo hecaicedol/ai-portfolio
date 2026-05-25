@@ -3440,12 +3440,12 @@
         <div class="stat-label" data-i18n="hero.stats.designs">Production-grade designs</div>
       </div>
       <div>
-        <div class="stat-num">2<span class="unit">/ 6</span></div>
+        <div class="stat-num">3<span class="unit">/ 6</span></div>
         <div class="stat-label" data-i18n="hero.stats.verified">With verified code · honest status</div>
       </div>
       <div>
-        <div class="stat-num">96</div>
-        <div class="stat-label" data-i18n="hero.stats.tests">Automated tests across P1 + P6</div>
+        <div class="stat-num">127</div>
+        <div class="stat-label" data-i18n="hero.stats.tests">Automated tests across P1 + P3 + P6</div>
       </div>
       <div>
         <div class="stat-num">0</div>
@@ -4257,7 +4257,7 @@
     <article class="project-detail reveal">
       <div class="project-head">
         <span class="project-num">PROJECT 03 / 06</span>
-        <span class="badge badge-scaffold">◐ Scaffolded</span>
+        <span class="badge badge-ok">● Core memory verified</span>
       </div>
       <h3>Autonomous Research Agent · MemGPT pattern</h3>
       <p class="project-subtitle" data-i18n="proj.p3.subtitle">Three-tier memory · Persistent state · Tavily + arXiv + PDF reports</p>
@@ -4275,6 +4275,14 @@
               <tr><td data-i18n="p3.dec.2a">Memory controller as a node</td><td data-i18n="p3.dec.2b">Promotion and eviction are first-class graph nodes — inspectable in Langfuse, not buried in a hook</td></tr>
               <tr><td data-i18n="p3.dec.3a">arXiv + Tavily + scraping</td><td data-i18n="p3.dec.3b">Mix of structured (arXiv API) and unstructured (Tavily) sources reduces source-bias in synthesized reports</td></tr>
             </table>
+          </div>
+          <div class="project-block">
+            <h5 data-i18n="proj.status">Implementation status</h5>
+            <ul>
+              <li data-i18n="p3.status.1"><strong>Implemented + tested:</strong> WorkingMemory (token-budget FIFO), InMemoryEpisodic (cosine-similarity recall + per-session archive), InMemorySemantic (cosine dedupe at 0.92 + source-union on collision), MemGPTController (auto-archives evictions, assembles working+episodic+semantic context, consolidates at session end), and the LangGraph research agent (planner→executor→reflector→reporter) driven by a ScriptedLLM. <strong>31 pytest tests passing in ~1 s</strong>, zero Docker, zero API keys.</li>
+              <li data-i18n="p3.status.2"><strong>Scaffolded:</strong> PostgresEpisodic / PostgresSemantic (pgvector backends — docker-compose service is already declared), Next.js memory viewer, real run against live Tavily + arXiv + Claude.</li>
+              <li data-i18n="p3.status.3">Same lesson as P1: LangGraph forbids node names that collide with state keys (<code>plan</code>, <code>report</code>) — nodes are renamed to verbs. The MemGPT controller, not the tiers, is what proves the architecture.</li>
+            </ul>
           </div>
         </div>
         <div>
@@ -5316,7 +5324,7 @@
 
     '03': {
       num: 'PROJECT 03 / 06',
-      status: { label: '◐ Scaffolded', cls: 'badge-scaffold' },
+      status: { label: '● Core memory verified', cls: 'badge-ok' },
       title: 'Autonomous Research Agent · MemGPT pattern',
       tagline: 'An AI researcher that remembers your work across weeks, not just sessions.',
       pitch: 'Friday evening, your research agent has spent <strong>40 hours mapping the competitive landscape</strong>. Monday morning, you want to continue. A normal chatbot says <em>"what were we talking about?"</em> — context window cleared, work lost. This agent says: <em>"Last Friday we identified seven competitors, ranked their pricing tiers, and I was about to draft the executive summary on tier-2 risks."</em> It does that by externalizing memory in three explicit tiers, just like a human researcher would.',
@@ -6358,6 +6366,13 @@
       pt: 'O P6 (benchmark de RAG agêntico) atualmente vem com <strong>74 testes pytest</strong>, as três slices estão code-complete: in-memory vector store + query rewriter + busca híbrida RRF (slice 1); metrics store + auto-optimizer + avaliador com scorer Ragas injetável (slice 2); backends pgvector / Qdrant / Pinecone + Cohere rerank + enricher contextual da Anthropic + wrapper Ragas (slice 3, todos unit-testados contra mocks). Só falta o run de benchmark real contra os serviços.',
     },
     {
+      id: 'p3_tests',
+      kws: ['p3','research','memgpt','memory','memoria','memória','agent','agente','tier','tiers','controller','controlador','working','episodic','semantic','episódica','episodica','semántica','semantica','semântica'],
+      en: 'P3 (the MemGPT Research Agent) ships <strong>31 pytest tests passing in ~1 second</strong>, covering every memory tier (working / episodic / semantic), the MemGPT controller that promotes and evicts across tiers, the injected web + arXiv tools (no network), the ReportLab generator with text fallback, and the LangGraph research graph (planner → executor → reflector → reporter) driven end-to-end by a ScriptedLLM. The Postgres backends are stubbed and the Next.js memory viewer is the pending slice — no API keys spent.',
+      es: 'P3 (el Research Agent MemGPT) trae <strong>31 tests de pytest pasando en ~1 segundo</strong>, cubriendo cada tier de memoria (working / episódica / semántica), el controlador MemGPT que promueve y desaloja entre tiers, las herramientas web + arXiv inyectadas (sin red), el generador ReportLab con fallback de texto, y el grafo de investigación en LangGraph (planner → executor → reflector → reporter) corrido end-to-end por un ScriptedLLM. Los backends de Postgres quedaron en stub y el memory viewer en Next.js es el slice pendiente — cero API keys gastadas.',
+      pt: 'O P3 (Research Agent MemGPT) vem com <strong>31 testes pytest passando em ~1 segundo</strong>, cobrindo cada tier de memória (working / episódica / semântica), o controlador MemGPT que promove e descarta entre tiers, as ferramentas web + arXiv injetadas (sem rede), o gerador ReportLab com fallback de texto, e o grafo de pesquisa em LangGraph (planner → executor → reflector → reporter) rodado end-to-end por um ScriptedLLM. Os backends Postgres ficaram em stub e o memory viewer em Next.js é a slice pendente — zero API keys gastas.',
+    },
+    {
       id: 'rrf',
       kws: ['rrf','reciprocal','rank','fusion','que es','qué es','what is','o que é','k','60'],
       en: 'Reciprocal Rank Fusion combines multiple ranked retrieval lists into a single ordering by summing 1/(k + rank) across lists, with k≈60. It\'s parameter-free, beats vector-only retrieval on every published benchmark, and is the fusion math behind P2 (graph + vector) and P6 (BM25 + vector + rerank). The live demo at the top of this section lets you play with k and watch the fused list re-sort.',
@@ -6401,10 +6416,10 @@
     },
     {
       id: 'tests_total',
-      kws: ['tests','test','pruebas','testes','total','sumados','total','todos','all','overall'],
-      en: 'Across the whole portfolio: <strong>65 automated tests</strong> currently passing — 22 in P1, 43 in P6. All run in under 5 seconds combined, no Docker, no API keys, no money spent. Every test uses fakes (FakeMemory, ScriptedLLM) so the test suite is the same speed as the linter.',
-      es: 'En todo el portafolio: <strong>65 tests automatizados</strong> pasando actualmente — 22 en P1, 43 en P6. Todos corren en menos de 5 segundos combinados, sin Docker, sin API keys, sin gastar dinero. Cada test usa fakes (FakeMemory, ScriptedLLM) así la suite es tan rápida como el linter.',
-      pt: 'Em todo o portfólio: <strong>65 testes automatizados</strong> passando no momento — 22 no P1, 43 no P6. Todos rodam em menos de 5 segundos combinados, sem Docker, sem API keys, sem gastar dinheiro. Cada teste usa fakes (FakeMemory, ScriptedLLM) então a suite roda na mesma velocidade que o linter.',
+      kws: ['tests','test','pruebas','testes','total','sumados','todos','all','overall'],
+      en: 'Across the whole portfolio: <strong>127 automated tests</strong> currently passing — 22 in P1, 31 in P3, 74 in P6. All run in under 6 seconds combined, no Docker, no API keys, no money spent. Every test uses fakes (FakeMemory, ScriptedLLM, FakeWebSearch) so the test suite is the same speed as the linter.',
+      es: 'En todo el portafolio: <strong>127 tests automatizados</strong> pasando actualmente — 22 en P1, 31 en P3, 74 en P6. Todos corren en menos de 6 segundos combinados, sin Docker, sin API keys, sin gastar dinero. Cada test usa fakes (FakeMemory, ScriptedLLM, FakeWebSearch) así la suite es tan rápida como el linter.',
+      pt: 'Em todo o portfólio: <strong>127 testes automatizados</strong> passando no momento — 22 no P1, 31 no P3, 74 no P6. Todos rodam em menos de 6 segundos combinados, sem Docker, sem API keys, sem gastar dinheiro. Cada teste usa fakes (FakeMemory, ScriptedLLM, FakeWebSearch) então a suite roda na mesma velocidade que o linter.',
     },
   ];
 
@@ -7062,7 +7077,7 @@
       'hero.meta.remote': 'remote-first · EU / USA',
       'hero.stats.designs': 'Production-grade designs',
       'hero.stats.verified': 'With verified code · honest status',
-      'hero.stats.tests': 'Automated tests across P1 + P6',
+      'hero.stats.tests': 'Automated tests across P1 + P3 + P6',
       'hero.stats.silent': 'Silent failures tolerated',
 
       'thesis.eyebrow': '01 · The thesis',
@@ -7332,6 +7347,9 @@
       'p3.dec.2b': 'Promotion and eviction are first-class graph nodes — inspectable in Langfuse, not buried in a hook',
       'p3.dec.3a': 'arXiv + Tavily + scraping',
       'p3.dec.3b': 'Mix of structured (arXiv API) and unstructured (Tavily) sources reduces source-bias in synthesized reports',
+      'p3.status.1': '<strong>Implemented + tested:</strong> WorkingMemory (token-budget FIFO), InMemoryEpisodic (cosine-similarity recall + per-session archive), InMemorySemantic (cosine dedupe at 0.92 + source-union on collision), MemGPTController (auto-archives evictions, assembles working+episodic+semantic context, consolidates at session end), and the LangGraph research agent (planner→executor→reflector→reporter) driven by a ScriptedLLM. <strong>31 pytest tests passing in ~1 s</strong>, zero Docker, zero API keys.',
+      'p3.status.2': '<strong>Scaffolded:</strong> PostgresEpisodic / PostgresSemantic (pgvector backends — docker-compose service is already declared), Next.js memory viewer, real run against live Tavily + arXiv + Claude.',
+      'p3.status.3': 'Same lesson as P1: LangGraph forbids node names that collide with state keys (<code>plan</code>, <code>report</code>) — nodes are renamed to verbs. The MemGPT controller, not the tiers, is what proves the architecture.',
 
       // Project 04
       'p4.arch.h': 'Architecture · debate flow',
@@ -7396,7 +7414,7 @@
       'hero.meta.remote': 'remoto · EU / USA',
       'hero.stats.designs': 'Diseños de nivel producción',
       'hero.stats.verified': 'Con código verificado · estado honesto',
-      'hero.stats.tests': 'Tests automatizados en P1 + P6',
+      'hero.stats.tests': 'Tests automatizados en P1 + P3 + P6',
       'hero.stats.silent': 'Fallos silenciosos tolerados',
 
       'thesis.eyebrow': '01 · La tesis',
@@ -7666,6 +7684,9 @@
       'p3.dec.2b': 'Promoción y desalojo son nodos de grafo de primera clase — inspeccionables en Langfuse, no escondidos en un hook',
       'p3.dec.3a': 'arXiv + Tavily + scraping',
       'p3.dec.3b': 'La mezcla de fuentes estructuradas (API de arXiv) y no estructuradas (Tavily) reduce el sesgo de fuente en los reportes sintetizados',
+      'p3.status.1': '<strong>Implementado + testeado:</strong> WorkingMemory (FIFO con presupuesto de tokens), InMemoryEpisodic (recall por similitud coseno + archivo por sesión), InMemorySemantic (dedupe coseno a 0.92 + unión de fuentes en colisión), MemGPTController (auto-archiva desalojos, ensambla contexto working+episodic+semantic, consolida al cierre de sesión), y el research agent en LangGraph (planner→executor→reflector→reporter) corrido por un ScriptedLLM. <strong>31 tests de pytest pasando en ~1 s</strong>, sin Docker, sin API keys.',
+      'p3.status.2': '<strong>Scaffolded:</strong> PostgresEpisodic / PostgresSemantic (backends pgvector — el servicio ya está declarado en docker-compose), memory viewer en Next.js, corrida real contra Tavily + arXiv + Claude en vivo.',
+      'p3.status.3': 'Misma lección que P1: LangGraph prohíbe nombres de nodos que colisionen con state keys (<code>plan</code>, <code>report</code>) — los nodos pasan a verbos. El controlador MemGPT, no los tiers, es lo que prueba la arquitectura.',
 
       // Project 04 — ES
       'p4.arch.h': 'Arquitectura · flujo de debate',
@@ -7730,7 +7751,7 @@
       'hero.meta.remote': 'remoto · UE / EUA',
       'hero.stats.designs': 'Projetos nível produção',
       'hero.stats.verified': 'Com código verificado · status honesto',
-      'hero.stats.tests': 'Testes automatizados em P1 + P6',
+      'hero.stats.tests': 'Testes automatizados em P1 + P3 + P6',
       'hero.stats.silent': 'Falhas silenciosas toleradas',
 
       'thesis.eyebrow': '01 · A tese',
@@ -8000,6 +8021,9 @@
       'p3.dec.2b': 'Promoção e descarte são nós de grafo de primeira classe — inspecionáveis no Langfuse, não enterrados num hook',
       'p3.dec.3a': 'arXiv + Tavily + scraping',
       'p3.dec.3b': 'A mistura de fontes estruturadas (API do arXiv) e não-estruturadas (Tavily) reduz o viés de fonte nos relatórios sintetizados',
+      'p3.status.1': '<strong>Implementado + testado:</strong> WorkingMemory (FIFO com orçamento de tokens), InMemoryEpisodic (recall por similaridade do cosseno + arquivo por sessão), InMemorySemantic (dedupe por cosseno a 0.92 + união de fontes na colisão), MemGPTController (arquiva descartes automaticamente, monta contexto working+episodic+semantic, consolida ao fim da sessão), e o research agent em LangGraph (planner→executor→reflector→reporter) conduzido por um ScriptedLLM. <strong>31 testes pytest passando em ~1 s</strong>, sem Docker, sem API keys.',
+      'p3.status.2': '<strong>Scaffolded:</strong> PostgresEpisodic / PostgresSemantic (backends pgvector — o serviço já está declarado no docker-compose), memory viewer em Next.js, execução real contra Tavily + arXiv + Claude ao vivo.',
+      'p3.status.3': 'Mesma lição que P1: LangGraph proíbe nomes de nós que colidem com state keys (<code>plan</code>, <code>report</code>) — os nós viram verbos. O controlador MemGPT, e não os tiers, é o que prova a arquitetura.',
 
       // Project 04 — PT
       'p4.arch.h': 'Arquitetura · fluxo do debate',
@@ -8526,8 +8550,8 @@
       info: 'LangGraph orchestrates 5 nodes (extract → validate → critique → reflect → synthesize). A Constitutional AI critic scores extractions across 4 principles; failures trigger a bounded reflection loop, and every error is persisted to pgvector episodic memory so the critic gets stricter over time. 22 pytest tests, 15-doc eval corpus, Next.js demo frontend.' },
     { id: '02', x:  0.0, y:  1.55, color: '#4dd0c2', label: 'P2 · Knowledge OS (GraphRAG)', status: 'scaffolded', w: 1.00,
       info: 'Hybrid retrieval that joins a Neo4j knowledge graph with vector search. Cypher pattern matching for multi-hop questions, RRF fusion for unstructured chunks, plus a background staleness agent that flags entities whose embeddings drift from their source documents.' },
-    { id: '03', x:  2.8, y:  1.05, color: '#ff9e6d', label: 'P3 · Research Agent (MemGPT)', status: 'scaffolded', w: 1.00,
-      info: 'Autonomous research agent with three-tier memory (working / episodic / semantic). A memory controller node handles promotion and eviction explicitly. Pulls from arXiv API + Tavily + scraped web, synthesizes ReportLab PDFs.' },
+    { id: '03', x:  2.8, y:  1.05, color: '#ff9e6d', label: 'P3 · Research Agent (MemGPT)', status: 'core memory · 31 tests', w: 1.45,
+      info: 'Autonomous research agent with three-tier memory (working / episodic / semantic). The MemGPT controller auto-archives evictions, assembles cross-tier context, and consolidates facts at session end — all driven by a LangGraph planner → executor → reflector → reporter loop. 31 tests cover every tier + the controller + the graph end-to-end via a ScriptedLLM, with no network and no API keys.' },
     { id: '04', x: -2.8, y: -1.05, color: '#fbbf24', label: 'P4 · Multi-Agent Debate', status: 'scaffolded', w: 1.00,
       info: 'Society-of-Mind pattern with 5 specialized agents (Optimist, Skeptic, Financial, Risk, Devil\'s Advocate) running a structured 3-round protocol. Per-round cosine similarity of positions measures convergence. WebSocket streaming surfaces each agent\'s reasoning live.' },
     { id: '05', x:  0.0, y: -1.55, color: '#34d399', label: 'P5 · Workflow Engine (MCP)', status: 'scaffolded', w: 1.00,
