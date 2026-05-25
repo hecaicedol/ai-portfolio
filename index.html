@@ -3444,7 +3444,7 @@
         <div class="stat-label" data-i18n="hero.stats.verified">With verified code · honest status</div>
       </div>
       <div>
-        <div class="stat-num">65</div>
+        <div class="stat-num">96</div>
         <div class="stat-label" data-i18n="hero.stats.tests">Automated tests across P1 + P6</div>
       </div>
       <div>
@@ -4438,7 +4438,7 @@
     <article class="project-detail reveal">
       <div class="project-head">
         <span class="project-num">PROJECT 06 / 06</span>
-        <span class="badge badge-live">● Core retrieval verified · 23 tests</span>
+        <span class="badge badge-live">● Code complete · 74 tests · pending keys</span>
       </div>
       <h3>Agentic RAG · Vector DB Benchmark</h3>
       <p class="project-subtitle" data-i18n="proj.p6.subtitle">pgvector vs Qdrant vs Pinecone · Contextual retrieval · RRF hybrid · Auto-optimizer agent</p>
@@ -6353,9 +6353,9 @@
     {
       id: 'p6_tests',
       kws: ['p6','agentic','rag','benchmark','tests','test','pruebas','testes','vector','store','stores'],
-      en: 'P6 (the Agentic RAG benchmark) currently ships <strong>43 pytest tests</strong> across two slices: the in-memory vector store + query rewriter + RRF hybrid search (slice 1), and the in-memory metrics store + auto-optimizer + evaluator with an injectable Ragas scorer (slice 2). Slice 3 — pgvector/Qdrant/Pinecone integration + Cohere rerank — is still scaffolded.',
-      es: 'P6 (el benchmark de RAG agéntico) trae actualmente <strong>43 tests de pytest</strong> en dos slices: el in-memory vector store + query rewriter + búsqueda híbrida RRF (slice 1), y el in-memory metrics store + auto-optimizer + evaluador con scorer Ragas inyectable (slice 2). El Slice 3 — integración pgvector/Qdrant/Pinecone + Cohere rerank — sigue scaffolded.',
-      pt: 'O P6 (benchmark de RAG agêntico) atualmente vem com <strong>43 testes pytest</strong> em duas slices: o in-memory vector store + query rewriter + busca híbrida RRF (slice 1), e o in-memory metrics store + auto-optimizer + avaliador com scorer Ragas injetável (slice 2). A Slice 3 — integração pgvector/Qdrant/Pinecone + Cohere rerank — segue scaffolded.',
+      en: 'P6 (the Agentic RAG benchmark) currently ships <strong>74 pytest tests</strong>, all three slices code-complete: in-memory vector store + query rewriter + RRF hybrid search (slice 1); metrics store + auto-optimizer + evaluator with injectable Ragas scorer (slice 2); pgvector / Qdrant / Pinecone backends + Cohere rerank + Anthropic contextual enricher + Ragas wrapper (slice 3, all unit-tested against mocks). Only thing left is the live benchmark run against real services.',
+      es: 'P6 (el benchmark de RAG agéntico) trae actualmente <strong>74 tests de pytest</strong>, los tres slices están code-complete: in-memory vector store + query rewriter + búsqueda híbrida RRF (slice 1); metrics store + auto-optimizer + evaluador con scorer Ragas inyectable (slice 2); backends pgvector / Qdrant / Pinecone + Cohere rerank + enricher contextual Anthropic + wrapper Ragas (slice 3, todos unit-tested contra mocks). Lo único que falta es el run de benchmark real contra los servicios.',
+      pt: 'O P6 (benchmark de RAG agêntico) atualmente vem com <strong>74 testes pytest</strong>, as três slices estão code-complete: in-memory vector store + query rewriter + busca híbrida RRF (slice 1); metrics store + auto-optimizer + avaliador com scorer Ragas injetável (slice 2); backends pgvector / Qdrant / Pinecone + Cohere rerank + enricher contextual da Anthropic + wrapper Ragas (slice 3, todos unit-testados contra mocks). Só falta o run de benchmark real contra os serviços.',
     },
     {
       id: 'rrf',
@@ -7221,7 +7221,7 @@
       'mathMap.info.03': 'Autonomous research agent with three-tier memory (working / episodic / semantic). A memory controller node handles promotion and eviction explicitly. Pulls from arXiv API + Tavily + scraped web, synthesizes ReportLab PDFs.',
       'mathMap.info.04': 'Society-of-Mind pattern with 5 specialized agents (Optimist, Skeptic, Financial, Risk, Devil\'s Advocate) running a structured 3-round protocol. Per-round cosine similarity of positions measures convergence. WebSocket streaming surfaces each agent\'s reasoning live.',
       'mathMap.info.05': 'Meta-agent generates execution DAGs at runtime from natural-language goals, then executes them via Model Context Protocol servers (GitHub, Jira, Slack, GDrive). Human-in-the-loop approvals on critical nodes; the planner retrieves similar past DAGs before generating.',
-      'mathMap.info.06': 'Three vector stores (pgvector / Qdrant / Pinecone) indexed with the same Anthropic-contextual-retrieval chunks, queried with RRF hybrid of BM25 + vector + Cohere rerank. An auto-optimizer agent watches Ragas scores and tunes parameters when faithfulness drops. 43 tests, in-memory backends for cheap dev.',
+      'mathMap.info.06': 'Three vector stores (pgvector / Qdrant / Pinecone) indexed with the same Anthropic-contextual-retrieval chunks, queried with RRF hybrid of BM25 + vector + Cohere rerank. An auto-optimizer agent watches Ragas scores and tunes parameters when faithfulness drops. 74 tests, all three slices code-complete with mocked integrations.',
 
       'caps.eyebrow': '03 · Capabilities',
       'caps.h2': 'Six axes of production AI',
@@ -7555,7 +7555,7 @@
       'mathMap.info.03': 'Agente de investigación autónomo con memoria de tres capas (working / episodic / semantic). Un nodo controlador de memoria maneja la promoción y desalojo explícitamente. Toma de API de arXiv + Tavily + web scrapeada, sintetiza PDFs con ReportLab.',
       'mathMap.info.04': 'Patrón Society-of-Mind con 5 agentes especializados (Optimista, Escéptico, Financiero, Risk, Abogado del Diablo) corriendo un protocolo estructurado de 3 rondas. Similitud coseno por ronda mide la convergencia. Streaming WebSocket muestra el razonamiento de cada agente en vivo.',
       'mathMap.info.05': 'Meta-agente genera DAGs de ejecución en runtime desde objetivos en lenguaje natural, luego los ejecuta vía servidores Model Context Protocol (GitHub, Jira, Slack, GDrive). Aprobaciones Human-in-the-loop en nodos críticos; el planner recupera DAGs pasados similares antes de generar.',
-      'mathMap.info.06': 'Tres vector stores (pgvector / Qdrant / Pinecone) indexados con los mismos chunks de retrieval contextual de Anthropic, consultados con híbrido RRF de BM25 + vector + rerank Cohere. Un agente auto-optimizer observa los scores de Ragas y ajusta parámetros cuando baja la faithfulness. 43 tests, backends in-memory para dev barato.',
+      'mathMap.info.06': 'Tres vector stores (pgvector / Qdrant / Pinecone) indexados con los mismos chunks de retrieval contextual de Anthropic, consultados con híbrido RRF de BM25 + vector + rerank Cohere. Un agente auto-optimizer observa los scores de Ragas y ajusta parámetros cuando baja la faithfulness. 74 tests, los tres slices están code-complete con integraciones mockeadas.',
 
       'caps.eyebrow': '03 · Capacidades',
       'caps.h2': 'Seis ejes de la IA de producción',
@@ -7889,7 +7889,7 @@
       'mathMap.info.03': 'Agente de pesquisa autônomo com memória de três camadas (working / episodic / semantic). Um nó controlador de memória cuida de promoção e descarte explicitamente. Puxa da API do arXiv + Tavily + web scrapeada, sintetiza PDFs com ReportLab.',
       'mathMap.info.04': 'Padrão Society-of-Mind com 5 agentes especializados (Otimista, Cético, Financeiro, Risk, Advogado do Diabo) rodando um protocolo estruturado de 3 rounds. Similaridade cosseno por round mede a convergência. Streaming WebSocket mostra o raciocínio de cada agente ao vivo.',
       'mathMap.info.05': 'Meta-agente gera DAGs de execução em runtime a partir de objetivos em linguagem natural, e os executa via servidores Model Context Protocol (GitHub, Jira, Slack, GDrive). Aprovações Human-in-the-loop em nós críticos; o planner recupera DAGs passados similares antes de gerar.',
-      'mathMap.info.06': 'Três vector stores (pgvector / Qdrant / Pinecone) indexados com os mesmos chunks de retrieval contextual da Anthropic, consultados com híbrido RRF de BM25 + vetor + rerank Cohere. Um agente auto-optimizer observa os scores do Ragas e ajusta parâmetros quando a faithfulness cai. 43 testes, backends in-memory para dev barato.',
+      'mathMap.info.06': 'Três vector stores (pgvector / Qdrant / Pinecone) indexados com os mesmos chunks de retrieval contextual da Anthropic, consultados com híbrido RRF de BM25 + vetor + rerank Cohere. Um agente auto-optimizer observa os scores do Ragas e ajusta parâmetros quando a faithfulness cai. 74 testes, as três slices estão code-complete com integrações mockadas.',
 
       'caps.eyebrow': '03 · Capacidades',
       'caps.h2': 'Seis eixos da IA de produção',
@@ -8532,8 +8532,8 @@
       info: 'Society-of-Mind pattern with 5 specialized agents (Optimist, Skeptic, Financial, Risk, Devil\'s Advocate) running a structured 3-round protocol. Per-round cosine similarity of positions measures convergence. WebSocket streaming surfaces each agent\'s reasoning live.' },
     { id: '05', x:  0.0, y: -1.55, color: '#34d399', label: 'P5 · Workflow Engine (MCP)', status: 'scaffolded', w: 1.00,
       info: 'Meta-agent generates execution DAGs at runtime from natural-language goals, then executes them via Model Context Protocol servers (GitHub, Jira, Slack, GDrive). Human-in-the-loop approvals on critical nodes; the planner retrieves similar past DAGs before generating.' },
-    { id: '06', x:  2.8, y: -1.05, color: '#ec4899', label: 'P6 · Agentic RAG benchmark', status: 'core verified · 43 tests', w: 1.45,
-      info: 'Three vector stores (pgvector / Qdrant / Pinecone) indexed with the same Anthropic-contextual-retrieval chunks, queried with RRF hybrid of BM25 + vector + Cohere rerank. An auto-optimizer agent watches Ragas scores and tunes parameters when faithfulness drops. 43 tests, in-memory backends for cheap dev.' },
+    { id: '06', x:  2.8, y: -1.05, color: '#ec4899', label: 'P6 · Agentic RAG benchmark', status: 'code complete · 74 tests', w: 1.45,
+      info: 'Three vector stores (pgvector / Qdrant / Pinecone) indexed with the same Anthropic-contextual-retrieval chunks, queried with RRF hybrid of BM25 + vector + Cohere rerank. An auto-optimizer agent watches Ragas scores and tunes parameters when faithfulness drops. 74 tests, all three slices code-complete with mocked integrations.' },
   ];
 
   const toScreen = (wx, wy) => ({

@@ -2,9 +2,9 @@
 
 > Production-grade RAG that indexes the same corpus into pgvector, Qdrant, and Pinecone in parallel — runs hybrid retrieval with contextual enrichment and reranking — and includes an evaluator agent that auto-tunes parameters when quality drops.
 
-[![Status](https://img.shields.io/badge/status-core%20retrieval%20verified-7c5cff)]()
+[![Status](https://img.shields.io/badge/status-code%20complete%20pending%20keys-7c5cff)]()
 [![Python](https://img.shields.io/badge/python-3.12-blue)]()
-[![Tests](https://img.shields.io/badge/tests-23%20passing-success)]()
+[![Tests](https://img.shields.io/badge/tests-74%20passing-success)]()
 [![Pattern](https://img.shields.io/badge/pattern-agentic--rag-7c5cff)]()
 
 ---
@@ -129,21 +129,44 @@ This project answers all three with a single system: identical corpus indexed in
 
 ## Implementation status
 
+All three slices of the backend are now code-complete. Production
+integrations (real Postgres, Qdrant, Pinecone, Cohere, Anthropic) need
+their respective services + API keys to run live, but the code is in
+place and tested against injected mocks — wiring the keys is the only
+thing left between this and a real benchmark run.
+
+### Slice 1 — core retrieval (Q2 milestone)
 | Component | State | Notes |
 |---|---|---|
-| `stores.in_memory_store.InMemoryVectorStore` | ✅ implemented | cosine similarity + BM25 keyword search + metadata filters |
-| `retrieval.query_rewriter.QueryRewriter` | ✅ implemented | model-injectable (testable without API key), 3-attempt JSON-retry, markdown-fence stripping |
-| `retrieval.hybrid_search.HybridSearcher` | ✅ implemented | Reciprocal Rank Fusion across vector + keyword hits, per phrasing |
-| **23 pytest tests** | ✅ passing | runs in ~0.4 s with no Docker / no API keys |
-| `stores.pgvector_store.PgVectorStore` | 🟡 scaffold | needs Postgres |
-| `stores.qdrant_store.QdrantStore` | 🟡 scaffold | needs Qdrant |
-| `stores.pinecone_store.PineconeStore` | 🟡 scaffold | needs Pinecone API key |
-| `ingestion.contextual_enricher.ContextualEnricher` | 🟡 scaffold | needs Claude API key |
-| `retrieval.reranker.CohereReranker` | 🟡 scaffold | needs Cohere API key |
-| `evaluation.evaluator_agent.EvaluatorAgent` | 🟡 scaffold | needs Ragas + Claude |
-| `evaluation.optimizer_agent.OptimizerAgent` | 🟡 partial | per-metric remediation map written, tuning loop pending |
-| `evaluation.metrics_store.MetricsStore` | 🟡 scaffold | needs Postgres |
-| `frontend/` | 🟡 scaffold | recharts benchmark dashboard |
+| `stores.in_memory_store.InMemoryVectorStore` | ✅ implemented | cosine + BM25 + metadata filters |
+| `retrieval.query_rewriter.QueryRewriter` | ✅ implemented | model-injectable, 3-attempt JSON-retry |
+| `retrieval.hybrid_search.HybridSearcher` | ✅ implemented | Reciprocal Rank Fusion across both signals |
+
+### Slice 2 — eval + auto-optimizer
+| Component | State | Notes |
+|---|---|---|
+| `evaluation.metrics_store.InMemoryMetricsStore` | ✅ implemented | per-store rolling windows, tuning-event timeline |
+| `evaluation.optimizer_agent.OptimizerAgent` | ✅ implemented | per-metric remediation map + clamping + revert |
+| `evaluation.evaluator_agent.EvaluatorAgent` | ✅ implemented | injectable Scorer protocol, triggers optimizer on rolling-window regressions |
+
+### Slice 3 — real integrations
+| Component | State | Notes |
+|---|---|---|
+| `stores.pgvector_store.PgVectorStore` | ✅ implemented (mocked tests) | Postgres+pgvector, async psycopg, ivfflat + GIN tsvector indices |
+| `stores.qdrant_store.QdrantStore` | ✅ implemented (mocked tests) | HNSW cosine, MatchText keyword filter |
+| `stores.pinecone_store.PineconeStore` | ✅ implemented (mocked tests) | serverless upsert/query/describe, BM25 sidecar contract |
+| `ingestion.contextual_enricher.ContextualEnricher` | ✅ implemented | Anthropic's chunk-context-prefix technique, batched via asyncio.gather, model-injectable |
+| `retrieval.reranker.CohereReranker` | ✅ implemented (mocked tests) | injectable HTTP client, Cohere v2 API contract |
+| `evaluation.ragas_scorer.RagasScorer` + `FixedScorer` | ✅ implemented | clamps Ragas noise, injectable compute_fn so tests don't import ragas |
+| **74 pytest tests** | ✅ passing | ~1 s total, no Docker, no API keys, no money spent |
+
+### Pending (requires user action / spending)
+| Item | Blocker |
+|---|---|
+| Integration tests against real Postgres / Qdrant / Pinecone | docker-compose up + free-tier accounts |
+| Real benchmark run against the production corpus | Anthropic + Cohere + Voyage API keys (~$1–5 USD) |
+| Frontend recharts dashboard | not yet built |
+| Postgres MetricsStore implementation | DSN + a metrics schema migration |
 
 ## Quick start
 
