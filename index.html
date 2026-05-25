@@ -2967,6 +2967,66 @@
     margin: 0 2px;
     vertical-align: text-top;
   }
+  .rrf-ask-row {
+    margin-top: 14px;
+    padding-top: 14px;
+    border-top: 1px solid rgba(139, 109, 255, 0.18);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .rrf-ask-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--text-faint);
+  }
+  .rrf-ask-input-row {
+    display: flex;
+    gap: 8px;
+  }
+  .rrf-ask-input-row input[type="text"] {
+    flex: 1;
+    background: rgba(10, 12, 18, 0.85);
+    color: var(--text);
+    border: 1px solid rgba(139, 109, 255, 0.25);
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    outline: none;
+    transition: border-color 0.15s, background 0.15s;
+  }
+  .rrf-ask-input-row input[type="text"]:focus {
+    border-color: var(--accent);
+    background: rgba(15, 17, 24, 0.95);
+  }
+  .rrf-ask-input-row input[type="text"]::placeholder {
+    color: var(--text-faint);
+    font-style: italic;
+  }
+  .rrf-ask-suggestions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .rrf-ask-suggestion {
+    background: transparent;
+    border: 1px dashed rgba(139, 109, 255, 0.3);
+    color: var(--text-dim);
+    padding: 5px 11px;
+    border-radius: 999px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    cursor: pointer;
+    transition: border-color 0.15s, color 0.15s, background 0.15s;
+  }
+  .rrf-ask-suggestion:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: rgba(139, 109, 255, 0.08);
+  }
   @keyframes blink {
     0%, 100% { opacity: 1; }
     50% { opacity: 0; }
@@ -3620,6 +3680,17 @@
         </div>
         <div class="rrf-llm-output" id="rrf-llm-output">
           <span class="rrf-llm-placeholder" data-i18n="mathRRF.llm.placeholder">Generated answer will stream here. Click "Synthesize" above to start.</span>
+        </div>
+        <div class="rrf-ask-row">
+          <span class="rrf-ask-label" data-i18n="mathRRF.ask.label">or · ask your own question about the portfolio</span>
+          <div class="rrf-ask-input-row">
+            <input type="text" id="rrf-ask-input" placeholder="how many tests does P1 have? · who built this? · what is RRF?" />
+            <button class="rrf-llm-button" id="rrf-ask-btn">
+              <span data-i18n="mathRRF.ask.button">Ask</span>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+            </button>
+          </div>
+          <div class="rrf-ask-suggestions" id="rrf-ask-suggestions"></div>
         </div>
       </div>
 
@@ -6248,10 +6319,165 @@
     step();
   }
 
+  // Lookup translated answers for the pre-baked corpora; falls back to the
+  // English one baked into CORPORA if no key is set in the dictionary.
+  function corpusAnswer(corpusId) {
+    const key = 'mathRRF.answer.' + corpusId;
+    const lang = (window.__LANG && window.__I18N && window.__I18N[window.__LANG]) ? window.__LANG : 'en';
+    return (window.__I18N && window.__I18N[lang] && window.__I18N[lang][key])
+        || (window.__I18N && window.__I18N.en && window.__I18N.en[key])
+        || CORPORA[corpusId].answer;
+  }
+
   llmButton.addEventListener('click', () => {
-    const answer = CORPORA[currentCorpus].answer;
-    streamAnswer(answer);
+    streamAnswer(corpusAnswer(currentCorpus));
   });
+
+  // ── Q&A: user types a question, we match against a small handcrafted bank
+  //    of portfolio FAQs (keyword scoring, since there's no real LLM here).
+  const QA_BANK = [
+    {
+      id: 'who',
+      kws: ['who','quien','quién','quem','built','built','author','autor','autora','heims','caicedo','about','sobre'],
+      en: 'This portfolio was built by <strong>Heims Andrés Caicedo Lopera</strong> — pure-mathematics undergraduate at Universidad Nacional de Colombia, Bogotá, training as an AI Engineer. The thesis: a system that can\'t detect its own failure isn\'t intelligent, just confident. Reach me at hecaicedol@unal.edu.co.',
+      es: 'Este portafolio lo construyó <strong>Heims Andrés Caicedo Lopera</strong> — estudiante de matemáticas puras en la Universidad Nacional de Colombia, Bogotá, formándose como AI Engineer. La tesis: un sistema que no puede detectar su propia falla no es inteligente, solo está confiado. Escríbeme a hecaicedol@unal.edu.co.',
+      pt: 'Este portfólio foi construído por <strong>Heims Andrés Caicedo Lopera</strong> — graduando em matemática pura na Universidad Nacional de Colombia, Bogotá, em formação como AI Engineer. A tese: um sistema que não consegue detectar sua própria falha não é inteligente, apenas confiante. Me chame em hecaicedol@unal.edu.co.',
+    },
+    {
+      id: 'p1_tests',
+      kws: ['p1','self-healing','tests','test','pruebas','testes','pytest','cuantos','cuántos','quantos','how many','self','healing'],
+      en: 'P1 (the Self-Healing Pipeline) ships <strong>22 pytest tests</strong> passing in ~3 seconds. They cover the validator paths, agent JSON-retry behavior, all four LangGraph orchestrator paths (pass-on-first, self-heal, exhaust-max-iter, streaming) and the FastAPI HTTP layer via TestClient. No Docker, no API key, no cost to run.',
+      es: 'P1 (el Self-Healing Pipeline) trae <strong>22 tests de pytest</strong> pasando en ~3 segundos. Cubren los caminos del validator, el JSON-retry de los agentes, los cuatro caminos del orchestrator LangGraph (pasa en el primero, auto-cura, max iter, streaming) y la capa HTTP FastAPI vía TestClient. Sin Docker, sin API key, sin costo para correrlos.',
+      pt: 'O P1 (Self-Healing Pipeline) vem com <strong>22 testes pytest</strong> passando em ~3 segundos. Cobrem os caminhos do validator, o JSON-retry dos agentes, os quatro caminhos do orchestrator LangGraph (passa no primeiro, auto-cura, max iter, streaming) e a camada HTTP FastAPI via TestClient. Sem Docker, sem API key, sem custo pra rodar.',
+    },
+    {
+      id: 'p6_tests',
+      kws: ['p6','agentic','rag','benchmark','tests','test','pruebas','testes','vector','store','stores'],
+      en: 'P6 (the Agentic RAG benchmark) currently ships <strong>43 pytest tests</strong> across two slices: the in-memory vector store + query rewriter + RRF hybrid search (slice 1), and the in-memory metrics store + auto-optimizer + evaluator with an injectable Ragas scorer (slice 2). Slice 3 — pgvector/Qdrant/Pinecone integration + Cohere rerank — is still scaffolded.',
+      es: 'P6 (el benchmark de RAG agéntico) trae actualmente <strong>43 tests de pytest</strong> en dos slices: el in-memory vector store + query rewriter + búsqueda híbrida RRF (slice 1), y el in-memory metrics store + auto-optimizer + evaluador con scorer Ragas inyectable (slice 2). El Slice 3 — integración pgvector/Qdrant/Pinecone + Cohere rerank — sigue scaffolded.',
+      pt: 'O P6 (benchmark de RAG agêntico) atualmente vem com <strong>43 testes pytest</strong> em duas slices: o in-memory vector store + query rewriter + busca híbrida RRF (slice 1), e o in-memory metrics store + auto-optimizer + avaliador com scorer Ragas injetável (slice 2). A Slice 3 — integração pgvector/Qdrant/Pinecone + Cohere rerank — segue scaffolded.',
+    },
+    {
+      id: 'rrf',
+      kws: ['rrf','reciprocal','rank','fusion','que es','qué es','what is','o que é','k','60'],
+      en: 'Reciprocal Rank Fusion combines multiple ranked retrieval lists into a single ordering by summing 1/(k + rank) across lists, with k≈60. It\'s parameter-free, beats vector-only retrieval on every published benchmark, and is the fusion math behind P2 (graph + vector) and P6 (BM25 + vector + rerank). The live demo at the top of this section lets you play with k and watch the fused list re-sort.',
+      es: 'Reciprocal Rank Fusion combina varias listas rankeadas de retrieval en un solo ordenamiento sumando 1/(k + rank) sobre las listas, con k≈60. Es sin parámetros, le gana al retrieval vector-only en todos los benchmarks publicados, y es la matemática de fusión detrás de P2 (grafo + vector) y P6 (BM25 + vector + rerank). El demo en vivo arriba de esta sección te deja jugar con k y ver la lista fusionada re-ordenarse.',
+      pt: 'Reciprocal Rank Fusion combina várias listas ranqueadas de retrieval em uma única ordem somando 1/(k + rank) sobre as listas, com k≈60. É sem parâmetros, ganha do retrieval vector-only em todos os benchmarks publicados, e é a matemática de fusão por trás do P2 (grafo + vetor) e do P6 (BM25 + vetor + rerank). O demo ao vivo no topo desta seção deixa você brincar com k e ver a lista fundida re-ordenar.',
+    },
+    {
+      id: 'attention',
+      kws: ['attention','atención','atenção','transformer','softmax','qkv','q','k','v','self-attention'],
+      en: 'Self-attention is the operation behind every modern LLM: <code>Attention(Q,K,V) = softmax(QK<sup>T</sup>/√d<sub>k</sub>) · V</code>. The √d<sub>k</sub> normalization is the unsung hero — without it, the softmax saturates as embedding dimension grows, gradients vanish, and the model can\'t learn. Section 02d has the interactive visualization.',
+      es: 'Self-attention es la operación detrás de cada LLM moderno: <code>Attention(Q,K,V) = softmax(QK<sup>T</sup>/√d<sub>k</sub>) · V</code>. La normalización √d<sub>k</sub> es el héroe olvidado — sin ella, el softmax se satura cuando la dimensión de embedding crece, los gradientes se desvanecen, y el modelo no puede aprender. La sección 02d tiene la visualización interactiva.',
+      pt: 'Self-attention é a operação por trás de cada LLM moderno: <code>Attention(Q,K,V) = softmax(QK<sup>T</sup>/√d<sub>k</sub>) · V</code>. A normalização √d<sub>k</sub> é o herói esquecido — sem ela, o softmax satura quando a dimensão do embedding cresce, os gradientes desaparecem, e o modelo não aprende. A seção 02d tem a visualização interativa.',
+    },
+    {
+      id: 'pgvector',
+      kws: ['pgvector','postgres','postgresql','vector','vector store','vectores','vetores','memoria','memória','embedding','embeddings'],
+      en: 'pgvector is a Postgres extension that turns regular tables into vector stores. The portfolio reuses it across three projects: as P1\'s episodic memory layer (errors persisted with 1024-dim Voyage embeddings), as one of three benchmarked vector DBs in P6, and as P3\'s session-memory backend. One infrastructure footprint, three different consumers.',
+      es: 'pgvector es una extensión de Postgres que convierte tablas normales en vector stores. El portafolio lo reutiliza en tres proyectos: como capa de memoria episódica de P1 (errores persistidos con embeddings Voyage de 1024 dim), como uno de los tres vector DBs benchmarked en P6, y como backend de memoria de sesión de P3. Una sola huella de infraestructura, tres consumidores distintos.',
+      pt: 'pgvector é uma extensão do Postgres que transforma tabelas comuns em vector stores. O portfólio o reutiliza em três projetos: como camada de memória episódica do P1 (erros persistidos com embeddings Voyage de 1024 dim), como um dos três vector DBs do benchmark do P6, e como backend de memória de sessão do P3. Uma única pegada de infra, três consumidores diferentes.',
+    },
+    {
+      id: 'critic',
+      kws: ['critic','crítico','constitucional','constitutional','p1','principios','principles','principios','self-healing'],
+      en: 'P1\'s critic is grounded in Constitutional AI. Instead of asking the unscoreable "is this answer good?", it scores against four explicit principles (completeness, accuracy, consistency, format) on 0–1 each. The overall score must clear 0.85; failures trigger a bounded reflection loop. Before scoring, the critic retrieves the 3 most-similar past errors from pgvector — so it learns failure patterns over time.',
+      es: 'El crítico de P1 está aterrizado en Constitutional AI. En vez de preguntar el no-puntuable "¿es buena esta respuesta?", puntúa contra cuatro principios explícitos (completeness, accuracy, consistency, format) en 0–1 cada uno. El score global debe pasar 0.85; los fallos disparan un loop de reflexión acotado. Antes de puntuar, el crítico recupera los 3 errores pasados más parecidos de pgvector — así aprende patrones de fallo con el tiempo.',
+      pt: 'O crítico do P1 é fundamentado em Constitutional AI. Em vez de perguntar o impossível-de-pontuar "essa resposta é boa?", ele pontua contra quatro princípios explícitos (completeness, accuracy, consistency, format) de 0 a 1 cada. O score geral precisa passar de 0.85; falhas disparam um loop de reflexão limitado. Antes de pontuar, o crítico recupera os 3 erros passados mais similares do pgvector — assim aprende padrões de falha ao longo do tempo.',
+    },
+    {
+      id: 'gradient',
+      kws: ['gradient','gradiente','descent','descenso','descida','sgd','optimizer','optimizador','optimizador'],
+      en: 'Every parameter inside every model in this portfolio was set by repeating one rule: <code>w<sub>t+1</sub> = w<sub>t</sub> − η · ∇L(w<sub>t</sub>)</code>. Pick a learning rate η too high, you diverge; too low, you converge glacially. Section 02b runs that rule live on five different "loss landscapes" — each framed as a real optimization happening inside one of the projects.',
+      es: 'Cada parámetro dentro de cada modelo de este portafolio fue fijado repitiendo una regla: <code>w<sub>t+1</sub> = w<sub>t</sub> − η · ∇L(w<sub>t</sub>)</code>. Si el learning rate η es muy alto, divergencia; muy bajo, convergencia glacial. La sección 02b corre esa regla en vivo sobre cinco "paisajes de pérdida" distintos — cada uno enmarcado como una optimización real dentro de uno de los proyectos.',
+      pt: 'Cada parâmetro dentro de cada modelo deste portfólio foi definido repetindo uma regra: <code>w<sub>t+1</sub> = w<sub>t</sub> − η · ∇L(w<sub>t</sub>)</code>. Se o learning rate η for alto demais, diverge; baixo demais, converge lento. A seção 02b roda essa regra ao vivo em cinco "paisagens de perda" diferentes — cada uma enquadrada como uma otimização real dentro de um dos projetos.',
+    },
+    {
+      id: 'hire',
+      kws: ['hire','contratar','contratacion','contratación','contratar','job','trabajo','rol','role','remote','remoto'],
+      en: 'Open to AI Engineer / AI Platform Engineer roles, remote-first, willing to relocate. Available Q2 2026 onward. Will do a paid take-home, a 30-min system-design call (free), or a code walkthrough of any project here — before any commitment. Reach out at <strong>hecaicedol@unal.edu.co</strong>; typical reply within 24h.',
+      es: 'Abierto a roles de AI Engineer / AI Platform Engineer, remoto-first, dispuesto a reubicarme. Disponible desde Q2 2026. Hago un take-home pagado, una llamada de system-design de 30 min (gratis), o un code walkthrough de cualquier proyecto aquí — antes de cualquier compromiso. Escríbeme a <strong>hecaicedol@unal.edu.co</strong>; respuesta típica en 24h.',
+      pt: 'Aberto a vagas de AI Engineer / AI Platform Engineer, remoto-first, disposto a me mudar. Disponível a partir do Q2 2026. Faço um take-home pago, uma call de system design de 30 min (grátis), ou um code walkthrough de qualquer projeto daqui — antes de qualquer compromisso. Escreva pra <strong>hecaicedol@unal.edu.co</strong>; resposta típica em 24h.',
+    },
+    {
+      id: 'tests_total',
+      kws: ['tests','test','pruebas','testes','total','sumados','total','todos','all','overall'],
+      en: 'Across the whole portfolio: <strong>65 automated tests</strong> currently passing — 22 in P1, 43 in P6. All run in under 5 seconds combined, no Docker, no API keys, no money spent. Every test uses fakes (FakeMemory, ScriptedLLM) so the test suite is the same speed as the linter.',
+      es: 'En todo el portafolio: <strong>65 tests automatizados</strong> pasando actualmente — 22 en P1, 43 en P6. Todos corren en menos de 5 segundos combinados, sin Docker, sin API keys, sin gastar dinero. Cada test usa fakes (FakeMemory, ScriptedLLM) así la suite es tan rápida como el linter.',
+      pt: 'Em todo o portfólio: <strong>65 testes automatizados</strong> passando no momento — 22 no P1, 43 no P6. Todos rodam em menos de 5 segundos combinados, sem Docker, sem API keys, sem gastar dinheiro. Cada teste usa fakes (FakeMemory, ScriptedLLM) então a suite roda na mesma velocidade que o linter.',
+    },
+  ];
+
+  function answerInLang(qa) {
+    const lang = (window.__LANG && qa[window.__LANG]) ? window.__LANG : 'en';
+    return qa[lang];
+  }
+
+  function tokenize(text) {
+    return text.toLowerCase()
+      .replace(/[^\p{L}\p{N}\s]/gu, ' ')
+      .split(/\s+/)
+      .filter(t => t.length >= 2);
+  }
+
+  function matchQA(question) {
+    const tokens = tokenize(question);
+    if (tokens.length === 0) return null;
+    let best = null, bestScore = 0;
+    for (const qa of QA_BANK) {
+      let score = 0;
+      for (const kw of qa.kws) {
+        if (tokens.includes(kw.toLowerCase())) score += 1;
+      }
+      if (score > bestScore) { bestScore = score; best = qa; }
+    }
+    return bestScore >= 1 ? best : null;
+  }
+
+  function renderSuggestions() {
+    const wrap = document.getElementById('rrf-ask-suggestions');
+    if (!wrap) return;
+    const lang = (window.__LANG || 'en');
+    const samples = lang === 'es'
+      ? ['¿quién construyó esto?', '¿cuántos tests tiene P1?', '¿qué es RRF?', '¿cómo funciona el crítico de P1?']
+      : lang === 'pt'
+        ? ['quem construiu isso?', 'quantos testes o P1 tem?', 'o que é RRF?', 'como o crítico do P1 funciona?']
+        : ['who built this?', 'how many tests does P1 have?', 'what is RRF?', 'how does P1\'s critic work?'];
+    wrap.innerHTML = samples.map(s => `<button type="button" class="rrf-ask-suggestion">${s}</button>`).join('');
+    wrap.querySelectorAll('.rrf-ask-suggestion').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.getElementById('rrf-ask-input').value = btn.textContent;
+        handleAsk();
+      });
+    });
+  }
+
+  function handleAsk() {
+    const input = document.getElementById('rrf-ask-input');
+    const q = (input.value || '').trim();
+    if (!q) return;
+    const match = matchQA(q);
+    if (match) {
+      streamAnswer(answerInLang(match));
+    } else {
+      const fallback = (window.__LANG === 'es')
+        ? 'No encontré esa respuesta en mi base. Prueba con: ¿quién construyó esto?, ¿cuántos tests tiene P1?, ¿qué es RRF?, ¿cómo funciona la atención?, ¿qué es pgvector?, ¿cómo te contrato?'
+        : (window.__LANG === 'pt')
+          ? 'Não achei essa resposta na minha base. Tente: quem construiu isso?, quantos testes o P1 tem?, o que é RRF?, como funciona a atenção?, o que é pgvector?, como te contrato?'
+          : 'I don\'t have that one in my bank. Try: who built this?, how many tests does P1 have?, what is RRF?, how does attention work?, what is pgvector?, how do I hire you?';
+      streamAnswer(fallback);
+    }
+  }
+
+  const askBtn = document.getElementById('rrf-ask-btn');
+  const askInput = document.getElementById('rrf-ask-input');
+  if (askBtn) askBtn.addEventListener('click', handleAsk);
+  if (askInput) askInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') { e.preventDefault(); handleAsk(); }
+  });
+
+  renderSuggestions();
+  window.addEventListener('langchange', renderSuggestions);
 
   // ── Control wiring ─────────────────────────────────────────────────────
   document.getElementById('rrf-dataset-group').addEventListener('click', (e) => {
@@ -6935,6 +7161,12 @@
       'mathRRF.llm.sub': 'The retrieved chunks above become the context window for a fake LLM call. The response below is precomputed per corpus but the streaming is real.',
       'mathRRF.llm.button': 'Synthesize answer',
       'mathRRF.llm.placeholder': 'Generated answer will stream here. Click "Synthesize" above to start.',
+      'mathRRF.ask.label': 'or · ask your own question about the portfolio',
+      'mathRRF.ask.button': 'Ask',
+      'mathRRF.answer.ai': 'Reciprocal Rank Fusion (RRF) combines multiple ranked retrieval lists into a single ordering by summing 1 / (k + rank) across lists, with k≈60 [§B]. Vector-only retrieval misses exact-keyword matches (acronyms, product codes) while BM25 alone misses semantic paraphrases [§D]. In hybrid RAG pipelines, fusing both signals before passing to a generator like RAG (Lewis 2020) yields a ~14-point recall@10 lift on standard IR benchmarks [§E].',
+      'mathRRF.answer.code': 'For bounded-concurrency async batching in Python, wrap your coroutines in an asyncio.Semaphore that caps the in-flight count, then pass the wrapped coroutines to asyncio.gather() [§A, §B]. For more structured guarantees (cancellation propagation, error scoping) use anyio task groups with a CapacityLimiter [§D] — they Trio-style nurseries make the concurrency contract explicit. concurrent.futures.ThreadPoolExecutor is a different tool: it\'s for I/O-blocking sync code, not async coroutines [§C].',
+      'mathRRF.answer.ecom': 'Within the $200 budget the strongest active-noise-cancelling options are the Soundcore Space Q45 ($149) and the Anker Soundcore Life Q30 ($79) [§C, §D]. Both ship hybrid ANC with multi-band noise rejection; the Q45 adds LDAC for higher-bitrate Bluetooth. The Sony WH-1000XM4 and Bose QC35 II are usually considered the gold standard for ANC, but they sit above the price ceiling [§A, §B].',
+      'mathRRF.answer.support': 'Duplicate subscription charges most often come from one of two causes [§A]: an attempted charge that returned as "pending" on your bank then re-cleared after the retry window, or an auto-renewal that overlapped with a manual subscription update during the pre-charge window [§C]. If a second charge has actually settled (not just authorized), open a refund request from your billing dashboard — pro-rated refunds clear within 5–7 business days [§B].',
       'mathRRF.explanation': '<strong>Why this matters for production RAG.</strong> Vector embeddings are good at <em>semantic</em> matches: "auth token" ≈ "JWT" ≈ "session credential". BM25 is good at <em>exact</em> matches: product codes, version numbers, acronyms, the names of internal services. Real corpora need both. The rest of the field snaps to vector-only — which is why so many RAG demos work on a curated wiki and fall over on real enterprise documents. Choosing the fusion math is the actual engineering decision.',
 
       'mathAttn.eyebrow': '02d · Mathematics in motion · Self-attention',
@@ -7263,6 +7495,12 @@
       'mathRRF.llm.sub': 'Los chunks recuperados de arriba se convierten en la ventana de contexto de una llamada LLM simulada. La respuesta de abajo está precalculada por corpus, pero el streaming es real.',
       'mathRRF.llm.button': 'Sintetizar respuesta',
       'mathRRF.llm.placeholder': 'La respuesta generada se va a transmitir aquí. Haz clic en "Sintetizar" arriba para empezar.',
+      'mathRRF.ask.label': 'o · hazme tu propia pregunta sobre el portafolio',
+      'mathRRF.ask.button': 'Preguntar',
+      'mathRRF.answer.ai': 'Reciprocal Rank Fusion (RRF) combina varias listas rankeadas de retrieval en un solo ordenamiento sumando 1 / (k + rank) sobre las listas, con k≈60 [§B]. El retrieval vector-only se pierde los matches de keyword exactos (acrónimos, códigos de producto) mientras que BM25 solo se pierde las paráfrasis semánticas [§D]. En pipelines RAG híbridos, fusionar ambas señales antes de pasar al generador como RAG (Lewis 2020) da un lift de ~14 puntos en recall@10 sobre los benchmarks IR estándar [§E].',
+      'mathRRF.answer.code': 'Para batching async con concurrencia acotada en Python, envuelve tus corrutinas en un asyncio.Semaphore que limite las que están en vuelo, luego pasa las envueltas a asyncio.gather() [§A, §B]. Para garantías más estructuradas (propagación de cancelación, scoping de errores) usa anyio task groups con un CapacityLimiter [§D] — los nurseries estilo Trio hacen el contrato de concurrencia explícito. concurrent.futures.ThreadPoolExecutor es otra herramienta: es para código sync I/O-blocking, no para corrutinas async [§C].',
+      'mathRRF.answer.ecom': 'Dentro del presupuesto de $200, las opciones más fuertes con noise-cancelling activo son los Soundcore Space Q45 ($149) y los Anker Soundcore Life Q30 ($79) [§C, §D]. Ambos traen ANC híbrido con rechazo de ruido multi-banda; los Q45 agregan LDAC para Bluetooth de mayor bitrate. Los Sony WH-1000XM4 y Bose QC35 II usualmente son el gold standard del ANC, pero quedan por encima del techo de precio [§A, §B].',
+      'mathRRF.answer.support': 'Los cargos duplicados de suscripción suelen venir de una de dos causas [§A]: un intento de cargo que volvió como "pendiente" en tu banco y se concretó después del retry window, o una auto-renovación que se solapó con una actualización manual de suscripción durante la ventana pre-cargo [§C]. Si un segundo cargo de verdad se asentó (no solo autorizado), abre una solicitud de reembolso desde tu billing dashboard — los reembolsos pro-rata se procesan en 5-7 días hábiles [§B].',
       'mathRRF.explanation': '<strong>Por qué esto importa en RAG de producción.</strong> Los embeddings vectoriales son buenos en matches <em>semánticos</em>: "token de auth" ≈ "JWT" ≈ "credencial de sesión". BM25 es bueno en matches <em>exactos</em>: códigos de producto, números de versión, acrónimos, nombres de servicios internos. Los corpus reales necesitan ambos. El resto del campo cae en vector-only — por eso tantos demos de RAG funcionan sobre una wiki curada y se caen sobre documentos empresariales reales. Decidir las matemáticas de fusión es la decisión de ingeniería real.',
 
       'mathAttn.eyebrow': '02d · Matemáticas en movimiento · Self-attention',
@@ -7591,6 +7829,12 @@
       'mathRRF.llm.sub': 'Os chunks recuperados acima viram a janela de contexto de uma chamada LLM simulada. A resposta abaixo é pré-calculada por corpus, mas o streaming é real.',
       'mathRRF.llm.button': 'Sintetizar resposta',
       'mathRRF.llm.placeholder': 'A resposta gerada vai aparecer aqui em streaming. Clique em "Sintetizar" acima para começar.',
+      'mathRRF.ask.label': 'ou · me faça sua própria pergunta sobre o portfólio',
+      'mathRRF.ask.button': 'Perguntar',
+      'mathRRF.answer.ai': 'Reciprocal Rank Fusion (RRF) combina várias listas ranqueadas de retrieval em uma única ordem somando 1 / (k + rank) sobre as listas, com k≈60 [§B]. O retrieval vector-only perde os matches exatos de keyword (siglas, códigos de produto) enquanto o BM25 sozinho perde as paráfrases semânticas [§D]. Em pipelines RAG híbridos, fundir os dois sinais antes de passar pro gerador como o RAG (Lewis 2020) dá um lift de ~14 pontos no recall@10 sobre os benchmarks IR padrão [§E].',
+      'mathRRF.answer.code': 'Para batching async com concorrência limitada em Python, envolva suas corrotinas num asyncio.Semaphore que limite as que estão em voo, e passe as envolvidas pro asyncio.gather() [§A, §B]. Pra garantias mais estruturadas (propagação de cancelamento, scoping de erros) use anyio task groups com um CapacityLimiter [§D] — as nurseries estilo Trio deixam o contrato de concorrência explícito. concurrent.futures.ThreadPoolExecutor é outra ferramenta: é pra código sync I/O-blocking, não pra corrotinas async [§C].',
+      'mathRRF.answer.ecom': 'Dentro do orçamento de $200, as opções mais fortes com noise-cancelling ativo são os Soundcore Space Q45 ($149) e os Anker Soundcore Life Q30 ($79) [§C, §D]. Ambos trazem ANC híbrido com rejeição de ruído multi-banda; os Q45 adicionam LDAC pra Bluetooth de bitrate maior. Os Sony WH-1000XM4 e Bose QC35 II são considerados o gold standard do ANC, mas ficam acima do teto de preço [§A, §B].',
+      'mathRRF.answer.support': 'Cobranças duplicadas de assinatura geralmente vêm de uma de duas causas [§A]: uma tentativa de cobrança que voltou como "pendente" no seu banco e se concretizou depois do retry window, ou uma auto-renovação que sobrepôs uma atualização manual de assinatura durante a janela pré-cobrança [§C]. Se uma segunda cobrança realmente caiu (não só autorizada), abra um pedido de reembolso pelo seu billing dashboard — reembolsos pro-rata caem em 5-7 dias úteis [§B].',
       'mathRRF.explanation': '<strong>Por que isso importa em RAG de produção.</strong> Embeddings vetoriais são bons em matches <em>semânticos</em>: "token de auth" ≈ "JWT" ≈ "credencial de sessão". BM25 é bom em matches <em>exatos</em>: códigos de produto, números de versão, siglas, nomes de serviços internos. Corpora reais precisam dos dois. O resto do campo cai em vector-only — por isso tantos demos de RAG funcionam numa wiki curada e quebram em documentos empresariais reais. Decidir a matemática da fusão é a decisão de engenharia real.',
 
       'mathAttn.eyebrow': '02d · Matemática em movimento · Self-attention',
