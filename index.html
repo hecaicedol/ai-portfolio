@@ -1579,6 +1579,36 @@
   }
   .modal-analogy p strong { color: var(--accent-2); font-style: normal; font-weight: 600; }
 
+  /* "Why a company cares" — explicit business framing */
+  .modal-business {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+  }
+  @media (max-width: 880px) { .modal-business { grid-template-columns: 1fr; } }
+  .biz-card {
+    background: var(--bg-elev);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 18px 20px;
+  }
+  .biz-card h6 {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--accent-2);
+    text-transform: uppercase;
+    letter-spacing: 0.13em;
+    margin: 0 0 10px 0;
+  }
+  .biz-card p { font-size: 14px; color: var(--text); line-height: 1.55; margin: 0; }
+  .biz-card p strong { color: var(--accent-2); font-weight: 600; }
+  .biz-card-hire {
+    background: linear-gradient(180deg, rgba(139, 109, 255, 0.10), rgba(139, 109, 255, 0.02));
+    border-color: rgba(139, 109, 255, 0.35);
+  }
+  .biz-card-hire h6 { color: var(--accent); }
+  .biz-card-hire p strong { color: var(--accent); }
+
   /* Expandable engineering section */
   .modal-engineering {
     background: var(--bg-elev);
@@ -5264,6 +5294,11 @@
         impact: 'Catches roughly <strong>11% more failures</strong> than a naive extractor. Costs about <strong>18% more in tokens</strong> per document — a small price for stopping wrong payments downstream. Every run is traced in Langfuse, so audit trails are automatic.'
       },
       analogy: 'Think of it as a <strong>small accounting team that knows when to double-check itself</strong>. Without a reviewer, an intern submits the first answer that "looks right." With a senior reviewer reading every submission against a checklist — and a notebook of mistakes the team has seen before — the same intern produces output you can trust. That\'s the pipeline.',
+      business: {
+        who: 'Any team running an AI extractor in a high-stakes pipeline — accounts payable, KYC, claims processing, contract review, healthcare intake. Anyone where a confident wrong answer flows straight to a downstream system that acts on it.',
+        value: 'At 5,000 invoices/month, catching <strong>~11% more errors</strong> = ~50 wrong payments prevented. At an average ticket of <strong>$4,000</strong>, that\'s roughly <strong>$200K/month avoided</strong> in chargebacks, re-billing, and trust loss with vendors.',
+        hire: 'Anyone can call an LLM. This shows I think about the failure modes that ship to production — critic loops, episodic memory of past errors, hard caps on retry spend. The work between "demo" and "production" is the work this hire understands.'
+      },
       arch: '<svg viewBox="0 0 600 320" xmlns="http://www.w3.org/2000/svg"><defs><marker id="m1arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#8b6dff"/></marker><marker id="m1ret" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#ff9e6d"/></marker></defs><g font-family="JetBrains Mono, monospace" font-size="12" fill="#e8eaf0"><rect x="30" y="30" width="120" height="44" rx="8" fill="#0f1118" stroke="#2a3142"/><text x="90" y="58" text-anchor="middle">Extractor</text><rect x="220" y="30" width="120" height="44" rx="8" fill="#0f1118" stroke="#2a3142"/><text x="280" y="58" text-anchor="middle">Validator</text><rect x="410" y="30" width="120" height="44" rx="8" fill="#0f1118" stroke="#8b6dff" stroke-width="2"/><text x="470" y="58" text-anchor="middle" fill="#8b6dff">Critic</text><rect x="410" y="150" width="120" height="44" rx="8" fill="#0f1118" stroke="#fbbf24"/><text x="470" y="178" text-anchor="middle" fill="#fbbf24">Reflection</text><rect x="220" y="260" width="120" height="44" rx="8" fill="#0f1118" stroke="#34d399" stroke-width="2"/><text x="280" y="288" text-anchor="middle" fill="#34d399">Synthesizer</text><rect x="30" y="150" width="120" height="44" rx="8" fill="#0f1118" stroke="#4dd0c2" stroke-dasharray="3,3"/><text x="90" y="172" text-anchor="middle" fill="#4dd0c2" font-size="11">Episodic Mem</text><text x="90" y="187" text-anchor="middle" fill="#5a5f6e" font-size="10">(pgvector)</text><line x1="150" y1="52" x2="218" y2="52" stroke="#8b6dff" stroke-width="2" marker-end="url(#m1arr)"/><line x1="340" y1="52" x2="408" y2="52" stroke="#8b6dff" stroke-width="2" marker-end="url(#m1arr)"/><line x1="470" y1="74" x2="470" y2="148" stroke="#ff9e6d" stroke-width="2" stroke-dasharray="5,3" marker-end="url(#m1ret)"/><line x1="408" y1="172" x2="155" y2="60" stroke="#ff9e6d" stroke-width="2" stroke-dasharray="5,3" marker-end="url(#m1ret)" fill="none"/><text x="285" y="105" fill="#ff9e6d" font-size="11" text-anchor="middle">reflect (≤3 cycles)</text><line x1="410" y1="172" x2="155" y2="172" stroke="#4dd0c2" stroke-width="1.5" stroke-dasharray="2,2" marker-end="url(#m1arr)"/><text x="285" y="166" fill="#4dd0c2" font-size="11" text-anchor="middle">consults · writes errors</text><line x1="470" y1="74" x2="340" y2="260" stroke="#34d399" stroke-width="2" marker-end="url(#m1arr)"/><text x="430" y="165" fill="#34d399" font-size="11">pass ≥ 0.85</text></g></svg>',
       decisions: [
         ['LangGraph orchestration', 'Explicit, inspectable state transitions — debug-friendly when something fails in production'],
@@ -5309,6 +5344,11 @@
             impact: 'Detecta aproximadamente <strong>11% más fallos</strong> que un extractor ingenuo. Cuesta cerca de <strong>18% más en tokens</strong> por documento — un precio bajo para frenar pagos equivocados aguas abajo. Cada run queda trazado en Langfuse, así que la pista de auditoría es automática.'
           },
           analogy: 'Pensalo como un <strong>equipo pequeño de contabilidad que sabe cuándo revisarse a sí mismo</strong>. Sin revisor, un practicante entrega la primera respuesta que "se ve bien". Con un revisor senior leyendo cada entrega contra un checklist — y un cuaderno de errores ya vistos — el mismo practicante produce salida confiable. Eso es el pipeline.',
+          business: {
+            who: 'Cualquier equipo que corre un extractor de IA en un pipeline crítico — cuentas a pagar, KYC, procesamiento de reclamos, revisión de contratos, intake de pacientes. Cualquier lugar donde una respuesta confiada pero equivocada fluye directo a un sistema downstream que actúa sobre ella.',
+            value: 'A 5.000 facturas/mes, detectar <strong>~11% más errores</strong> = ~50 pagos equivocados prevenidos. A un ticket promedio de <strong>USD 4.000</strong>, son aproximadamente <strong>USD 200K/mes evitados</strong> en chargebacks, re-facturación y pérdida de confianza con proveedores.',
+            hire: 'Cualquiera puede llamar a un LLM. Esto muestra que pienso en los modos de fallo que llegan a producción — loops de crítico, memoria episódica de errores pasados, topes duros al gasto de retries. El trabajo entre "demo" y "producción" es el trabajo que esta contratación entiende.'
+          },
           decisions: [
             ['Orquestación LangGraph', 'Transiciones de estado explícitas e inspeccionables — fáciles de debuggear cuando algo falla en producción'],
             ['Crítico estilo Constitutional AI', 'Puntaje por principio (4 ejes) da feedback accionable a la siguiente iteración'],
@@ -5341,6 +5381,11 @@
             impact: 'Captura aproximadamente <strong>11% mais falhas</strong> que um extrator ingênuo. Custa cerca de <strong>18% mais em tokens</strong> por documento — preço pequeno para evitar pagamentos errados a jusante. Cada execução é rastreada no Langfuse, então a trilha de auditoria é automática.'
           },
           analogy: 'Pense nele como um <strong>pequeno time de contabilidade que sabe quando se conferir</strong>. Sem revisor, um estagiário entrega a primeira resposta que "parece certa". Com um revisor sênior lendo cada entrega contra um checklist — e um caderno de erros já vistos — o mesmo estagiário produz saída confiável. Esse é o pipeline.',
+          business: {
+            who: 'Qualquer time rodando um extrator de IA num pipeline crítico — contas a pagar, KYC, processamento de sinistros, revisão de contratos, intake de pacientes. Qualquer lugar onde uma resposta confiante mas errada flui direto pra um sistema downstream que age sobre ela.',
+            value: 'A 5.000 faturas/mês, capturar <strong>~11% mais erros</strong> = ~50 pagamentos errados prevenidos. A um ticket médio de <strong>USD 4.000</strong>, são cerca de <strong>USD 200K/mês evitados</strong> em chargebacks, re-faturamento e perda de confiança com fornecedores.',
+            hire: 'Qualquer um chama um LLM. Isto mostra que penso nos modos de falha que chegam à produção — loops de crítico, memória episódica de erros passados, limites rígidos no gasto de retries. O trabalho entre "demo" e "produção" é o trabalho que esse contratado entende.'
+          },
           decisions: [
             ['Orquestração LangGraph', 'Transições de estado explícitas e inspecionáveis — fáceis de debugar quando algo falha em produção'],
             ['Crítico estilo Constitutional AI', 'Pontuação por princípio (4 eixos) dá feedback acionável para a próxima iteração'],
@@ -5378,6 +5423,11 @@
         impact: 'Multi-hop question accuracy lifts from <strong>~0.56</strong> (vector-only) to a target of <strong>≥ 0.78</strong>. Onboarding goes from "read the wiki" to "ask the wiki." Compliance audits drop from days to minutes.'
       },
       analogy: 'Imagine your company\'s knowledge as a <strong>Wikipedia, but every person, project, and concept is hyperlinked to every other one</strong>. Ask any question and the system follows the trail — it doesn\'t just find a matching paragraph, it walks from "API team" to "individuals" to "their past projects" to find the answer. Regular search reads. This system <strong>reasons</strong>.',
+      business: {
+        who: 'Engineering and product orgs where knowledge is fragmented across Notion + Jira + Slack + Drive. Typically <strong>200+ employees</strong>, where "who knows X?" is a daily blocker and onboarding is measured in weeks.',
+        value: 'Cuts time-to-answer on cross-team questions from <strong>"30 min reading 5 docs"</strong> to <strong>"10-second query."</strong> For a 50-engineer team asking 3 such questions a day, that\'s roughly <strong>75 engineer-hours/week reclaimed</strong>.',
+        hire: 'Vector search alone fails on real enterprise questions ("who used to work on X?"). This hire ships retrieval that handles multi-hop reasoning — the layer most LLM apps fake their way through with prompt engineering.'
+      },
       arch: '<svg viewBox="0 0 600 280" xmlns="http://www.w3.org/2000/svg"><defs><marker id="m2arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#4dd0c2"/></marker></defs><g font-family="JetBrains Mono, monospace" font-size="12" fill="#e8eaf0"><rect x="30" y="30" width="120" height="44" rx="8" fill="#0f1118" stroke="#2a3142"/><text x="90" y="58" text-anchor="middle">Documents</text><rect x="220" y="30" width="120" height="44" rx="8" fill="#0f1118" stroke="#8b6dff"/><text x="280" y="52" text-anchor="middle" fill="#8b6dff" font-size="11">Entity LLM</text><text x="280" y="68" text-anchor="middle" fill="#5a5f6e" font-size="10">extracts triples</text><rect x="410" y="30" width="120" height="44" rx="8" fill="#0f1118" stroke="#fbbf24"/><text x="470" y="58" text-anchor="middle" fill="#fbbf24">Triples</text><rect x="220" y="120" width="120" height="44" rx="8" fill="#0f1118" stroke="#4dd0c2"/><text x="280" y="148" text-anchor="middle" fill="#4dd0c2">Neo4j graph</text><rect x="410" y="120" width="120" height="44" rx="8" fill="#0f1118" stroke="#4dd0c2"/><text x="470" y="148" text-anchor="middle" fill="#4dd0c2">Vector store</text><rect x="220" y="210" width="310" height="44" rx="8" fill="#0f1118" stroke="#34d399" stroke-width="2"/><text x="375" y="238" text-anchor="middle" fill="#34d399">Hybrid retriever · RRF fusion</text><line x1="150" y1="52" x2="218" y2="52" stroke="#4dd0c2" stroke-width="2" marker-end="url(#m2arr)"/><line x1="340" y1="52" x2="408" y2="52" stroke="#4dd0c2" stroke-width="2" marker-end="url(#m2arr)"/><line x1="470" y1="74" x2="470" y2="118" stroke="#4dd0c2" stroke-width="2" marker-end="url(#m2arr)"/><line x1="280" y1="74" x2="280" y2="118" stroke="#4dd0c2" stroke-width="2" marker-end="url(#m2arr)"/><line x1="280" y1="164" x2="280" y2="208" stroke="#34d399" stroke-width="2" marker-end="url(#m2arr)"/><line x1="470" y1="164" x2="470" y2="208" stroke="#34d399" stroke-width="2" marker-end="url(#m2arr)"/></g></svg>',
       decisions: [
         ['Neo4j over Postgres CTEs', 'Path queries and Cypher\'s pattern matching are native; recursive CTEs become unreadable at depth 3+'],
@@ -5421,6 +5471,11 @@
             impact: 'La exactitud en preguntas multi-hop sube de <strong>~0.56</strong> (solo vectores) a una meta de <strong>≥ 0.78</strong>. El onboarding pasa de "leé la wiki" a "preguntale a la wiki". Las auditorías de compliance bajan de días a minutos.'
           },
           analogy: 'Imaginá el conocimiento de tu empresa como una <strong>Wikipedia, pero cada persona, proyecto y concepto está hiperlinkeado a todos los demás</strong>. Hacés cualquier pregunta y el sistema sigue el rastro — no busca un párrafo similar, camina de "equipo de API" a "personas" a "sus proyectos pasados" para encontrar la respuesta. La búsqueda normal lee. Este sistema <strong>razona</strong>.',
+          business: {
+            who: 'Orgs de ingeniería y producto donde el conocimiento está fragmentado en Notion + Jira + Slack + Drive. Típicamente más de <strong>200 empleados</strong>, donde "¿quién sabe X?" es un blocker diario y el onboarding se mide en semanas.',
+            value: 'Reduce el tiempo de respuesta a preguntas cross-equipo de <strong>"30 min leyendo 5 docs"</strong> a <strong>"consulta de 10 segundos"</strong>. Para un equipo de 50 ingenieros haciendo 3 preguntas así por día, son aproximadamente <strong>75 horas-ingeniero/semana recuperadas</strong>.',
+            hire: 'La búsqueda vectorial sola falla en las preguntas reales de empresa ("¿quién trabajó antes en X?"). Esta contratación entrega retrieval que maneja razonamiento multi-hop — la capa que la mayoría de las apps de LLM tapa con prompt engineering.'
+          },
           decisions: [
             ['Neo4j sobre CTEs recursivas de Postgres', 'Las consultas de caminos y el pattern matching de Cypher son nativos; las CTEs recursivas se vuelven ilegibles a profundidad 3+'],
             ['Híbrido: grafo + vector', 'El grafo captura estructura; los vectores capturan lenguaje no estructurado. RRF fusiona ambos en tiempo de consulta'],
@@ -5451,6 +5506,11 @@
             impact: 'A acurácia em perguntas multi-hop sobe de <strong>~0.56</strong> (só vetores) para uma meta de <strong>≥ 0.78</strong>. O onboarding muda de "leia a wiki" para "pergunte à wiki". Auditorias de compliance caem de dias para minutos.'
           },
           analogy: 'Imagine o conhecimento da sua empresa como uma <strong>Wikipedia, mas toda pessoa, projeto e conceito está hiperlinkado a todos os outros</strong>. Pergunte qualquer coisa e o sistema segue o rastro — ele não acha um parágrafo parecido, ele caminha de "time de API" para "pessoas" para "projetos passados delas" para chegar à resposta. Busca comum lê. Este sistema <strong>raciocina</strong>.',
+          business: {
+            who: 'Orgs de engenharia e produto onde o conhecimento está fragmentado em Notion + Jira + Slack + Drive. Tipicamente <strong>200+ funcionários</strong>, onde "quem sabe X?" é um bloqueio diário e onboarding se mede em semanas.',
+            value: 'Reduz o tempo de resposta para perguntas cross-time de <strong>"30 min lendo 5 docs"</strong> para <strong>"query de 10 segundos"</strong>. Para um time de 50 engenheiros fazendo 3 perguntas dessas por dia, são cerca de <strong>75 horas-engenheiro/semana recuperadas</strong>.',
+            hire: 'Busca vetorial sozinha falha nas perguntas reais de empresa ("quem trabalhou antes em X?"). Esse contratado entrega retrieval que aguenta raciocínio multi-hop — a camada que a maioria dos apps LLM disfarça com prompt engineering.'
+          },
           decisions: [
             ['Neo4j em vez de CTEs recursivas no Postgres', 'Queries de caminhos e pattern matching do Cypher são nativos; CTEs recursivas ficam ilegíveis em profundidade 3+'],
             ['Híbrido: grafo + vetor', 'O grafo captura estrutura; vetores capturam linguagem não estruturada. RRF funde os dois em tempo de query'],
@@ -5486,6 +5546,11 @@
         impact: 'Cross-session research becomes possible. Reports cite real sources, not hallucinations. Knowledge survives team turnover because it lives outside the model, in your database.'
       },
       analogy: 'A human researcher doesn\'t memorize every word. They <strong>take notes</strong>, file them by topic, and re-read them when they need context. Working memory = what\'s on the desk. Episodic = the filing cabinet. Semantic = the textbook of permanent facts. This agent does exactly that — explicitly, observably, controllably.',
+      business: {
+        who: 'Research-heavy teams: M&A diligence, competitive intelligence, scientific R&D, legal discovery. Anywhere context has to survive longer than one chat session.',
+        value: 'Lets one analyst run <strong>4–5 parallel deep-research threads</strong> instead of 1, because the agent picks up where it left off days later. At analyst rates (~$80–150/hr) the throughput multiplier pays for the stack in <strong>under a month</strong>.',
+        hire: 'Memory architecture is the <strong>#1 technical question in 2026 AI interviews</strong>. Someone who built MemGPT tiers from scratch (not via an SDK) can debug your production memory failures — and design new ones for your domain.'
+      },
       arch: '<svg viewBox="0 0 600 260" xmlns="http://www.w3.org/2000/svg"><g font-family="JetBrains Mono, monospace" font-size="12"><rect x="60" y="30" width="480" height="50" rx="10" fill="#0f1118" stroke="#8b6dff" stroke-width="2"/><text x="300" y="60" text-anchor="middle" fill="#8b6dff" font-size="13">WORKING · in context · ~8k tokens</text><rect x="100" y="110" width="400" height="50" rx="10" fill="#0f1118" stroke="#4dd0c2" stroke-width="2"/><text x="300" y="140" text-anchor="middle" fill="#4dd0c2" font-size="13">EPISODIC · pgvector · last 200 runs</text><rect x="140" y="190" width="320" height="50" rx="10" fill="#0f1118" stroke="#34d399" stroke-width="2"/><text x="300" y="220" text-anchor="middle" fill="#34d399" font-size="13">SEMANTIC · consolidated facts</text><text x="555" y="60" fill="#5a5f6e" font-size="11">↑ promote</text><text x="555" y="140" fill="#5a5f6e" font-size="11">↑ archive</text><text x="555" y="220" fill="#5a5f6e" font-size="11">consolidate</text></g></svg>',
       decisions: [
         ['Three tiers, not one big context', 'Cost scales linearly with context. Tiered retrieval keeps working memory cheap'],
@@ -5529,6 +5594,11 @@
             impact: 'La investigación entre sesiones se vuelve posible. Los reportes citan fuentes reales, no alucinaciones. El conocimiento sobrevive a la rotación del equipo porque vive afuera del modelo, en tu base de datos.'
           },
           analogy: 'Un investigador humano no memoriza cada palabra. <strong>Toma notas</strong>, las archiva por tema, y las relee cuando necesita contexto. Memoria de trabajo = lo que está sobre el escritorio. Episódica = el archivador. Semántica = el manual de hechos permanentes. Este agente hace exactamente eso — explícita, observable, controlablemente.',
+          business: {
+            who: 'Equipos pesados en investigación: due diligence de M&A, inteligencia competitiva, I+D científico, discovery legal. Cualquier lugar donde el contexto tiene que sobrevivir más que una sola sesión de chat.',
+            value: 'Permite que un solo analista corra <strong>4–5 hilos de investigación profunda en paralelo</strong> en vez de 1, porque el agente retoma donde quedó días después. A tarifas de analista (~USD 80–150/hr) el multiplicador de throughput paga el stack en <strong>menos de un mes</strong>.',
+            hire: 'La arquitectura de memoria es la <strong>pregunta técnica #1 en entrevistas de AI en 2026</strong>. Alguien que construyó capas MemGPT desde cero (no vía SDK) puede debuggear tus fallos de memoria en producción — y diseñar nuevos para tu dominio.'
+          },
           decisions: [
             ['Tres capas, no un solo contexto gigante', 'El costo escala lineal con el contexto. La recuperación por capas mantiene la memoria de trabajo barata'],
             ['Controlador de memoria como nodo del grafo', 'Promoción y desalojo son inspeccionables en Langfuse, no escondidos en hooks privados'],
@@ -5559,6 +5629,11 @@
             impact: 'Pesquisa entre sessões fica possível. Relatórios citam fontes reais, não alucinações. O conhecimento sobrevive à rotatividade do time porque vive fora do modelo, no seu banco.'
           },
           analogy: 'Um pesquisador humano não memoriza cada palavra. <strong>Faz anotações</strong>, arquiva por tópico, e relê quando precisa de contexto. Memória de trabalho = o que está sobre a mesa. Episódica = o arquivo. Semântica = o manual de fatos permanentes. Este agente faz exatamente isso — de forma explícita, observável, controlável.',
+          business: {
+            who: 'Times pesados em pesquisa: due diligence de M&A, inteligência competitiva, P&D científico, discovery legal. Qualquer lugar onde o contexto precisa sobreviver mais que uma única sessão de chat.',
+            value: 'Permite que um único analista rode <strong>4–5 threads de pesquisa profunda em paralelo</strong> em vez de 1, porque o agente retoma onde parou dias depois. A taxas de analista (~USD 80–150/hr) o multiplicador de throughput paga o stack em <strong>menos de um mês</strong>.',
+            hire: 'A arquitetura de memória é a <strong>pergunta técnica #1 em entrevistas de AI em 2026</strong>. Alguém que construiu camadas MemGPT do zero (não via SDK) consegue debugar suas falhas de memória em produção — e desenhar novas para seu domínio.'
+          },
           decisions: [
             ['Três camadas, não um contexto gigante', 'O custo escala linear com o contexto. Recuperação por camadas mantém a memória de trabalho barata'],
             ['Controlador de memória como nó do grafo', 'Promoção e descarte são inspecionáveis no Langfuse, não escondidos em hooks privados'],
@@ -5594,6 +5669,11 @@
         impact: 'Executives get a balanced recommendation they can defend. Hidden risks surface early — typically <strong>8+ distinct considerations per decision</strong>, vs ~3 from a single-agent CoT chain.'
       },
       analogy: 'A <strong>board meeting with five different domain experts</strong>, except it runs in 60 seconds and you can replay any decision later. The cost: ~5× a single agent call. The benefit: dissent that single-agent reasoning systematically hides.',
+      business: {
+        who: 'Strategy and exec teams making <strong>$1M+ decisions</strong> — product launches, M&A, market expansion, vendor selection — where one missed risk costs more than a year of AI ops.',
+        value: 'Surfaces <strong>8+ distinct considerations per decision</strong> vs ~3 from a single analyst chain. For a board cycle running 12 strategic calls per quarter, that\'s <strong>weeks of rework avoided</strong> + faster consensus + auditable transcripts.',
+        hire: 'Multi-agent orchestration is the layer above prompt-engineering. This hire builds systems that replace expensive committees — not chatbots that wrap one model behind a UI.'
+      },
       arch: '<svg viewBox="0 0 600 280" xmlns="http://www.w3.org/2000/svg"><g font-family="JetBrains Mono, monospace" font-size="11" fill="#e8eaf0"><rect x="30" y="20" width="100" height="36" rx="8" fill="#0f1118" stroke="#34d399"/><text x="80" y="44" text-anchor="middle" fill="#34d399">Optimist</text><rect x="146" y="20" width="100" height="36" rx="8" fill="#0f1118" stroke="#ff5a72"/><text x="196" y="44" text-anchor="middle" fill="#ff5a72">Skeptic</text><rect x="262" y="20" width="100" height="36" rx="8" fill="#0f1118" stroke="#fbbf24"/><text x="312" y="44" text-anchor="middle" fill="#fbbf24">Financial</text><rect x="378" y="20" width="100" height="36" rx="8" fill="#0f1118" stroke="#4dd0c2"/><text x="428" y="44" text-anchor="middle" fill="#4dd0c2">Risk</text><rect x="494" y="20" width="100" height="36" rx="8" fill="#0f1118" stroke="#8b6dff"/><text x="544" y="44" text-anchor="middle" fill="#8b6dff">Devil</text><rect x="80" y="100" width="440" height="40" rx="8" fill="#0f1118" stroke="#2a3142"/><text x="300" y="124" text-anchor="middle" fill="#8b91a3">Round 1 · opening positions (parallel)</text><rect x="80" y="155" width="440" height="40" rx="8" fill="#0f1118" stroke="#2a3142"/><text x="300" y="179" text-anchor="middle" fill="#8b91a3">Round 2 · rebuttals + consensus score</text><rect x="80" y="210" width="440" height="44" rx="8" fill="#0f1118" stroke="#8b6dff" stroke-width="2"/><text x="300" y="237" text-anchor="middle" fill="#8b6dff" font-size="12">Round 3 · executive synthesis</text></g></svg>',
       decisions: [
         ['5 roles, not 2', 'Two-agent debate collapses to majority. Five distinct roles, three structured rounds, prevent groupthink'],
@@ -5638,6 +5718,11 @@
             impact: 'Los ejecutivos reciben una recomendación balanceada y defendible. Los riesgos ocultos emergen temprano — típicamente <strong>8+ consideraciones distintas por decisión</strong>, vs ~3 de una cadena CoT con un solo agente.'
           },
           analogy: 'Una <strong>reunión de directorio con cinco expertos de dominios distintos</strong>, salvo que corre en 60 segundos y podés replayear cualquier decisión después. Costo: ~5× una llamada a un solo agente. Beneficio: el disenso que el razonamiento de un solo agente esconde sistemáticamente.',
+          business: {
+            who: 'Equipos de estrategia y ejecutivos tomando decisiones de <strong>USD 1M+</strong> — lanzamientos de producto, M&A, expansión de mercado, selección de vendor — donde un riesgo no detectado cuesta más que un año de operaciones de AI.',
+            value: 'Saca a la luz <strong>8+ consideraciones distintas por decisión</strong> vs ~3 de una cadena de un solo analista. Para un ciclo de directorio con 12 decisiones estratégicas por trimestre, son <strong>semanas de retrabajo evitadas</strong> + consenso más rápido + transcripciones auditables.',
+            hire: 'La orquestación multi-agente es la capa arriba del prompt-engineering. Esta contratación construye sistemas que reemplazan comités caros — no chatbots que envuelven un solo modelo detrás de una UI.'
+          },
           decisions: [
             ['5 roles, no 2', 'El debate a dos agentes colapsa a mayoría. Cinco roles distintos, tres rondas estructuradas, previenen el groupthink'],
             ['Tres rondas, no abiertas', 'Apertura · refutación · síntesis. Acotado, medible, evita el ida-y-vuelta infinito'],
@@ -5669,6 +5754,11 @@
             impact: 'Os executivos recebem uma recomendação balanceada e defensável. Riscos ocultos aparecem cedo — tipicamente <strong>8+ considerações distintas por decisão</strong>, vs ~3 de uma chain-of-thought de agente único.'
           },
           analogy: 'Uma <strong>reunião do conselho com cinco especialistas de domínios diferentes</strong>, só que roda em 60 segundos e dá pra repassar qualquer decisão depois. Custo: ~5× uma chamada de agente único. Benefício: o dissenso que o raciocínio de um agente sozinho esconde sistematicamente.',
+          business: {
+            who: 'Times de estratégia e executivos tomando decisões de <strong>USD 1M+</strong> — lançamentos de produto, M&A, expansão de mercado, escolha de vendor — onde um risco não detectado custa mais que um ano de operação de AI.',
+            value: 'Traz à tona <strong>8+ considerações distintas por decisão</strong> vs ~3 de uma cadeia de analista único. Para um ciclo de conselho com 12 decisões estratégicas por trimestre, são <strong>semanas de retrabalho evitadas</strong> + consenso mais rápido + transcrições auditáveis.',
+            hire: 'Orquestração multi-agente é a camada acima do prompt-engineering. Esse contratado constrói sistemas que substituem comitês caros — não chatbots que envolvem um único modelo atrás de uma UI.'
+          },
           decisions: [
             ['5 papéis, não 2', 'Debate de dois agentes colapsa para maioria. Cinco papéis distintos, três rodadas estruturadas, evitam o groupthink'],
             ['Três rodadas, não abertas', 'Abertura · refutação · síntese. Limitado, mensurável, evita o vai-e-vem infinito'],
@@ -5705,6 +5795,11 @@
         impact: 'Workflow change cost drops by an order of magnitude. Business users describe outcomes; the system builds the steps. Auditable approval trails. <strong>Target: ≥ 70%</strong> of generated workflows are valid first-pass, ≥ 90% after one reflection cycle.'
       },
       analogy: 'A <strong>smart office assistant who can write their own job description and then execute it</strong>. You describe the goal in one sentence; they design the steps, check past examples, and ask you for sign-off on anything that can\'t be undone.',
+      business: {
+        who: 'Ops, IT, security, and support teams — anyone whose workflows live in Notion runbooks and break the day a tool changes its API. Typically post-Series-B companies with 20+ internal processes.',
+        value: 'Reduces "engineering time to wire up a new workflow" from a <strong>sprint (~80 hours)</strong> to <strong>a sentence</strong>. For a 50-person ops team adding 1 new workflow/week, that\'s roughly <strong>4,000 engineer-hours/year reclaimed</strong>.',
+        hire: 'MCP is becoming the standard tool-integration protocol — companies that adopt it early own the integration layer for years. This hire already built a planner + executor + HITL gate against it.'
+      },
       arch: '<svg viewBox="0 0 600 260" xmlns="http://www.w3.org/2000/svg"><defs><marker id="m5arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#8b6dff"/></marker></defs><g font-family="JetBrains Mono, monospace" font-size="12" fill="#e8eaf0"><rect x="30" y="30" width="120" height="44" rx="8" fill="#0f1118" stroke="#8b6dff" stroke-width="2"/><text x="90" y="58" text-anchor="middle" fill="#8b6dff">Meta-agent</text><rect x="220" y="30" width="120" height="44" rx="8" fill="#0f1118" stroke="#fbbf24"/><text x="280" y="58" text-anchor="middle" fill="#fbbf24">DAG plan</text><rect x="410" y="30" width="120" height="44" rx="8" fill="#0f1118" stroke="#4dd0c2"/><text x="470" y="58" text-anchor="middle" fill="#4dd0c2">Executor</text><rect x="30" y="120" width="110" height="40" rx="8" fill="#0f1118" stroke="#2a3142"/><text x="85" y="145" text-anchor="middle" font-size="11">MCP · GitHub</text><rect x="160" y="120" width="110" height="40" rx="8" fill="#0f1118" stroke="#2a3142"/><text x="215" y="145" text-anchor="middle" font-size="11">MCP · Jira</text><rect x="290" y="120" width="110" height="40" rx="8" fill="#0f1118" stroke="#2a3142"/><text x="345" y="145" text-anchor="middle" font-size="11">MCP · Slack</text><rect x="420" y="120" width="110" height="40" rx="8" fill="#0f1118" stroke="#2a3142"/><text x="475" y="145" text-anchor="middle" font-size="11">MCP · Drive</text><rect x="160" y="195" width="240" height="44" rx="8" fill="#0f1118" stroke="#ff9e6d" stroke-width="2"/><text x="280" y="223" text-anchor="middle" fill="#ff9e6d">HITL approval gate</text><line x1="150" y1="52" x2="218" y2="52" stroke="#8b6dff" stroke-width="2" marker-end="url(#m5arr)"/><line x1="340" y1="52" x2="408" y2="52" stroke="#8b6dff" stroke-width="2" marker-end="url(#m5arr)"/><line x1="470" y1="74" x2="475" y2="118" stroke="#8b6dff" stroke-width="2" marker-end="url(#m5arr)"/><line x1="470" y1="74" x2="345" y2="118" stroke="#8b6dff" stroke-width="2" marker-end="url(#m5arr)"/><line x1="470" y1="74" x2="215" y2="118" stroke="#8b6dff" stroke-width="2" marker-end="url(#m5arr)"/><line x1="470" y1="74" x2="85" y2="118" stroke="#8b6dff" stroke-width="2" marker-end="url(#m5arr)"/></g></svg>',
       decisions: [
         ['MCP, not custom tool APIs', 'Standardized protocol means GitHub/Jira/Slack/Drive integrations are reusable, swappable, auditable'],
@@ -5748,6 +5843,11 @@
             impact: 'El costo de cambiar un workflow baja un orden de magnitud. Los usuarios de negocio describen resultados; el sistema construye los pasos. Trails de aprobación auditables. <strong>Meta: ≥ 70%</strong> de los workflows generados son válidos en el primer intento, ≥ 90% tras una ronda de reflexión.'
           },
           analogy: 'Un <strong>asistente de oficina inteligente que puede escribir su propia descripción de puesto y después ejecutarla</strong>. Describís el objetivo en una frase; el asistente diseña los pasos, revisa ejemplos pasados, y te pide firma para todo lo que no se puede deshacer.',
+          business: {
+            who: 'Ops, IT, seguridad y soporte — cualquier equipo cuyos workflows viven en runbooks de Notion y se rompen el día que una herramienta cambia su API. Típicamente empresas post-Serie B con 20+ procesos internos.',
+            value: 'Reduce el "tiempo de ingeniería para cablear un workflow nuevo" de un <strong>sprint (~80 horas)</strong> a <strong>una frase</strong>. Para un equipo de ops de 50 personas con 1 workflow nuevo por semana, son aproximadamente <strong>4.000 horas-ingeniero/año recuperadas</strong>.',
+            hire: 'MCP se está volviendo el protocolo estándar de integración de herramientas — las empresas que lo adopten temprano se quedan con la capa de integración por años. Esta contratación ya construyó un planner + executor + gate HITL contra él.'
+          },
           decisions: [
             ['MCP en vez de APIs de herramienta custom', 'Un protocolo estandarizado hace que las integraciones GitHub/Jira/Slack/Drive sean reusables, intercambiables, auditables'],
             ['El planner aprende de DAGs pasados', 'Los workflows exitosos se embeben; el planner recupera planes pasados similares antes de generar uno nuevo'],
@@ -5778,6 +5878,11 @@
             impact: 'O custo de mudar um workflow cai uma ordem de grandeza. Usuários de negócio descrevem resultados; o sistema constrói os passos. Trilhas de aprovação auditáveis. <strong>Meta: ≥ 70%</strong> dos workflows gerados são válidos na primeira passagem, ≥ 90% após um ciclo de reflexão.'
           },
           analogy: 'Um <strong>assistente de escritório inteligente que escreve a própria descrição de cargo e depois executa</strong>. Você descreve o objetivo numa frase; ele desenha os passos, confere exemplos passados, e pede sua assinatura para qualquer coisa que não dê pra desfazer.',
+          business: {
+            who: 'Ops, TI, segurança e suporte — qualquer time cujos workflows vivem em runbooks de Notion e quebram no dia que uma ferramenta muda a API. Tipicamente empresas pós-Série B com 20+ processos internos.',
+            value: 'Reduz o "tempo de engenharia pra ligar um novo workflow" de uma <strong>sprint (~80 horas)</strong> para <strong>uma frase</strong>. Para um time de ops de 50 pessoas com 1 workflow novo por semana, são cerca de <strong>4.000 horas-engenheiro/ano recuperadas</strong>.',
+            hire: 'MCP está virando o protocolo padrão de integração de ferramentas — as empresas que adotam cedo ficam com a camada de integração por anos. Esse contratado já construiu um planner + executor + gate HITL contra ele.'
+          },
           decisions: [
             ['MCP em vez de APIs custom de ferramenta', 'Protocolo padronizado torna as integrações GitHub/Jira/Slack/Drive reutilizáveis, trocáveis, auditáveis'],
             ['O planner aprende com DAGs passados', 'Workflows bem-sucedidos são embedados; o planner recupera planos passados similares antes de gerar um novo'],
@@ -5813,6 +5918,11 @@
         impact: 'Faithfulness target lifts from <strong>~0.74</strong> (vector-only) to <strong>≥ 0.88</strong> with the full stack. Cost trade-offs become explicit, not assumed. Optimization runs continuously — your retrieval gets better while you sleep.'
       },
       analogy: '<strong>A/B testing for your AI\'s memory.</strong> Instead of guessing which retrieval setup is best, the system measures it on real questions and re-tunes itself when quality drifts. The closed loop matters: a one-time tuning becomes stale within weeks.',
+      business: {
+        who: 'Any team running RAG in production whose CTO is asking <strong>"are we leaving accuracy or money on the table?"</strong> — typically post-Series-A startups + enterprise AI teams with &gt;100K vector queries/month.',
+        value: 'Quantifies your vendor lock-in. Picking the wrong vector DB at scale costs <strong>$50–200K/year</strong> in infra over-spend — this benchmark picks the right one for YOUR documents and YOUR query mix in <strong>under a week</strong>.',
+        hire: 'Most AI engineers can call <code>vector.search()</code>. This hire can prove which vector DB is right for your data, and why. That\'s the gap between <strong>"tinkerer"</strong> and <strong>"architect"</strong>.'
+      },
       arch: '<svg viewBox="0 0 600 320" xmlns="http://www.w3.org/2000/svg"><defs><marker id="m6arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#8b6dff"/></marker><marker id="m6tune" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#34d399"/></marker></defs><g font-family="JetBrains Mono, monospace" font-size="12" fill="#e8eaf0"><rect x="240" y="10" width="120" height="36" rx="8" fill="#0f1118" stroke="#2a3142"/><text x="300" y="34" text-anchor="middle">Query</text><rect x="30" y="80" width="120" height="40" rx="8" fill="#0f1118" stroke="#8b6dff" stroke-width="2"/><text x="90" y="105" text-anchor="middle" fill="#8b6dff">pgvector</text><rect x="240" y="80" width="120" height="40" rx="8" fill="#0f1118" stroke="#4dd0c2" stroke-width="2"/><text x="300" y="105" text-anchor="middle" fill="#4dd0c2">Qdrant</text><rect x="450" y="80" width="120" height="40" rx="8" fill="#0f1118" stroke="#ff9e6d" stroke-width="2"/><text x="510" y="105" text-anchor="middle" fill="#ff9e6d">Pinecone</text><rect x="200" y="160" width="200" height="44" rx="8" fill="#0f1118" stroke="#fbbf24" stroke-width="2"/><text x="300" y="187" text-anchor="middle" fill="#fbbf24">RRF + Cohere rerank</text><rect x="120" y="240" width="160" height="44" rx="8" fill="#0f1118" stroke="#34d399"/><text x="200" y="267" text-anchor="middle" fill="#34d399">Ragas eval</text><rect x="320" y="240" width="160" height="44" rx="8" fill="#0f1118" stroke="#34d399"/><text x="400" y="267" text-anchor="middle" fill="#34d399">Optimizer agent</text><line x1="300" y1="46" x2="90" y2="78" stroke="#8b6dff" stroke-width="1.5" marker-end="url(#m6arr)"/><line x1="300" y1="46" x2="300" y2="78" stroke="#8b6dff" stroke-width="1.5" marker-end="url(#m6arr)"/><line x1="300" y1="46" x2="510" y2="78" stroke="#8b6dff" stroke-width="1.5" marker-end="url(#m6arr)"/><line x1="90" y1="120" x2="220" y2="158" stroke="#8b6dff" stroke-width="1.5" marker-end="url(#m6arr)"/><line x1="300" y1="120" x2="300" y2="158" stroke="#8b6dff" stroke-width="1.5" marker-end="url(#m6arr)"/><line x1="510" y1="120" x2="380" y2="158" stroke="#8b6dff" stroke-width="1.5" marker-end="url(#m6arr)"/><line x1="260" y1="204" x2="220" y2="238" stroke="#34d399" stroke-width="1.5" marker-end="url(#m6tune)"/><line x1="340" y1="204" x2="380" y2="238" stroke="#34d399" stroke-width="1.5" marker-end="url(#m6tune)"/><path d="M 400 284 Q 580 300, 580 200 Q 580 100, 90 90" fill="none" stroke="#34d399" stroke-width="1.2" stroke-dasharray="3,3" marker-end="url(#m6tune)"/><text x="500" y="305" fill="#5a5f6e" font-size="10">retune params</text></g></svg>',
       decisions: [
         ['Three stores in parallel', 'Same corpus, same queries, same eval. Apples-to-apples — published benchmarks rarely are'],
@@ -5858,6 +5968,11 @@
             impact: 'La meta de faithfulness sube de <strong>~0.74</strong> (solo vectores) a <strong>≥ 0.88</strong> con el stack completo. Los trade-offs de costo se vuelven explícitos, no asumidos. La optimización corre continuamente — tu retrieval mejora mientras dormís.'
           },
           analogy: '<strong>A/B testing para la memoria de tu IA.</strong> En vez de adivinar qué setup de retrieval es el mejor, el sistema lo mide sobre preguntas reales y se re-tunea cuando la calidad deriva. El loop cerrado importa: un tuneo one-shot se vuelve obsoleto en semanas.',
+          business: {
+            who: 'Cualquier equipo corriendo RAG en producción cuyo CTO pregunta <strong>"¿estamos dejando exactitud o plata sobre la mesa?"</strong> — típicamente startups post-Serie A + equipos de AI en empresa con &gt;100K queries vectoriales/mes.',
+            value: 'Cuantifica tu vendor lock-in. Elegir el vector DB equivocado a escala cuesta <strong>USD 50–200K/año</strong> en sobre-gasto de infra — este benchmark elige el correcto para TUS documentos y TU mix de queries en <strong>menos de una semana</strong>.',
+            hire: 'La mayoría de los AI engineers pueden llamar a <code>vector.search()</code>. Esta contratación puede demostrar qué vector DB es el correcto para tus datos, y por qué. Es la diferencia entre <strong>"hobbyist"</strong> y <strong>"arquitecto"</strong>.'
+          },
           decisions: [
             ['Tres stores en paralelo', 'Mismo corpus, mismas consultas, misma eval. Apples-to-apples — los benchmarks publicados rara vez lo son'],
             ['Contextual retrieval de Anthropic', 'Pre-agregar contexto al chunk reduce ~49% el failure de retrieval. Lift gratis antes de cualquier reranker'],
@@ -5889,6 +6004,11 @@
             impact: 'A meta de faithfulness sobe de <strong>~0.74</strong> (só vetores) para <strong>≥ 0.88</strong> com o stack completo. Trade-offs de custo ficam explícitos, não assumidos. A otimização roda continuamente — seu retrieval melhora enquanto você dorme.'
           },
           analogy: '<strong>A/B testing para a memória da sua IA.</strong> Em vez de chutar qual setup de retrieval é melhor, o sistema mede em perguntas reais e se re-tuna quando a qualidade deriva. O loop fechado importa: um tuning one-shot fica obsoleto em semanas.',
+          business: {
+            who: 'Qualquer time rodando RAG em produção cujo CTO pergunta <strong>"estamos deixando acurácia ou dinheiro na mesa?"</strong> — tipicamente startups pós-Série A + times de AI corporativos com &gt;100K queries vetoriais/mês.',
+            value: 'Quantifica seu vendor lock-in. Escolher o vector DB errado em escala custa <strong>USD 50–200K/ano</strong> em over-spend de infra — esse benchmark escolhe o certo pros SEUS documentos e SEU mix de queries em <strong>menos de uma semana</strong>.',
+            hire: 'A maioria dos AI engineers chama <code>vector.search()</code>. Esse contratado consegue provar qual vector DB é certo pros seus dados, e por quê. É a diferença entre <strong>"hobbyist"</strong> e <strong>"arquiteto"</strong>.'
+          },
           decisions: [
             ['Três stores em paralelo', 'Mesmo corpus, mesmas queries, mesma eval. Apples-to-apples — benchmarks publicados raramente são'],
             ['Contextual retrieval da Anthropic', 'Pré-adicionar contexto ao chunk reduz ~49% as falhas de retrieval. Lift de graça antes de qualquer reranker'],
@@ -5991,6 +6111,28 @@
           <p>${p.analogy}</p>
         </div>
       </section>
+
+      ${p.business ? `
+      <section class="modal-section">
+        <div class="modal-section-head">
+          <span class="modal-section-tag">For a hiring manager</span>
+          <h4 data-i18n="proj.bizH">Why a company cares about this</h4>
+        </div>
+        <div class="modal-business">
+          <div class="biz-card">
+            <h6 data-i18n="proj.bizWho">Who needs this</h6>
+            <p>${p.business.who}</p>
+          </div>
+          <div class="biz-card">
+            <h6 data-i18n="proj.bizValue">What it saves them</h6>
+            <p>${p.business.value}</p>
+          </div>
+          <div class="biz-card biz-card-hire">
+            <h6 data-i18n="proj.bizHire">Why hire someone who built it</h6>
+            <p>${p.business.hire}</p>
+          </div>
+        </div>
+      </section>` : ''}
 
       <section class="modal-section">
         <div class="modal-section-head">
@@ -7727,6 +7869,10 @@
       'about.sub': 'Short version below. The rest lives in the code.',
 
       'proj.theProblem': 'The problem',
+      'proj.bizH': 'Why a company cares about this',
+      'proj.bizWho': 'Who needs this',
+      'proj.bizValue': 'What it saves them',
+      'proj.bizHire': 'Why hire someone who built it',
       'proj.decisions': 'Key architectural decisions',
       'proj.lessons': 'Lessons learned the hard way',
       'proj.status': 'Implementation status',
@@ -8073,6 +8219,10 @@
       'about.sub': 'La versión corta abajo. El resto vive en el código.',
 
       'proj.theProblem': 'El problema',
+      'proj.bizH': 'Por qué le importa a una empresa',
+      'proj.bizWho': 'Quién lo necesita',
+      'proj.bizValue': 'Qué les ahorra',
+      'proj.bizHire': 'Por qué contratar a quien lo construyó',
       'proj.decisions': 'Decisiones arquitectónicas clave',
       'proj.lessons': 'Lecciones aprendidas a las malas',
       'proj.status': 'Estado de implementación',
@@ -8419,6 +8569,10 @@
       'about.sub': 'A versão curta abaixo. O resto vive no código.',
 
       'proj.theProblem': 'O problema',
+      'proj.bizH': 'Por que uma empresa se importa com isso',
+      'proj.bizWho': 'Quem precisa disso',
+      'proj.bizValue': 'O que economiza para elas',
+      'proj.bizHire': 'Por que contratar quem construiu',
       'proj.decisions': 'Decisões arquitetônicas-chave',
       'proj.lessons': 'Lições aprendidas na marra',
       'proj.status': 'Status de implementação',
@@ -8958,19 +9112,38 @@
   });
 
   // ── Pan + zoom ─────────────────────────────────────────────────────────
+  const ZOOM_MIN = 0.7, ZOOM_MAX = 1.8;
   let zoom = 1;
   let panX = 0, panY = 0;
   let panning = false;
   let panStart = { x: 0, y: 0, px: 0, py: 0 };
 
+  // Clamp pan so the graph cannot fully exit the viewport. At zoom=1 the
+  // scene is W×H and the viewport sees W×H, so pan can drift up to half
+  // the viewport without losing the graph. At higher zoom, more slack.
+  function clampPan() {
+    const slackX = (W * (zoom - 0.4));  // 0 when zoom=0.4, grows linearly
+    const slackY = (H * (zoom - 0.4));
+    const maxX = Math.max(W * 0.45, slackX);
+    const maxY = Math.max(H * 0.45, slackY);
+    panX = Math.max(-maxX, Math.min(maxX, panX));
+    panY = Math.max(-maxY, Math.min(maxY, panY));
+  }
+
   function applyTransform() {
+    clampPan();
     viewport.setAttribute('transform', `translate(${panX}, ${panY}) scale(${zoom})`);
-    if (zoomReadout) zoomReadout.textContent = `zoom ${zoom.toFixed(2)}× · scroll to zoom · drag empty space to pan`;
+    if (zoomReadout) zoomReadout.textContent =
+      `zoom ${zoom.toFixed(2)}× · scroll to zoom · drag empty space to pan · double-click to reset`;
+  }
+  function resetView() {
+    zoom = 1; panX = 0; panY = 0; applyTransform();
   }
   svg.addEventListener('wheel', (e) => {
     e.preventDefault();
     const delta = e.deltaY > 0 ? 0.92 : 1.08;
-    const newZoom = Math.max(0.4, Math.min(3, zoom * delta));
+    const newZoom = Math.max(ZOOM_MIN, Math.min(ZOOM_MAX, zoom * delta));
+    if (newZoom === zoom) return;
     // Zoom toward the cursor
     const p = svgPoint(e);
     panX = p.x - (p.x - panX) * (newZoom / zoom);
@@ -8988,12 +9161,19 @@
   });
   document.addEventListener('mousemove', (e) => {
     if (!panning) return;
-    panX = panStart.px + (e.clientX - panStart.x) * (W / svg.getBoundingClientRect().width);
-    panY = panStart.py + (e.clientY - panStart.y) * (W / svg.getBoundingClientRect().width);
+    const ratio = W / svg.getBoundingClientRect().width;
+    panX = panStart.px + (e.clientX - panStart.x) * ratio;
+    panY = panStart.py + (e.clientY - panStart.y) * ratio;
     applyTransform();
   });
   document.addEventListener('mouseup', () => {
     if (panning) { panning = false; svg.classList.remove('is-dragging'); }
+  });
+  svg.addEventListener('dblclick', (e) => {
+    if (e.target === svg || e.target === viewport) {
+      e.preventDefault();
+      resetView();
+    }
   });
 
   // ── Frame loop ─────────────────────────────────────────────────────────
@@ -9033,17 +9213,21 @@
   const SIGMA2 = SIGMA * SIGMA;
 
   const PROJECTS = [
-    { id: '01', x: -2.8, y:  1.05, color: '#8b6dff', label: 'P1 · Self-Healing Pipeline', status: 'live · 22 tests', w: 1.55,
+    // Weights vary deliberately so the loss landscape has clear basins
+    // instead of a symmetrical hexagon (which would cancel gradients in
+    // the middle). P1 is the deepest basin (flagship); P6 second
+    // (largest test suite); the others form a shallower ring.
+    { id: '01', x: -2.8, y:  1.05, color: '#8b6dff', label: 'P1 · Self-Healing Pipeline', status: 'live · 22 tests', w: 2.20,
       info: 'LangGraph orchestrates 5 nodes (extract → validate → critique → reflect → synthesize). A Constitutional AI critic scores extractions across 4 principles; failures trigger a bounded reflection loop, and every error is persisted to pgvector episodic memory so the critic gets stricter over time. 22 pytest tests, 15-doc eval corpus, Next.js demo frontend.' },
-    { id: '02', x:  0.0, y:  1.55, color: '#4dd0c2', label: 'P2 · Knowledge OS (GraphRAG)', status: 'graph RAG · 19 tests', w: 1.10,
+    { id: '02', x:  0.0, y:  1.55, color: '#4dd0c2', label: 'P2 · Knowledge OS (GraphRAG)', status: 'graph RAG · 19 tests', w: 0.85,
       info: 'Hybrid retrieval that joins a graph store with vector search. The GraphRAG engine extracts query entities → vector-matches across labels → BFS-traverses up to max_hops → RRF-fuses both lists → calls a synthesizer that must cite node ids the engine knows about (hallucinated ids are silently dropped — a test pins this). InMemoryGraphStore + entity extractor + staleness agent ship under fakes-only tests; the Neo4j backend stays lazy-imported.' },
     { id: '03', x:  2.8, y:  1.05, color: '#ff9e6d', label: 'P3 · Research Agent (MemGPT)', status: 'core memory · 31 tests', w: 1.10,
       info: 'Autonomous research agent with three-tier memory (working / episodic / semantic). The MemGPT controller auto-archives evictions, assembles cross-tier context, and consolidates facts at session end — all driven by a LangGraph planner → executor → reflector → reporter loop. 31 tests cover every tier + the controller + the graph end-to-end via a ScriptedLLM, with no network and no API keys.' },
-    { id: '04', x: -2.8, y: -1.05, color: '#fbbf24', label: 'P4 · Multi-Agent Debate', status: 'debate graph · 18 tests', w: 1.10,
+    { id: '04', x: -2.8, y: -1.05, color: '#fbbf24', label: 'P4 · Multi-Agent Debate', status: 'debate graph · 18 tests', w: 0.80,
       info: 'Five specialized agents (Optimist, Skeptic, Financial, Risk, Devil\'s Advocate) argue across opening → rebuttal → final, then a synthesizer produces an executive memo. The consensus number is computed deterministically from final-round stances (variance on a {-2..+2} axis) — the LLM does not own it. 18 tests cover the JSON envelope, the consensus math, the in-memory shared store, and the full LangGraph debate end-to-end via a ScriptedLLM.' },
-    { id: '05', x:  0.0, y: -1.55, color: '#34d399', label: 'P5 · Workflow Engine (MCP)', status: 'executor · 24 tests', w: 1.10,
+    { id: '05', x:  0.0, y: -1.55, color: '#34d399', label: 'P5 · Workflow Engine (MCP)', status: 'executor · 24 tests', w: 0.95,
       info: 'Meta-agent turns natural language ("when a P0 bug is filed, ping the lead engineer, search past tickets, post to #incidents") into a runnable DAG. The executor runs layer-by-layer in parallel via asyncio.gather, interpolates {{nX.field}} references from upstream outputs (preserves int types), pauses at HITL gates with edited-params propagation, and on node failure asks a replanner for a replacement subgraph that the executor splices in-place — rewiring downstream depends_on so the rest of the DAG continues. 24 tests cover every path including parallel fan-out, pause/resume races, and the splice math, all without any real MCP server.' },
-    { id: '06', x:  2.8, y: -1.05, color: '#ec4899', label: 'P6 · Agentic RAG benchmark', status: 'code complete · 74 tests', w: 1.45,
+    { id: '06', x:  2.8, y: -1.05, color: '#ec4899', label: 'P6 · Agentic RAG benchmark', status: 'code complete · 74 tests', w: 1.85,
       info: 'Three vector stores (pgvector / Qdrant / Pinecone) indexed with the same Anthropic-contextual-retrieval chunks, queried with RRF hybrid of BM25 + vector + Cohere rerank. An auto-optimizer agent watches Ragas scores and tunes parameters when faithfulness drops. 74 tests, all three slices code-complete with mocked integrations.' },
   ];
 
@@ -9109,26 +9293,41 @@
   })();
 
   function drawVectorField() {
-    const cols = 26, rows = 12;
+    const cols = 32, rows = 14;
     const dx = (2 * WORLD_X) / cols;
     const dy = (2 * WORLD_Y) / rows;
     ctx.save();
-    ctx.strokeStyle = 'rgba(255, 255, 255, 0.14)';
-    ctx.lineWidth = 1;
+    ctx.lineCap = 'round';
     for (let i = 0; i <= cols; i++) {
       for (let j = 0; j <= rows; j++) {
         const wx = -WORLD_X + i * dx;
         const wy = -WORLD_Y + j * dy;
         const g = grad(wx, wy);
         const mag = Math.sqrt(g.gx * g.gx + g.gy * g.gy);
-        if (mag < 1e-3) continue;
-        const visualLen = 12 * Math.tanh(mag * 0.7);
+        if (mag < 1e-5) continue;
+        // Arrow length saturates at 22px near attractors; opacity scales
+        // with magnitude so the eye picks up the "flow" toward basins.
+        const visualLen = 6 + 16 * Math.tanh(mag * 0.55);
         const ux = -g.gx / mag * visualLen;
         const uy = -g.gy / mag * visualLen;
         const s = toScreen(wx, wy);
+        const alpha = Math.min(0.7, 0.18 + 0.55 * Math.tanh(mag * 0.6));
+        ctx.strokeStyle = `rgba(220, 230, 255, ${alpha.toFixed(3)})`;
+        ctx.lineWidth = 1 + Math.min(0.8, mag * 0.4);
         ctx.beginPath();
         ctx.moveTo(s.x, s.y);
         ctx.lineTo(s.x + ux, s.y + uy);
+        ctx.stroke();
+        // Small arrowhead so direction reads at a glance
+        const ang = Math.atan2(uy, ux);
+        const headLen = 4;
+        ctx.beginPath();
+        ctx.moveTo(s.x + ux, s.y + uy);
+        ctx.lineTo(s.x + ux - headLen * Math.cos(ang - 0.5),
+                   s.y + uy - headLen * Math.sin(ang - 0.5));
+        ctx.moveTo(s.x + ux, s.y + uy);
+        ctx.lineTo(s.x + ux - headLen * Math.cos(ang + 0.5),
+                   s.y + uy - headLen * Math.sin(ang + 0.5));
         ctx.stroke();
       }
     }
