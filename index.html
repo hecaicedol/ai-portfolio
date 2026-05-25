@@ -5297,7 +5297,73 @@
         { txt: '<em>Self-Refine: Iterative Refinement with Self-Feedback.</em> Madaan et al.', venue: 'NeurIPS 2023' }
       ],
       github: 'https://github.com/hecaicedol/ai-portfolio/tree/main/01-self-healing-pipeline',
-      readme: 'https://github.com/hecaicedol/ai-portfolio/blob/main/01-self-healing-pipeline/README.md'
+      readme: 'https://github.com/hecaicedol/ai-portfolio/blob/main/01-self-healing-pipeline/README.md',
+      i18n: {
+        es: {
+          title: 'Pipeline Multi-Agente Auto-Reparable',
+          tagline: 'Cinco agentes de IA que detectan sus propios errores — antes de que se pague una factura equivocada.',
+          pitch: 'Imaginá que tu empresa procesa <strong>5.000 facturas de proveedores al mes</strong>. Una de cada veinte tiene un error de tipeo o un layout raro. Un extractor de IA estándar confiadamente lee mal el nombre del proveedor — y tu sistema de pagos termina pagando <strong>$4.820 a Acme Corp en vez de a Acme Construction</strong>. Este pipeline corrige esa clase de fallo en su raíz: cada salida es revisada por un agente crítico, los errores disparan un loop de reflexión, y el sistema aprende de los errores pasados para no repetirlos.',
+          three: {
+            problem: 'Los fallos más caros de la IA son silenciosos. Una respuesta confiada pero equivocada fluye directo a tu ERP. Te enterás solo cuando un proveedor llama a preguntar por qué le pagaron dos veces — o por qué no le pagaron.',
+            solution: 'Cinco agentes especializados trabajan como equipo: el <strong>extractor</strong> lee el documento, el <strong>validador</strong> verifica estructura, el <strong>crítico</strong> lo puntúa contra cuatro principios de calidad, la <strong>reflexión</strong> aprende de los errores pasados cuando algo falla, y el <strong>sintetizador</strong> produce la salida auditada final. Tope de 3 ciclos — los fallos se marcan de forma ruidosa, nunca silenciosa.',
+            impact: 'Detecta aproximadamente <strong>11% más fallos</strong> que un extractor ingenuo. Cuesta cerca de <strong>18% más en tokens</strong> por documento — un precio bajo para frenar pagos equivocados aguas abajo. Cada run queda trazado en Langfuse, así que la pista de auditoría es automática.'
+          },
+          analogy: 'Pensalo como un <strong>equipo pequeño de contabilidad que sabe cuándo revisarse a sí mismo</strong>. Sin revisor, un practicante entrega la primera respuesta que "se ve bien". Con un revisor senior leyendo cada entrega contra un checklist — y un cuaderno de errores ya vistos — el mismo practicante produce salida confiable. Eso es el pipeline.',
+          decisions: [
+            ['Orquestación LangGraph', 'Transiciones de estado explícitas e inspeccionables — fáciles de debuggear cuando algo falla en producción'],
+            ['Crítico estilo Constitutional AI', 'Puntaje por principio (4 ejes) da feedback accionable a la siguiente iteración'],
+            ['Memoria episódica en pgvector', 'Los patrones de fallo emergen sobre miles de runs pasados en el Postgres que ya tenés'],
+            ['Tope duro: 3 iteraciones', 'Loops de retry sin tope queman $40 en un PDF — el tope fuerza fallos ruidosos, no gasto silencioso de tokens']
+          ],
+          lessons: [
+            '<strong>Los críticos necesitan memoria, no solo rúbricas.</strong> Un crítico sin estado vuelve a cometer el mismo error en cada run; uno que recupera fallos pasados detecta patrones del dominio en unos ~50 ejemplos.',
+            '<strong>Los principios constitucionales deben ser evaluables, no filosóficos.</strong> "La salida debería ser útil" es impuntuable. "Cada campo requerido tiene un valor no vacío que matchea su tipo" sí lo es.',
+            '<strong>Los loops de reflexión sin tope son un incidente esperando a pasar.</strong> Lo aprendí a las malas después de quemar dinero real en un solo PDF mal formado en la semana uno.'
+          ],
+          metrics: [
+            ['≥ 0.92', 'Meta de exactitud de extracción', true],
+            ['≤ 0.8', 'Promedio de retries por documento', true],
+            ['+18%', 'Overhead de tokens vs baseline', false],
+            ['≥ 0.88 κ', 'Acuerdo crítico vs humano', true]
+          ],
+          chart: {
+            title: 'Puntajes del crítico a lo largo de las iteraciones de reflexión',
+            caption: '<strong>Umbral τ = 0.85</strong> · el sistema reflexiona hasta aprobar o llega al límite de 3 retries'
+          }
+        },
+        pt: {
+          title: 'Pipeline Multi-Agente Auto-Reparável',
+          tagline: 'Cinco agentes de IA que detectam os próprios erros — antes que uma fatura errada seja paga.',
+          pitch: 'Imagine que sua empresa processa <strong>5.000 faturas de fornecedores por mês</strong>. Uma a cada vinte tem um erro de digitação ou layout incomum. Um extrator de IA padrão lê confiantemente o nome errado do fornecedor — e seu sistema de pagamentos paga <strong>R$ 4.820 à Acme Corp em vez da Acme Construction</strong>. Este pipeline corrige essa classe de falha na raiz: cada saída é revisada por um agente crítico, erros disparam um loop de reflexão, e o sistema aprende com erros passados para não repeti-los.',
+          three: {
+            problem: 'As falhas de IA mais caras são silenciosas. Uma resposta confiante mas errada flui direto para seu ERP. Você só descobre quando um fornecedor liga perguntando por que recebeu duas vezes — ou por que não recebeu.',
+            solution: 'Cinco agentes especializados trabalham em equipe: o <strong>extrator</strong> lê o documento, o <strong>validador</strong> checa estrutura, o <strong>crítico</strong> pontua contra quatro princípios de qualidade, a <strong>reflexão</strong> aprende dos erros passados quando algo falha, e o <strong>sintetizador</strong> produz a saída auditada final. Limite de 3 ciclos — falhas são marcadas ruidosamente, nunca em silêncio.',
+            impact: 'Captura aproximadamente <strong>11% mais falhas</strong> que um extrator ingênuo. Custa cerca de <strong>18% mais em tokens</strong> por documento — preço pequeno para evitar pagamentos errados a jusante. Cada execução é rastreada no Langfuse, então a trilha de auditoria é automática.'
+          },
+          analogy: 'Pense nele como um <strong>pequeno time de contabilidade que sabe quando se conferir</strong>. Sem revisor, um estagiário entrega a primeira resposta que "parece certa". Com um revisor sênior lendo cada entrega contra um checklist — e um caderno de erros já vistos — o mesmo estagiário produz saída confiável. Esse é o pipeline.',
+          decisions: [
+            ['Orquestração LangGraph', 'Transições de estado explícitas e inspecionáveis — fáceis de debugar quando algo falha em produção'],
+            ['Crítico estilo Constitutional AI', 'Pontuação por princípio (4 eixos) dá feedback acionável para a próxima iteração'],
+            ['Memória episódica em pgvector', 'Padrões de falha emergem sobre milhares de runs passados no Postgres que você já tem'],
+            ['Limite rígido: 3 iterações', 'Loops de retry sem limite queimam $40 em um PDF — o limite força falhas ruidosas, não gasto silencioso de tokens']
+          ],
+          lessons: [
+            '<strong>Críticos precisam de memória, não só rubrica.</strong> Um crítico sem estado refaz o mesmo erro toda execução; um que recupera falhas passadas captura padrões do domínio em ~50 exemplos.',
+            '<strong>Princípios constitucionais precisam ser avaliáveis, não filosóficos.</strong> "A saída deve ser útil" não é pontuável. "Todo campo obrigatório tem um valor não vazio que casa com seu tipo" é.',
+            '<strong>Loops de reflexão sem limite são incidente esperando para acontecer.</strong> Aprendi do jeito difícil depois de queimar dinheiro real em um único PDF mal formatado na primeira semana.'
+          ],
+          metrics: [
+            ['≥ 0.92', 'Meta de acurácia de extração', true],
+            ['≤ 0.8', 'Média de retries por documento', true],
+            ['+18%', 'Overhead de tokens vs baseline', false],
+            ['≥ 0.88 κ', 'Concordância crítico vs humano', true]
+          ],
+          chart: {
+            title: 'Pontuação do crítico ao longo das iterações de reflexão',
+            caption: '<strong>Limiar τ = 0.85</strong> · o sistema reflete até passar ou chegar a 3 retries'
+          }
+        }
+      }
     },
 
     '02': {
@@ -5308,7 +5374,7 @@
       pitch: 'Most corporate knowledge bases can only answer "where is X documented?" But the real questions look like: <strong>"Has anyone on the API team worked on payment processing in the last 3 years?"</strong> or <strong>"Which competitors employ ex-Stripe engineers?"</strong> These require <strong>connections</strong>, not just text similarity. This system builds a living graph of every entity in your company — people, projects, systems, concepts — and the relationships between them. Then it combines that graph with traditional search to answer questions other systems can\'t.',
       three: {
         problem: 'Vector search asks "what document is most similar to my query?" — fine for "find me the API docs." Useless for "find me the projects led by alumni of Acme that compete with our Y product." That requires understanding connections.',
-        solution: 'Reads every document, extracts entities and the relationships between them, builds a Neo4j graph. At query time, it walks the graph (Cypher) <strong>and</strong> searches text (pgvector), then fuses both results with Reciprocal Rank Fusion. A background "staleness agent" flags entities whose facts drift from their source documents.',
+        solution: 'Reads every document and pulls out the people, projects, and concepts mentioned — plus how they connect — building a network of relationships. When you ask a question, it does <strong>two searches at the same time</strong>: it walks the network (like following 2nd-degree connections on LinkedIn) <strong>and</strong> looks up matching text, then merges both result sets. A background agent keeps the network honest by flagging entities whose facts drift from the source documents.',
         impact: 'Multi-hop question accuracy lifts from <strong>~0.56</strong> (vector-only) to a target of <strong>≥ 0.78</strong>. Onboarding goes from "read the wiki" to "ask the wiki." Compliance audits drop from days to minutes.'
       },
       analogy: 'Imagine your company\'s knowledge as a <strong>Wikipedia, but every person, project, and concept is hyperlinked to every other one</strong>. Ask any question and the system follows the trail — it doesn\'t just find a matching paragraph, it walks from "API team" to "individuals" to "their past projects" to find the answer. Regular search reads. This system <strong>reasons</strong>.',
@@ -5343,7 +5409,69 @@
         { txt: '<em>Unifying Large Language Models and Knowledge Graphs.</em> Pan et al.', venue: 'TKDE 2024' }
       ],
       github: 'https://github.com/hecaicedol/ai-portfolio/tree/main/02-knowledge-os',
-      readme: 'https://github.com/hecaicedol/ai-portfolio/blob/main/02-knowledge-os/README.md'
+      readme: 'https://github.com/hecaicedol/ai-portfolio/blob/main/02-knowledge-os/README.md',
+      i18n: {
+        es: {
+          title: 'Knowledge OS Empresarial · GraphRAG',
+          tagline: 'Un sistema de conocimiento que entiende relaciones — no solo palabras clave.',
+          pitch: 'La mayoría de las bases de conocimiento corporativas solo saben responder "¿dónde está documentado X?" Pero las preguntas reales se ven así: <strong>"¿Alguien del equipo de API trabajó en procesamiento de pagos en los últimos 3 años?"</strong> o <strong>"¿Qué competidores emplean a ex-ingenieros de Stripe?"</strong> Eso requiere <strong>conexiones</strong>, no solo similitud de texto. Este sistema construye un grafo vivo de cada entidad de tu empresa — personas, proyectos, sistemas, conceptos — y las relaciones entre ellas. Después combina ese grafo con búsqueda tradicional para responder preguntas que otros sistemas no pueden.',
+          three: {
+            problem: 'La búsqueda vectorial pregunta "¿qué documento es más similar a mi consulta?" — perfecto para "encontrame los docs de la API". Inútil para "encontrame proyectos liderados por ex-empleados de Acme que compitan con nuestro producto Y". Eso necesita entender conexiones.',
+            solution: 'Lee cada documento y extrae las personas, proyectos y conceptos mencionados — más cómo se conectan — construyendo una red de relaciones. Cuando hacés una pregunta hace <strong>dos búsquedas al mismo tiempo</strong>: camina la red (como seguir contactos de 2º grado en LinkedIn) <strong>y</strong> busca texto que matchee, después fusiona ambos resultados. Un agente en segundo plano mantiene la red al día marcando entidades cuyos datos divergen de los documentos fuente.',
+            impact: 'La exactitud en preguntas multi-hop sube de <strong>~0.56</strong> (solo vectores) a una meta de <strong>≥ 0.78</strong>. El onboarding pasa de "leé la wiki" a "preguntale a la wiki". Las auditorías de compliance bajan de días a minutos.'
+          },
+          analogy: 'Imaginá el conocimiento de tu empresa como una <strong>Wikipedia, pero cada persona, proyecto y concepto está hiperlinkeado a todos los demás</strong>. Hacés cualquier pregunta y el sistema sigue el rastro — no busca un párrafo similar, camina de "equipo de API" a "personas" a "sus proyectos pasados" para encontrar la respuesta. La búsqueda normal lee. Este sistema <strong>razona</strong>.',
+          decisions: [
+            ['Neo4j sobre CTEs recursivas de Postgres', 'Las consultas de caminos y el pattern matching de Cypher son nativos; las CTEs recursivas se vuelven ilegibles a profundidad 3+'],
+            ['Híbrido: grafo + vector', 'El grafo captura estructura; los vectores capturan lenguaje no estructurado. RRF fusiona ambos en tiempo de consulta'],
+            ['Agente de staleness en segundo plano', 'El conocimiento decae — cuando alguien cambia de rol, el grafo debe reflejarlo. El agente marca la deriva']
+          ],
+          lessons: [
+            '<strong>La extracción de entidades es la mitad del trabajo.</strong> Si te equivocás con el esquema el día uno, vas a re-extraer para siempre. Esquemas Pydantic con versionado no son negociables.',
+            '<strong>RRF no es magia.</strong> Los pesos de fusión necesitan ajuste por dominio. Tratalos como hiperparámetros, no como constantes.'
+          ],
+          metrics: [
+            ['≥ 0.78', 'Meta de exactitud QA a 2 hops', true],
+            ['+0.22', 'Lift vs solo vectores', false],
+            ['≥ 0.85', 'F1 de extracción de entidades', true],
+            ['TBD', 'Recall de staleness @ 7d', false]
+          ],
+          chart: {
+            title: 'Exactitud de QA multi-hop según profundidad de consulta',
+            caption: '<strong>El híbrido gana al crecer la profundidad</strong> · la similitud vectorial colapsa pasados 2 hops'
+          }
+        },
+        pt: {
+          title: 'Knowledge OS Empresarial · GraphRAG',
+          tagline: 'Um sistema de conhecimento que entende relacionamentos — não só palavras-chave.',
+          pitch: 'A maioria das bases de conhecimento corporativas só sabe responder "onde X está documentado?" Mas as perguntas reais são tipo: <strong>"Alguém do time de API trabalhou em processamento de pagamentos nos últimos 3 anos?"</strong> ou <strong>"Quais concorrentes empregam ex-engenheiros da Stripe?"</strong> Isso exige <strong>conexões</strong>, não só similaridade de texto. Este sistema constrói um grafo vivo de toda entidade da sua empresa — pessoas, projetos, sistemas, conceitos — e as relações entre elas. Aí combina esse grafo com busca tradicional para responder perguntas que outros sistemas não conseguem.',
+          three: {
+            problem: 'A busca vetorial pergunta "qual documento é mais parecido com minha query?" — ótimo para "ache a doc da API". Inútil para "ache projetos liderados por ex-funcionários da Acme que competem com nosso produto Y". Isso exige entender conexões.',
+            solution: 'Lê cada documento e extrai as pessoas, projetos e conceitos mencionados — mais como eles se conectam — montando uma rede de relacionamentos. Quando você pergunta algo ele faz <strong>duas buscas ao mesmo tempo</strong>: caminha pela rede (como seguir conexões de 2º grau no LinkedIn) <strong>e</strong> busca texto que case, depois funde os dois resultados. Um agente em background mantém a rede honesta marcando entidades cujos dados divergem dos documentos fonte.',
+            impact: 'A acurácia em perguntas multi-hop sobe de <strong>~0.56</strong> (só vetores) para uma meta de <strong>≥ 0.78</strong>. O onboarding muda de "leia a wiki" para "pergunte à wiki". Auditorias de compliance caem de dias para minutos.'
+          },
+          analogy: 'Imagine o conhecimento da sua empresa como uma <strong>Wikipedia, mas toda pessoa, projeto e conceito está hiperlinkado a todos os outros</strong>. Pergunte qualquer coisa e o sistema segue o rastro — ele não acha um parágrafo parecido, ele caminha de "time de API" para "pessoas" para "projetos passados delas" para chegar à resposta. Busca comum lê. Este sistema <strong>raciocina</strong>.',
+          decisions: [
+            ['Neo4j em vez de CTEs recursivas no Postgres', 'Queries de caminhos e pattern matching do Cypher são nativos; CTEs recursivas ficam ilegíveis em profundidade 3+'],
+            ['Híbrido: grafo + vetor', 'O grafo captura estrutura; vetores capturam linguagem não estruturada. RRF funde os dois em tempo de query'],
+            ['Agente de staleness em background', 'Conhecimento decai — quando alguém muda de cargo, o grafo precisa refletir. O agente sinaliza o drift']
+          ],
+          lessons: [
+            '<strong>Extração de entidades é metade do trabalho.</strong> Erre o schema no dia um e vai re-extrair pra sempre. Schemas Pydantic com versionamento não são negociáveis.',
+            '<strong>RRF não é mágica.</strong> Os pesos de fusão precisam ajuste por domínio. Trate como hiperparâmetros, não constantes.'
+          ],
+          metrics: [
+            ['≥ 0.78', 'Meta de acurácia QA a 2 hops', true],
+            ['+0.22', 'Lift vs só vetores', false],
+            ['≥ 0.85', 'F1 de extração de entidades', true],
+            ['TBD', 'Recall de staleness @ 7d', false]
+          ],
+          chart: {
+            title: 'Acurácia de QA multi-hop por profundidade da query',
+            caption: '<strong>O híbrido vence conforme a profundidade cresce</strong> · similaridade vetorial colapsa passando de 2 hops'
+          }
+        }
+      }
     },
 
     '03': {
@@ -5354,7 +5482,7 @@
       pitch: 'Friday evening, your research agent has spent <strong>40 hours mapping the competitive landscape</strong>. Monday morning, you want to continue. A normal chatbot says <em>"what were we talking about?"</em> — context window cleared, work lost. This agent says: <em>"Last Friday we identified seven competitors, ranked their pricing tiers, and I was about to draft the executive summary on tier-2 risks."</em> It does that by externalizing memory in three explicit tiers, just like a human researcher would.',
       three: {
         problem: 'Chatbots forget. Every session starts from zero. A research project spanning weeks would require you to manually re-summarize context every morning — defeating the point of having an agent at all.',
-        solution: 'Three memory tiers: <strong>working</strong> (in-context, fastest, smallest), <strong>episodic</strong> (last 200 sessions, vector-searchable), <strong>semantic</strong> (consolidated facts, never expires). A memory controller — a first-class agent in the graph — decides what to promote and what to archive. Every read and write is observable in Langfuse.',
+        solution: 'Three layers of memory, modeled on how a person\'s brain works: <strong>short-term</strong> (what\'s in mind right now — the current task and recent messages), <strong>session memory</strong> (a searchable journal of past conversations), and <strong>long-term facts</strong> (durable knowledge that survives forever). A controller decides what gets stored where, and the agent retrieves from all three when answering — so it can pick up a research project days later as if no time had passed.',
         impact: 'Cross-session research becomes possible. Reports cite real sources, not hallucinations. Knowledge survives team turnover because it lives outside the model, in your database.'
       },
       analogy: 'A human researcher doesn\'t memorize every word. They <strong>take notes</strong>, file them by topic, and re-read them when they need context. Working memory = what\'s on the desk. Episodic = the filing cabinet. Semantic = the textbook of permanent facts. This agent does exactly that — explicitly, observably, controllably.',
@@ -5389,7 +5517,69 @@
         { txt: '<em>Cognitive Architectures for Language Agents.</em> Sumers et al.', venue: 'TMLR 2024' }
       ],
       github: 'https://github.com/hecaicedol/ai-portfolio/tree/main/03-research-agent',
-      readme: 'https://github.com/hecaicedol/ai-portfolio/blob/main/03-research-agent/README.md'
+      readme: 'https://github.com/hecaicedol/ai-portfolio/blob/main/03-research-agent/README.md',
+      i18n: {
+        es: {
+          title: 'Agente de Investigación Autónomo · patrón MemGPT',
+          tagline: 'Un investigador de IA que se acuerda de tu trabajo durante semanas, no solo durante una sesión.',
+          pitch: 'Viernes por la tarde, tu agente de investigación pasó <strong>40 horas mapeando el panorama competitivo</strong>. Lunes por la mañana, querés continuar. Un chatbot normal dice <em>"¿de qué estábamos hablando?"</em> — ventana de contexto vacía, trabajo perdido. Este agente dice: <em>"El viernes identificamos siete competidores, ordenamos sus tiers de precio, y estaba por escribir el resumen ejecutivo sobre los riesgos de tier-2."</em> Lo hace externalizando la memoria en tres capas explícitas, igual que haría un investigador humano.',
+          three: {
+            problem: 'Los chatbots olvidan. Cada sesión arranca de cero. Un proyecto de investigación que abarca semanas te obligaría a re-resumir el contexto manualmente cada mañana — anulando el sentido mismo de tener un agente.',
+            solution: 'Tres capas de memoria, modeladas sobre cómo funciona el cerebro humano: <strong>corto plazo</strong> (lo que está en mente ahora — la tarea actual y los mensajes recientes), <strong>memoria de sesiones</strong> (un diario buscable de conversaciones pasadas), y <strong>hechos de largo plazo</strong> (conocimiento durable que nunca expira). Un controlador decide qué se guarda dónde, y el agente recupera de las tres capas al responder — así puede retomar un proyecto días después como si no hubiera pasado el tiempo.',
+            impact: 'La investigación entre sesiones se vuelve posible. Los reportes citan fuentes reales, no alucinaciones. El conocimiento sobrevive a la rotación del equipo porque vive afuera del modelo, en tu base de datos.'
+          },
+          analogy: 'Un investigador humano no memoriza cada palabra. <strong>Toma notas</strong>, las archiva por tema, y las relee cuando necesita contexto. Memoria de trabajo = lo que está sobre el escritorio. Episódica = el archivador. Semántica = el manual de hechos permanentes. Este agente hace exactamente eso — explícita, observable, controlablemente.',
+          decisions: [
+            ['Tres capas, no un solo contexto gigante', 'El costo escala lineal con el contexto. La recuperación por capas mantiene la memoria de trabajo barata'],
+            ['Controlador de memoria como nodo del grafo', 'Promoción y desalojo son inspeccionables en Langfuse, no escondidos en hooks privados'],
+            ['arXiv + Tavily + scraping web', 'Mezclar fuentes estructuradas (API de arXiv) con no estructuradas reduce el sesgo de fuente en la síntesis']
+          ],
+          lessons: [
+            '<strong>"Usar un contexto más largo" no escala.</strong> El costo crece lineal; la coherencia no. El stack por capas explícito gana.',
+            '<strong>Las escrituras a memoria necesitan políticas.</strong> Sin reglas explícitas, el agente olvida lo correcto y recuerda lo incorrecto.'
+          ],
+          metrics: [
+            ['≥ 0.75', 'Meta de recall entre sesiones', true],
+            ['≤ 60k', 'Tokens por reporte', true],
+            ['≥ 12', 'Fuentes por reporte', true],
+            ['TBD', 'Coherencia evaluada por humano', false]
+          ],
+          chart: {
+            title: 'Tamaño de la memoria de trabajo entre sesiones · con vs sin capas',
+            caption: '<strong>El stack ingenuo crece lineal</strong> hasta que vuela la ventana de contexto · el stack por capas se mantiene acotado'
+          }
+        },
+        pt: {
+          title: 'Agente de Pesquisa Autônomo · padrão MemGPT',
+          tagline: 'Um pesquisador de IA que lembra do seu trabalho por semanas, não só por uma sessão.',
+          pitch: 'Sexta-feira à noite, seu agente de pesquisa passou <strong>40 horas mapeando o cenário competitivo</strong>. Segunda de manhã, você quer continuar. Um chatbot comum diz <em>"do que a gente estava falando?"</em> — janela de contexto zerada, trabalho perdido. Este agente diz: <em>"Na sexta a gente identificou sete concorrentes, ranqueou os tiers de preço deles, e eu ia escrever o resumo executivo sobre os riscos de tier-2."</em> Ele faz isso externalizando a memória em três camadas explícitas, igual a um pesquisador humano faria.',
+          three: {
+            problem: 'Chatbots esquecem. Cada sessão começa do zero. Um projeto de pesquisa que dura semanas te obrigaria a re-resumir o contexto manualmente toda manhã — derrubando o sentido inteiro de ter um agente.',
+            solution: 'Três camadas de memória, modeladas em como o cérebro humano funciona: <strong>curto prazo</strong> (o que está na mente agora — a tarefa atual e mensagens recentes), <strong>memória de sessões</strong> (um diário buscável de conversas passadas), e <strong>fatos de longo prazo</strong> (conhecimento durável que nunca expira). Um controlador decide o que guarda onde, e o agente recupera das três camadas ao responder — então retoma um projeto de pesquisa dias depois como se nada tivesse passado.',
+            impact: 'Pesquisa entre sessões fica possível. Relatórios citam fontes reais, não alucinações. O conhecimento sobrevive à rotatividade do time porque vive fora do modelo, no seu banco.'
+          },
+          analogy: 'Um pesquisador humano não memoriza cada palavra. <strong>Faz anotações</strong>, arquiva por tópico, e relê quando precisa de contexto. Memória de trabalho = o que está sobre a mesa. Episódica = o arquivo. Semântica = o manual de fatos permanentes. Este agente faz exatamente isso — de forma explícita, observável, controlável.',
+          decisions: [
+            ['Três camadas, não um contexto gigante', 'O custo escala linear com o contexto. Recuperação por camadas mantém a memória de trabalho barata'],
+            ['Controlador de memória como nó do grafo', 'Promoção e descarte são inspecionáveis no Langfuse, não escondidos em hooks privados'],
+            ['arXiv + Tavily + scraping web', 'Misturar fontes estruturadas (API do arXiv) com não estruturadas reduz o viés de fonte na síntese']
+          ],
+          lessons: [
+            '<strong>"Usar um contexto mais longo" não escala.</strong> O custo cresce linear; a coerência não. Camadas explícitas vencem.',
+            '<strong>Escritas em memória precisam de políticas.</strong> Sem regras explícitas, o agente esquece o certo e lembra do errado.'
+          ],
+          metrics: [
+            ['≥ 0.75', 'Meta de recall entre sessões', true],
+            ['≤ 60k', 'Tokens por relatório', true],
+            ['≥ 12', 'Fontes por relatório', true],
+            ['TBD', 'Coerência avaliada por humano', false]
+          ],
+          chart: {
+            title: 'Tamanho da memória de trabalho entre sessões · com vs sem camadas',
+            caption: '<strong>O stack ingênuo cresce linear</strong> até a janela de contexto estourar · o stack por camadas se mantém limitado'
+          }
+        }
+      }
     },
 
     '04': {
@@ -5400,7 +5590,7 @@
       pitch: 'Should we launch product X next quarter? Ask one AI and you get one answer reflecting one bias. Ask five AIs — <strong>Optimist, Skeptic, Financial Analyst, Risk Officer, Devil\'s Advocate</strong> — and they argue across three rounds: opening positions, rebuttals, executive synthesis. You walk into your board meeting with a recommendation, eight named risks, and a transcript that shows every dissenting voice was heard.',
       three: {
         problem: 'Single-agent reasoning collapses to the model\'s prior. Strategic decisions need <strong>dissent</strong>. Hidden assumptions kill products — and they only surface when someone with a different perspective is forced to argue against the majority.',
-        solution: 'Five specialized agents with persistent, distinct roles. A three-round protocol prevents both infinite loops and premature consensus. A measurable <strong>consensus score</strong> (cosine similarity over rounds) tracks how far apart the agents started and how close they got. The synthesizer cannot ignore dissent — it must address each unresolved disagreement explicitly.',
+        solution: 'Five agents, each locked into a distinct point of view (Optimist, Skeptic, Financial Analyst, Risk Officer, Devil\'s Advocate), debate across three structured rounds: opening positions → rebuttals → final stance. A <strong>consensus score</strong> measures how far apart they started and how much they converged. The final synthesizer can\'t paper over dissent — every unresolved disagreement has to be named explicitly in the memo.',
         impact: 'Executives get a balanced recommendation they can defend. Hidden risks surface early — typically <strong>8+ distinct considerations per decision</strong>, vs ~3 from a single-agent CoT chain.'
       },
       analogy: 'A <strong>board meeting with five different domain experts</strong>, except it runs in 60 seconds and you can replay any decision later. The cost: ~5× a single agent call. The benefit: dissent that single-agent reasoning systematically hides.',
@@ -5436,7 +5626,71 @@
         { txt: '<em>Encouraging Divergent Thinking in LLMs Through Multi-Agent Debate.</em> Liang et al.', venue: 'EMNLP 2024' }
       ],
       github: 'https://github.com/hecaicedol/ai-portfolio/tree/main/04-debate-system',
-      readme: 'https://github.com/hecaicedol/ai-portfolio/blob/main/04-debate-system/README.md'
+      readme: 'https://github.com/hecaicedol/ai-portfolio/blob/main/04-debate-system/README.md',
+      i18n: {
+        es: {
+          title: 'Sistema Multi-Agente de Debate · Society of Mind',
+          tagline: 'Cinco IAs discuten desde perspectivas distintas — para que tu directorio se lleve una recomendación defendible.',
+          pitch: '¿Deberíamos lanzar el producto X el próximo trimestre? Preguntale a una IA y te da una respuesta con un solo sesgo. Preguntale a cinco IAs — <strong>Optimista, Escéptico, Analista Financiero, Risk Officer, Abogado del Diablo</strong> — y discuten en tres rondas: posiciones de apertura, refutaciones, síntesis ejecutiva. Entrás a la reunión de directorio con una recomendación, ocho riesgos nombrados, y una transcripción que demuestra que cada voz disidente fue escuchada.',
+          three: {
+            problem: 'El razonamiento de un solo agente colapsa al prior del modelo. Las decisiones estratégicas necesitan <strong>disenso</strong>. Los supuestos ocultos matan productos — y solo emergen cuando alguien con otra perspectiva está forzado a discutir contra la mayoría.',
+            solution: 'Cinco agentes, cada uno bloqueado en un punto de vista distinto (Optimista, Escéptico, Analista Financiero, Risk Officer, Abogado del Diablo), debaten en tres rondas estructuradas: posiciones iniciales → refutaciones → postura final. Un <strong>score de consensus</strong> mide qué tan separados arrancaron y cuánto convergieron. El sintetizador final no puede tapar el disenso — cada desacuerdo sin resolver tiene que nombrarse explícitamente en el memo.',
+            impact: 'Los ejecutivos reciben una recomendación balanceada y defendible. Los riesgos ocultos emergen temprano — típicamente <strong>8+ consideraciones distintas por decisión</strong>, vs ~3 de una cadena CoT con un solo agente.'
+          },
+          analogy: 'Una <strong>reunión de directorio con cinco expertos de dominios distintos</strong>, salvo que corre en 60 segundos y podés replayear cualquier decisión después. Costo: ~5× una llamada a un solo agente. Beneficio: el disenso que el razonamiento de un solo agente esconde sistemáticamente.',
+          decisions: [
+            ['5 roles, no 2', 'El debate a dos agentes colapsa a mayoría. Cinco roles distintos, tres rondas estructuradas, previenen el groupthink'],
+            ['Tres rondas, no abiertas', 'Apertura · refutación · síntesis. Acotado, medible, evita el ida-y-vuelta infinito'],
+            ['Consensus = similitud coseno entre rondas', 'Convergencia medible. No "siento que estuvieron de acuerdo"'],
+            ['Streaming por WebSocket a la UI', 'El debate se vuelve un artefacto observable, no una caja negra de decisión']
+          ],
+          lessons: [
+            '<strong>La persistencia de personalidad importa.</strong> Si el prompt del Escéptico no es firme, para la ronda 2 ya está de acuerdo con el Optimista. Usá system prompts que rechacen explícitamente el reflejo de acuerdo.',
+            '<strong>Los sintetizadores hacen trampa.</strong> Si no los forzás a nombrar cada disenso, tapan el desacuerdo. La salida con schema rígido frena eso.'
+          ],
+          metrics: [
+            ['≥ 8', 'Consideraciones distintas por decisión', true],
+            ['≥ 0.82', 'Convergencia de consensus en R3', true],
+            ['~5×', 'Costo de tokens vs agente único', false],
+            ['TBD', 'Lift de calidad evaluado por exec', false]
+          ],
+          chart: {
+            title: 'Convergencia de consensus entre los agentes en 3 rondas',
+            caption: '<strong>5 agentes arrancan ~0.2 separados</strong> · convergen a ~0.85 en R3 sin colapsar a una sola voz'
+          }
+        },
+        pt: {
+          title: 'Sistema Multi-Agente de Debate · Society of Mind',
+          tagline: 'Cinco IAs discutem de perspectivas diferentes — para o seu conselho sair com uma recomendação defensável.',
+          pitch: 'Devemos lançar o produto X no próximo trimestre? Pergunte a uma IA e recebe uma resposta com um único viés. Pergunte a cinco IAs — <strong>Otimista, Cético, Analista Financeiro, Risk Officer, Advogado do Diabo</strong> — e elas discutem em três rodadas: posições de abertura, refutações, síntese executiva. Você entra na reunião do conselho com uma recomendação, oito riscos nomeados, e uma transcrição que mostra que toda voz dissidente foi ouvida.',
+          three: {
+            problem: 'O raciocínio de um único agente colapsa para o prior do modelo. Decisões estratégicas precisam de <strong>dissenso</strong>. Pressupostos ocultos matam produtos — e só vêm à tona quando alguém com outra perspectiva é forçado a argumentar contra a maioria.',
+            solution: 'Cinco agentes, cada um travado num ponto de vista distinto (Otimista, Cético, Analista Financeiro, Risk Officer, Advogado do Diabo), debatem em três rodadas estruturadas: posições iniciais → refutações → postura final. Um <strong>score de consensus</strong> mede o quanto começaram separados e o quanto convergiram. O sintetizador final não consegue mascarar o dissenso — cada desacordo não resolvido precisa ser nomeado explicitamente no memo.',
+            impact: 'Os executivos recebem uma recomendação balanceada e defensável. Riscos ocultos aparecem cedo — tipicamente <strong>8+ considerações distintas por decisão</strong>, vs ~3 de uma chain-of-thought de agente único.'
+          },
+          analogy: 'Uma <strong>reunião do conselho com cinco especialistas de domínios diferentes</strong>, só que roda em 60 segundos e dá pra repassar qualquer decisão depois. Custo: ~5× uma chamada de agente único. Benefício: o dissenso que o raciocínio de um agente sozinho esconde sistematicamente.',
+          decisions: [
+            ['5 papéis, não 2', 'Debate de dois agentes colapsa para maioria. Cinco papéis distintos, três rodadas estruturadas, evitam o groupthink'],
+            ['Três rodadas, não abertas', 'Abertura · refutação · síntese. Limitado, mensurável, evita o vai-e-vem infinito'],
+            ['Consensus = similaridade cosseno entre rodadas', 'Convergência mensurável. Não "achei que concordaram"'],
+            ['Streaming via WebSocket para a UI', 'O debate vira um artefato observável, não uma caixa-preta de decisão']
+          ],
+          lessons: [
+            '<strong>Persistência de personalidade importa.</strong> Se o prompt do Cético não for firme, na rodada 2 ele já concordou com o Otimista. Use system prompts que rejeitem explicitamente o reflexo de concordar.',
+            '<strong>Sintetizadores trapaceiam.</strong> Se não forçar eles a nomear cada dissenso, eles disfarçam o desacordo. Saída com schema rígido corta isso.'
+          ],
+          metrics: [
+            ['≥ 8', 'Considerações distintas por decisão', true],
+            ['≥ 0.82', 'Convergência de consensus em R3', true],
+            ['~5×', 'Custo de tokens vs agente único', false],
+            ['TBD', 'Lift de qualidade avaliado por exec', false]
+          ],
+          chart: {
+            title: 'Convergência de consensus entre agentes em 3 rodadas',
+            caption: '<strong>5 agentes começam ~0.2 separados</strong> · convergem a ~0.85 em R3 sem colapsar para uma única voz'
+          }
+        }
+      }
     },
 
     '05': {
@@ -5447,7 +5701,7 @@
       pitch: 'Your ops team says: <em>"Whenever a P0 bug is filed, ping the lead engineer, search past tickets for similar incidents, and post a summary to the #incidents Slack channel — but if it\'s a customer-facing outage, also page the on-call manager."</em> Normally that\'s a sprint of engineering work. Here, a meta-agent <strong>reads the sentence and builds the workflow on the spot</strong>. Each step talks to real tools — GitHub, Jira, Slack, Drive — through Model Context Protocol (MCP), the emerging standard for tool integration.',
       three: {
         problem: 'Hardcoded workflows break the moment the business changes. Every new process needs an engineer to wire it up. The half-life of a workflow before it needs revision is weeks, not years.',
-        solution: 'A meta-agent reads natural-language goals and outputs a workflow DAG. It retrieves similar past workflows from memory before planning. Each tool is an MCP server (standardized, swappable). Critical actions — sending messages, irreversible writes — pause for human approval.',
+        solution: 'A <strong>coordinator agent</strong> reads your request in plain English, looks up similar past workflows in memory, then designs a step-by-step pipeline that calls real tools (GitHub, Slack, Jira, Google Drive). Each step uses a standardized tool protocol called MCP, so any tool can be swapped without changing the agent. Risky actions — sending a message, deleting a file — pause for your approval before running.',
         impact: 'Workflow change cost drops by an order of magnitude. Business users describe outcomes; the system builds the steps. Auditable approval trails. <strong>Target: ≥ 70%</strong> of generated workflows are valid first-pass, ≥ 90% after one reflection cycle.'
       },
       analogy: 'A <strong>smart office assistant who can write their own job description and then execute it</strong>. You describe the goal in one sentence; they design the steps, check past examples, and ask you for sign-off on anything that can\'t be undone.',
@@ -5482,7 +5736,69 @@
         { txt: '<em>Plan-and-Solve Prompting: Improving Zero-Shot Chain-of-Thought Reasoning.</em> Wang et al.', venue: 'ACL 2023' }
       ],
       github: 'https://github.com/hecaicedol/ai-portfolio/tree/main/05-workflow-engine',
-      readme: 'https://github.com/hecaicedol/ai-portfolio/blob/main/05-workflow-engine/README.md'
+      readme: 'https://github.com/hecaicedol/ai-portfolio/blob/main/05-workflow-engine/README.md',
+      i18n: {
+        es: {
+          title: 'Motor de Workflows Adaptativo · MCP',
+          tagline: 'Una IA que arma workflows custom para cualquier pedido del negocio — al vuelo.',
+          pitch: 'Tu equipo de ops dice: <em>"Cada vez que entre un bug P0, pingueá al lead engineer, buscá tickets parecidos pasados, y posteá un resumen en el canal #incidents — pero si es un outage de cara al cliente, pageá también al on-call manager."</em> Normalmente eso es un sprint entero de ingeniería. Acá, un meta-agente <strong>lee la frase y arma el workflow al vuelo</strong>. Cada paso habla con herramientas reales — GitHub, Jira, Slack, Drive — vía Model Context Protocol (MCP), el estándar emergente para integración de herramientas.',
+          three: {
+            problem: 'Los workflows hardcodeados se rompen apenas el negocio cambia. Cada proceso nuevo necesita un ingeniero que lo cablée. La vida útil de un workflow antes de necesitar revisión es semanas, no años.',
+            solution: 'Un <strong>agente coordinador</strong> lee tu pedido en lenguaje natural, busca workflows pasados parecidos en memoria, y diseña un pipeline paso-a-paso que llama herramientas reales (GitHub, Slack, Jira, Google Drive). Cada paso usa un protocolo estandarizado (MCP), así cualquier herramienta es intercambiable sin tocar al agente. Las acciones riesgosas — mandar un mensaje, borrar un archivo — pausan para tu aprobación antes de correr.',
+            impact: 'El costo de cambiar un workflow baja un orden de magnitud. Los usuarios de negocio describen resultados; el sistema construye los pasos. Trails de aprobación auditables. <strong>Meta: ≥ 70%</strong> de los workflows generados son válidos en el primer intento, ≥ 90% tras una ronda de reflexión.'
+          },
+          analogy: 'Un <strong>asistente de oficina inteligente que puede escribir su propia descripción de puesto y después ejecutarla</strong>. Describís el objetivo en una frase; el asistente diseña los pasos, revisa ejemplos pasados, y te pide firma para todo lo que no se puede deshacer.',
+          decisions: [
+            ['MCP en vez de APIs de herramienta custom', 'Un protocolo estandarizado hace que las integraciones GitHub/Jira/Slack/Drive sean reusables, intercambiables, auditables'],
+            ['El planner aprende de DAGs pasados', 'Los workflows exitosos se embeben; el planner recupera planes pasados similares antes de generar uno nuevo'],
+            ['Aprobaciones HITL en nodos críticos', 'Mandar mensajes, escrituras irreversibles, eliminaciones — todas pausan para firma humana']
+          ],
+          lessons: [
+            '<strong>"Generar el DAG" no es la parte difícil.</strong> Validarlo sí. Sin un schema estricto de DAG y modo dry-run, el meta-agente inventa tool calls que no existen.',
+            '<strong>Los gates HITL necesitan timeouts.</strong> Un workflow que espera por aprobación para siempre es un workflow que muere en silencio. Siempre tené una acción de fallback.'
+          ],
+          metrics: [
+            ['≥ 0.70', 'DAG válido en primer intento', true],
+            ['≥ 0.90', 'Tras 1 reflexión', true],
+            ['5–12', 'Promedio de nodos por workflow', false],
+            ['4+', 'Servidores MCP integrados', false]
+          ],
+          chart: {
+            title: 'Validez del DAG en primer intento según complejidad del workflow',
+            caption: '<strong>El ciclo de reflexión cierra la mayoría de los gaps</strong> · workflows complejos todavía necesitan revisión humana'
+          }
+        },
+        pt: {
+          title: 'Motor de Workflows Adaptativo · MCP',
+          tagline: 'Uma IA que monta workflows sob medida para qualquer pedido do negócio — na hora.',
+          pitch: 'Seu time de ops diz: <em>"Sempre que entrar um bug P0, ping no lead engineer, busca tickets parecidos passados, e posta um resumo no canal #incidents — mas se for um outage que afeta cliente, paga também o on-call manager."</em> Normalmente isso é uma sprint inteira de engenharia. Aqui, um meta-agente <strong>lê a frase e monta o workflow na hora</strong>. Cada passo fala com ferramentas reais — GitHub, Jira, Slack, Drive — via Model Context Protocol (MCP), o padrão emergente para integração de ferramentas.',
+          three: {
+            problem: 'Workflows hardcoded quebram no momento que o negócio muda. Todo processo novo precisa de um engenheiro pra cabear. A meia-vida de um workflow antes de precisar revisão é semanas, não anos.',
+            solution: 'Um <strong>agente coordenador</strong> lê seu pedido em linguagem natural, busca workflows passados parecidos na memória, e desenha um pipeline passo-a-passo que chama ferramentas reais (GitHub, Slack, Jira, Google Drive). Cada passo usa um protocolo padronizado (MCP), então qualquer ferramenta pode ser trocada sem mexer no agente. Ações arriscadas — mandar mensagem, deletar arquivo — pausam para sua aprovação antes de rodar.',
+            impact: 'O custo de mudar um workflow cai uma ordem de grandeza. Usuários de negócio descrevem resultados; o sistema constrói os passos. Trilhas de aprovação auditáveis. <strong>Meta: ≥ 70%</strong> dos workflows gerados são válidos na primeira passagem, ≥ 90% após um ciclo de reflexão.'
+          },
+          analogy: 'Um <strong>assistente de escritório inteligente que escreve a própria descrição de cargo e depois executa</strong>. Você descreve o objetivo numa frase; ele desenha os passos, confere exemplos passados, e pede sua assinatura para qualquer coisa que não dê pra desfazer.',
+          decisions: [
+            ['MCP em vez de APIs custom de ferramenta', 'Protocolo padronizado torna as integrações GitHub/Jira/Slack/Drive reutilizáveis, trocáveis, auditáveis'],
+            ['O planner aprende com DAGs passados', 'Workflows bem-sucedidos são embedados; o planner recupera planos passados similares antes de gerar um novo'],
+            ['Aprovações HITL em nós críticos', 'Mandar mensagens, escritas irreversíveis, deleções — todas pausam para assinatura humana']
+          ],
+          lessons: [
+            '<strong>"Gerar o DAG" não é a parte difícil.</strong> Validar é. Sem schema rígido de DAG e modo dry-run, o meta-agente inventa tool calls que não existem.',
+            '<strong>Gates HITL precisam de timeout.</strong> Um workflow que espera aprovação pra sempre é um workflow que morre em silêncio. Sempre tenha uma ação de fallback.'
+          ],
+          metrics: [
+            ['≥ 0.70', 'DAG válido na primeira passagem', true],
+            ['≥ 0.90', 'Após 1 reflexão', true],
+            ['5–12', 'Média de nós por workflow', false],
+            ['4+', 'Servidores MCP integrados', false]
+          ],
+          chart: {
+            title: 'Validade do DAG na primeira passagem por complexidade do workflow',
+            caption: '<strong>O ciclo de reflexão fecha a maioria dos gaps</strong> · workflows complexos ainda precisam de revisão humana'
+          }
+        }
+      }
     },
 
     '06': {
@@ -5493,7 +5809,7 @@
       pitch: 'Most teams pick a vector database by <strong>reading a blog post</strong>. But the right answer depends on YOUR documents, YOUR queries, YOUR budget — not a benchmark someone ran on a different corpus. This system runs the same queries against <strong>pgvector, Qdrant, and Pinecone in parallel</strong>. Same documents, same evaluation harness. An optimizer agent watches Ragas scores in real time and re-tunes parameters when quality drops. Vendor choice becomes a measured decision, not a vibe.',
       three: {
         problem: 'Published benchmarks are rarely run on data that looks like yours. "We chose X because it had the best recall" usually means "we read one blog." Real answers require real measurement, on your real corpus.',
-        solution: 'Triple-write to pgvector, Qdrant, and Pinecone. Apply Anthropic\'s contextual retrieval (chunks enriched with their surrounding context), BM25 + vector hybrid with RRF fusion, then Cohere reranking. A Ragas-driven optimizer agent watches faithfulness scores and auto-tunes chunk size, rerank-k, and fusion weights — A/B tested against a held-out set.',
+        solution: 'Three different search databases are loaded with the same documents and queried side-by-side. Each chunk of text is pre-processed with a technique from Anthropic (<strong>contextual retrieval</strong>) that boosts accuracy ~49% before any reranker. Searches combine keyword matching <strong>and</strong> semantic similarity, then a Cohere reranker re-orders the top results. An <strong>optimizer agent</strong> watches an evaluator continuously and re-tunes the search settings whenever accuracy drops — every change is A/B tested against a held-out set before promotion.',
         impact: 'Faithfulness target lifts from <strong>~0.74</strong> (vector-only) to <strong>≥ 0.88</strong> with the full stack. Cost trade-offs become explicit, not assumed. Optimization runs continuously — your retrieval gets better while you sleep.'
       },
       analogy: '<strong>A/B testing for your AI\'s memory.</strong> Instead of guessing which retrieval setup is best, the system measures it on real questions and re-tunes itself when quality drifts. The closed loop matters: a one-time tuning becomes stale within weeks.',
@@ -5530,7 +5846,71 @@
         { txt: '<em>Lost in the Middle: How Language Models Use Long Contexts.</em> Liu et al.', venue: 'TACL 2024' }
       ],
       github: 'https://github.com/hecaicedol/ai-portfolio/tree/main/06-agentic-rag',
-      readme: 'https://github.com/hecaicedol/ai-portfolio/blob/main/06-agentic-rag/README.md'
+      readme: 'https://github.com/hecaicedol/ai-portfolio/blob/main/06-agentic-rag/README.md',
+      i18n: {
+        es: {
+          title: 'RAG Agéntico · Benchmark de Vector DBs',
+          tagline: 'Corro tres vector databases en paralelo — y dejo que los datos elijan al ganador.',
+          pitch: 'La mayoría de los equipos elige un vector database <strong>leyendo un blog post</strong>. Pero la respuesta correcta depende de TUS documentos, TUS consultas, TU presupuesto — no de un benchmark que alguien corrió sobre otro corpus. Este sistema corre las mismas consultas contra <strong>pgvector, Qdrant y Pinecone en paralelo</strong>. Mismos documentos, mismo harness de evaluación. Un agente optimizador mira los puntajes de Ragas en tiempo real y re-tunea parámetros cuando la calidad baja. La elección de vendor se vuelve una decisión medida, no un feeling.',
+          three: {
+            problem: 'Los benchmarks publicados rara vez corren sobre datos parecidos a los tuyos. "Elegimos X porque tenía el mejor recall" suele significar "leímos un blog". Las respuestas reales requieren medición real sobre tu corpus real.',
+            solution: 'Tres bases de datos de búsqueda distintas cargadas con los mismos documentos y consultadas en paralelo. Cada chunk de texto se pre-procesa con una técnica de Anthropic (<strong>contextual retrieval</strong>) que sube ~49% la exactitud antes de cualquier reranker. Las búsquedas combinan match por keyword <strong>y</strong> similitud semántica, después un reranker de Cohere reordena el top de resultados. Un <strong>agente optimizador</strong> mira un evaluador continuamente y re-tunea los settings de búsqueda cuando la exactitud cae — cada cambio se A/B testea contra un set held-out antes de promoverse.',
+            impact: 'La meta de faithfulness sube de <strong>~0.74</strong> (solo vectores) a <strong>≥ 0.88</strong> con el stack completo. Los trade-offs de costo se vuelven explícitos, no asumidos. La optimización corre continuamente — tu retrieval mejora mientras dormís.'
+          },
+          analogy: '<strong>A/B testing para la memoria de tu IA.</strong> En vez de adivinar qué setup de retrieval es el mejor, el sistema lo mide sobre preguntas reales y se re-tunea cuando la calidad deriva. El loop cerrado importa: un tuneo one-shot se vuelve obsoleto en semanas.',
+          decisions: [
+            ['Tres stores en paralelo', 'Mismo corpus, mismas consultas, misma eval. Apples-to-apples — los benchmarks publicados rara vez lo son'],
+            ['Contextual retrieval de Anthropic', 'Pre-agregar contexto al chunk reduce ~49% el failure de retrieval. Lift gratis antes de cualquier reranker'],
+            ['BM25 + vector + rerank (fusión RRF)', 'Cada etapa se mide independientemente. El híbrido gana en consultas long-tail que el semántico puro pierde'],
+            ['Auto-optimizer con Ragas', 'Control de calidad en loop cerrado. El tuneo estático decae — el tuneo continuo compone']
+          ],
+          lessons: [
+            '<strong>"Usá un vector DB" es la mitad fácil de RAG.</strong> La estrategia de chunking, los pesos de fusión y el harness de eval son la mitad difícil. La mayoría de los RAG en producción fallan en la segunda.',
+            '<strong>La latencia de Pinecone es grandiosa. El costo de Pinecone no.</strong> El benchmark existe precisamente porque el trade-off correcto depende de patrones de tráfico que no podés adivinar.'
+          ],
+          metrics: [
+            ['≥ 0.88', 'Meta de faithfulness Ragas', true],
+            ['+0.14', 'vs baseline solo vectores', false],
+            ['≤ 800ms', 'Latencia de consulta P95', true],
+            ['~3 / sem', 'Episodios de auto-tuneo', false]
+          ],
+          chart: {
+            title: 'Frontera de Pareto costo / calidad · 3 vector stores',
+            caption: '<strong>pgvector gana en costo-calidad.</strong> Pinecone gana en latencia. No hay un único ganador — depende del tráfico.'
+          }
+        },
+        pt: {
+          title: 'RAG Agêntico · Benchmark de Vector DBs',
+          tagline: 'Eu rodo três vector databases em paralelo — e deixo os dados escolherem o vencedor.',
+          pitch: 'A maioria dos times escolhe um vector database <strong>lendo um blog post</strong>. Mas a resposta certa depende dos SEUS documentos, das SUAS queries, do SEU orçamento — não de um benchmark que alguém rodou em outro corpus. Este sistema roda as mesmas queries contra <strong>pgvector, Qdrant e Pinecone em paralelo</strong>. Mesmos documentos, mesmo harness de avaliação. Um agente otimizador olha os scores Ragas em tempo real e re-tuna parâmetros quando a qualidade cai. A escolha do vendor vira uma decisão medida, não um feeling.',
+          three: {
+            problem: 'Benchmarks publicados raramente rodam em dados parecidos com os seus. "Escolhemos X porque tinha o melhor recall" geralmente significa "lemos um blog". Respostas reais exigem medição real no seu corpus real.',
+            solution: 'Três bancos de busca diferentes carregados com os mesmos documentos e consultados lado-a-lado. Cada chunk de texto é pré-processado com uma técnica da Anthropic (<strong>contextual retrieval</strong>) que sobe ~49% a acurácia antes de qualquer reranker. As buscas combinam match por keyword <strong>e</strong> similaridade semântica, depois um reranker da Cohere reordena o topo dos resultados. Um <strong>agente otimizador</strong> olha um avaliador continuamente e re-tuna os ajustes de busca quando a acurácia cai — toda mudança é A/B testada contra um set held-out antes de promovida.',
+            impact: 'A meta de faithfulness sobe de <strong>~0.74</strong> (só vetores) para <strong>≥ 0.88</strong> com o stack completo. Trade-offs de custo ficam explícitos, não assumidos. A otimização roda continuamente — seu retrieval melhora enquanto você dorme.'
+          },
+          analogy: '<strong>A/B testing para a memória da sua IA.</strong> Em vez de chutar qual setup de retrieval é melhor, o sistema mede em perguntas reais e se re-tuna quando a qualidade deriva. O loop fechado importa: um tuning one-shot fica obsoleto em semanas.',
+          decisions: [
+            ['Três stores em paralelo', 'Mesmo corpus, mesmas queries, mesma eval. Apples-to-apples — benchmarks publicados raramente são'],
+            ['Contextual retrieval da Anthropic', 'Pré-adicionar contexto ao chunk reduz ~49% as falhas de retrieval. Lift de graça antes de qualquer reranker'],
+            ['BM25 + vetor + rerank (fusão RRF)', 'Cada etapa medida independentemente. O híbrido vence em queries long-tail que o semântico puro perde'],
+            ['Auto-optimizer com Ragas', 'Controle de qualidade em loop fechado. Tuning estático decai — tuning contínuo se acumula']
+          ],
+          lessons: [
+            '<strong>"Use um vector DB" é a metade fácil de RAG.</strong> A estratégia de chunking, os pesos de fusão e o harness de eval são a metade difícil. A maioria dos RAG em produção falham na segunda.',
+            '<strong>A latência da Pinecone é ótima. O custo da Pinecone não.</strong> O benchmark existe justamente porque o trade-off certo depende de padrões de tráfego que você não consegue adivinhar.'
+          ],
+          metrics: [
+            ['≥ 0.88', 'Meta de faithfulness Ragas', true],
+            ['+0.14', 'vs baseline só vetores', false],
+            ['≤ 800ms', 'Latência de query P95', true],
+            ['~3 / sem', 'Episódios de auto-tuning', false]
+          ],
+          chart: {
+            title: 'Fronteira de Pareto custo / qualidade · 3 vector stores',
+            caption: '<strong>pgvector vence em custo-qualidade.</strong> Pinecone vence em latência. Sem vencedor único — depende do tráfego.'
+          }
+        }
+      }
     }
   };
 
@@ -5545,8 +5925,24 @@
   const $tagline = document.getElementById('modalTagline');
   const $body = document.getElementById('modalBody');
 
+  // Merge a project's optional `i18n[lang]` overlay onto the EN base so
+  // every modal field renders in the current language when translated.
+  // Fields that stay universal (svg arch, sample code, github/readme,
+  // stack, formula) are NOT in the overlay and inherit from EN.
+  function tr(p) {
+    const lang = window.__LANG || 'en';
+    if (lang === 'en' || !p.i18n || !p.i18n[lang]) return p;
+    const o = p.i18n[lang];
+    return {
+      ...p,
+      ...o,
+      three: { ...p.three, ...(o.three || {}) },
+      chart: p.chart ? { ...p.chart, ...(o.chart || {}) } : p.chart,
+    };
+  }
+
   function renderProject(id) {
-    const p = PROJECTS[id];
+    const p = tr(PROJECTS[id]);
     if (!p) return;
     $num.textContent = p.num;
     $badge.className = 'badge ' + p.status.cls;
@@ -5738,6 +6134,25 @@
     const id = location.hash.replace('#/p/', '').padStart(2, '0');
     if (PROJECTS[id]) setTimeout(() => openModal(id), 300);
   }
+
+  // Re-render the open modal when the language changes so the translated
+  // pitch / problem / solution / impact / decisions / lessons swap in.
+  let _currentOpenId = null;
+  const _origOpenModal = openModal;
+  openModal = function (id) {
+    _currentOpenId = id;
+    _origOpenModal(id);
+  };
+  const _origCloseModal = closeModal;
+  closeModal = function () {
+    _currentOpenId = null;
+    _origCloseModal();
+  };
+  window.addEventListener('langchange', () => {
+    if (_currentOpenId && $shell.classList.contains('open')) {
+      renderProject(_currentOpenId);
+    }
+  });
 </script>
 
 <!-- ============ WORDS-AS-VECTORS · embedding space + arithmetic ============ -->
@@ -8620,13 +9035,13 @@
   const PROJECTS = [
     { id: '01', x: -2.8, y:  1.05, color: '#8b6dff', label: 'P1 · Self-Healing Pipeline', status: 'live · 22 tests', w: 1.55,
       info: 'LangGraph orchestrates 5 nodes (extract → validate → critique → reflect → synthesize). A Constitutional AI critic scores extractions across 4 principles; failures trigger a bounded reflection loop, and every error is persisted to pgvector episodic memory so the critic gets stricter over time. 22 pytest tests, 15-doc eval corpus, Next.js demo frontend.' },
-    { id: '02', x:  0.0, y:  1.55, color: '#4dd0c2', label: 'P2 · Knowledge OS (GraphRAG)', status: 'graph RAG · 19 tests', w: 1.45,
+    { id: '02', x:  0.0, y:  1.55, color: '#4dd0c2', label: 'P2 · Knowledge OS (GraphRAG)', status: 'graph RAG · 19 tests', w: 1.10,
       info: 'Hybrid retrieval that joins a graph store with vector search. The GraphRAG engine extracts query entities → vector-matches across labels → BFS-traverses up to max_hops → RRF-fuses both lists → calls a synthesizer that must cite node ids the engine knows about (hallucinated ids are silently dropped — a test pins this). InMemoryGraphStore + entity extractor + staleness agent ship under fakes-only tests; the Neo4j backend stays lazy-imported.' },
-    { id: '03', x:  2.8, y:  1.05, color: '#ff9e6d', label: 'P3 · Research Agent (MemGPT)', status: 'core memory · 31 tests', w: 1.45,
+    { id: '03', x:  2.8, y:  1.05, color: '#ff9e6d', label: 'P3 · Research Agent (MemGPT)', status: 'core memory · 31 tests', w: 1.10,
       info: 'Autonomous research agent with three-tier memory (working / episodic / semantic). The MemGPT controller auto-archives evictions, assembles cross-tier context, and consolidates facts at session end — all driven by a LangGraph planner → executor → reflector → reporter loop. 31 tests cover every tier + the controller + the graph end-to-end via a ScriptedLLM, with no network and no API keys.' },
-    { id: '04', x: -2.8, y: -1.05, color: '#fbbf24', label: 'P4 · Multi-Agent Debate', status: 'debate graph · 18 tests', w: 1.45,
+    { id: '04', x: -2.8, y: -1.05, color: '#fbbf24', label: 'P4 · Multi-Agent Debate', status: 'debate graph · 18 tests', w: 1.10,
       info: 'Five specialized agents (Optimist, Skeptic, Financial, Risk, Devil\'s Advocate) argue across opening → rebuttal → final, then a synthesizer produces an executive memo. The consensus number is computed deterministically from final-round stances (variance on a {-2..+2} axis) — the LLM does not own it. 18 tests cover the JSON envelope, the consensus math, the in-memory shared store, and the full LangGraph debate end-to-end via a ScriptedLLM.' },
-    { id: '05', x:  0.0, y: -1.55, color: '#34d399', label: 'P5 · Workflow Engine (MCP)', status: 'executor · 24 tests', w: 1.45,
+    { id: '05', x:  0.0, y: -1.55, color: '#34d399', label: 'P5 · Workflow Engine (MCP)', status: 'executor · 24 tests', w: 1.10,
       info: 'Meta-agent turns natural language ("when a P0 bug is filed, ping the lead engineer, search past tickets, post to #incidents") into a runnable DAG. The executor runs layer-by-layer in parallel via asyncio.gather, interpolates {{nX.field}} references from upstream outputs (preserves int types), pauses at HITL gates with edited-params propagation, and on node failure asks a replanner for a replacement subgraph that the executor splices in-place — rewiring downstream depends_on so the rest of the DAG continues. 24 tests cover every path including parallel fan-out, pause/resume races, and the splice math, all without any real MCP server.' },
     { id: '06', x:  2.8, y: -1.05, color: '#ec4899', label: 'P6 · Agentic RAG benchmark', status: 'code complete · 74 tests', w: 1.45,
       info: 'Three vector stores (pgvector / Qdrant / Pinecone) indexed with the same Anthropic-contextual-retrieval chunks, queried with RRF hybrid of BM25 + vector + Cohere rerank. An auto-optimizer agent watches Ragas scores and tunes parameters when faithfulness drops. 74 tests, all three slices code-complete with mocked integrations.' },
